@@ -4,7 +4,7 @@ import { IBaseService } from '../abstractions/interfaces';
 
 export abstract class BaseService<M> implements IBaseService<M> {
   protected readonly repository: Repository<M>;
-  private entity: EntityTarget<M>;
+  private readonly entity: EntityTarget<M>;
 
   constructor(entity: EntityTarget<M>) {
     this.repository = db.getRepository(entity);
@@ -15,7 +15,7 @@ export abstract class BaseService<M> implements IBaseService<M> {
     return this.repository.find();
   }
 
-  async getOne(id: number): Promise<M> {
+  async getOne(id = -1): Promise<M> {
     const entity: M | null = await this.repository.findOneBy({
       id,
     } as unknown as FindOptionsWhere<M>);

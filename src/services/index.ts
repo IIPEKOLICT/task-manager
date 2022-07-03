@@ -1,8 +1,8 @@
 import { TagService } from './tag.service';
 import { TodoService } from './todo.service';
 import { TopicService } from './topic.service';
-import { Todo } from '../models/todo';
+import { Tag, Todo, Topic } from '../models';
 
-export const tagService = new TagService();
+export const tagService = new TagService(Tag);
 export const todoService = new TodoService(Todo);
-export const topicService = new TopicService();
+export const topicService = new TopicService(Topic);
