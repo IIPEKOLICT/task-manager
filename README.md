@@ -1,34 +1,68 @@
-# todo-backend
-Todo app backend on Jovy framework
+_todo_
+
+# ??? + ??? app
+
+App for manage tasks
+
+### Backend tech stack
+
+- ???
+
+### Frontend tech stack
+
+- ???
+
+### Repository secrets
+
+- `HEROKU_APP_NAME` name of backend Heroku app
+- `HEROKU_API_KEY` used Heroku api key for deploy backend
+- `HEROKU_EMAIL` used Heroku email for deploy backend
+- `KEYSTORE_GIT_REPOSITORY` name of git repository with keystore for mobile client
+- `KEYSTORE_ACCESS_TOKEN` token for get access to keystore repository
+- `KEYSTORE_PASSWORD` password of used keystore
+- `RELEASE_SIGN_KEY_ALIAS` used alias for sign app using keystore
+- `RELEASE_SIGN_KEY_PASSWORD` used password for sign app using keystore
 
 ### Environment variables
-- `PORT`
-- `DATABASE_URL`
-- `PGSSLMODE` set 'no-verify' for Heroku
 
-### How to use
-Setup PostgreSQl DB:
+- `PORT` used port by backend
+- `SPRING_DATASOURCE_URL` db url string
+- `SPRING_DATASOURCE_USERNAME` db username
+- `SPRING_DATASOURCE_PASSWORD` db password
+- `PGSSLMODE` set to 'no-verify' for Heroku
+
+### Setup database
+
 ```shell
 psql -U postgres
 create database todo;
 \q
 ```
 
-Prepare project
+### Load project
+
 ```shell
-git clone git@github.com:IIPEKOLICT/todo-backend.git
-cd safe-backend
-npm i
+git clone git@github.com:IIPEKOLICT/todo.git
+cd todo
 ```
 
-Run in dev mode
+<!-- ### Start backend locally (needed 17 Java)
+
 ```shell
-npm run start:dev
+cd backend
+./gradlew build
+./gradlew bootRun
 ```
 
-Run in prod mode
-```shell
-npm run start:prod
-```
+### Start backend on heroku command (needed 17 Java)
 
-[Jovy guide](https://github.com/IIPEKOLICT/jovy#readme)
+```shell
+java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/backend.jar
+``` -->
+
+<!-- ### Build APK and AAB files
+
+```shell
+chmod +x ./scripts/build_client.sh
+./scripts/build_client.sh $FRONTED_NAME-$GIT_TAG_NAME
+``` -->
