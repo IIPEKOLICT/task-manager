@@ -1,16 +1,22 @@
 _todo_
 
-# ??? + ??? app
+# Ktor + Flutter app
 
-App for manage tasks
+App for manage tasks (Main diploma in BSUIR)
 
 ### Backend tech stack
 
-- ???
+- Kotlin
+- Ktor
+- Exposed ORM
+- Gradle
+- PostgreSQL
+- SwaggerUI
 
-### Frontend tech stack
+### Client tech stack
 
-- ???
+- Dart
+- Flutter
 
 ### Repository secrets
 
@@ -26,9 +32,7 @@ App for manage tasks
 ### Environment variables
 
 - `PORT` used port by backend
-- `SPRING_DATASOURCE_URL` db url string
-- `SPRING_DATASOURCE_USERNAME` db username
-- `SPRING_DATASOURCE_PASSWORD` db password
+- `JDBC_DATABASE_URL` db url string
 - `PGSSLMODE` set to 'no-verify' for Heroku
 
 ### Setup database
@@ -46,7 +50,7 @@ git clone git@github.com:IIPEKOLICT/todo.git
 cd todo
 ```
 
-<!-- ### Start backend locally (needed 17 Java)
+### Start backend locally (needed 11+ Java)
 
 ```shell
 cd backend
@@ -54,15 +58,19 @@ cd backend
 ./gradlew bootRun
 ```
 
-### Start backend on heroku command (needed 17 Java)
+### Start backend on heroku command (needed 11+ Java)
 
 ```shell
-java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/backend.jar
-``` -->
+./build/install/backend/bin/backend
+```
 
-<!-- ### Build APK and AAB files
+[//]: # (### Build APK and AAB files)
 
-```shell
-chmod +x ./scripts/build_client.sh
-./scripts/build_client.sh $FRONTED_NAME-$GIT_TAG_NAME
-``` -->
+[//]: # ()
+[//]: # (```shell)
+
+[//]: # (chmod +x ./scripts/build_client.sh)
+
+[//]: # (./scripts/build_client.sh $CLIENT_NAME-$GIT_TAG_NAME)
+
+[//]: # (```)
