@@ -1,0 +1,5 @@
+deploy:
+  artifact: backend/build/libs/backend.jar
+global:
+  application_name: task-manager
+  default_platform: Corretto 17 running on 64bit Amazon Linux 2

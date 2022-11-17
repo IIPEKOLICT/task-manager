@@ -4,16 +4,20 @@ rm -rf build
 mkdir build
 cd frontend/android || exit
 
-echo Test client code...
+echo Install dependencies...
 
-./gradlew test
+flutter pub get
+
+echo Test code...
+
+flutter test
 
 echo Build APK and AAB files...
 
-./gradlew assembleRelease
-./gradlew bundleRelease
+flutter build apk
+flutter build appbundle
 
 echo Move output client files to build directory...
 
-mv "app/build/outputs/apk/release/app-release.apk" "../../build/$1.apk"
-mv "app/build/outputs/bundle/release/app-release.aab" "../../build/$1.aab"
+mv "../build/app/outputs/apk/release/app-release.apk" "../../build/$1.apk"
+mv "../build/app/outputs/bundle/release/app-release.aab" "../../build/$1.aab"

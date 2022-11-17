@@ -1,18 +1,19 @@
 val ktorVersion: String by project
+val kNestVersion: String by project
+val kMongoVersion: String by project
+val koinVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
-val pgVersion: String by project
-val exposedVersion: String by project
-val hikariVersion: String by project
 val swaggerVersion: String by project
+val bcryptVersion: String by project
 
 plugins {
     application
     kotlin("jvm") version "1.7.10"
-    id("io.ktor.plugin") version "2.1.1"
+    id("io.ktor.plugin") version "2.1.3"
 }
 
-group = "backend.todo"
+group = "taskmanager.backend"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
@@ -27,16 +28,9 @@ ktor {
     }
 }
 
-tasks {
-    create("stage").dependsOn("installDist")
-}
-
 repositories {
     mavenCentral()
 
-    maven {
-        setUrl("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-    }
     maven {
         setUrl("https://jitpack.io")
     }
@@ -51,14 +45,14 @@ dependencies {
     implementation("io.ktor:ktor-serialization-gson-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 
-    implementation ("io.github.smiley4:ktor-swagger-ui:$swaggerVersion")
+    implementation("com.github.IIPEKOLICT:knest:$kNestVersion")
+    implementation("io.github.smiley4:ktor-swagger-ui:$swaggerVersion")
+    implementation("at.favre.lib:bcrypt:$bcryptVersion")
 
-    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    implementation("com.zaxxer:HikariCP:$hikariVersion")
+    implementation("io.insert-koin:koin-ktor:$koinVersion")
+    implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
 
-    runtimeOnly("org.postgresql:postgresql:$pgVersion")
+    implementation("org.litote.kmongo:kmongo-coroutine:$kMongoVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
