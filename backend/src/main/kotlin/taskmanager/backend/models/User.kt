@@ -11,7 +11,6 @@ import taskmanager.backend.shared.Configuration
 
 data class User(
     @BsonId val _id: ObjectId = ObjectId(),
-    val projects: Set<ObjectId> = emptySet(),
 
     var email: String,
     var password: String,

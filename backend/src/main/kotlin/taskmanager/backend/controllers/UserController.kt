@@ -9,6 +9,7 @@ import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
+import org.bson.types.ObjectId
 import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.dtos.request.CreateUserDto
@@ -18,6 +19,7 @@ import taskmanager.backend.dtos.request.UpdateUserInfoDto
 import taskmanager.backend.dtos.response.UserResponseDto
 import taskmanager.backend.models.User
 import taskmanager.backend.services.FileService
+import taskmanager.backend.services.ProjectService
 import taskmanager.backend.services.S3Service
 import taskmanager.backend.services.UserService
 
@@ -27,6 +29,7 @@ class UserController {
     private val fileService by inject<FileService>(FileService::class.java)
     private val s3Service by inject<S3Service>(S3Service::class.java)
     private val userService by inject<UserService>(UserService::class.java)
+    private val projectService by inject<ProjectService>(ProjectService::class.java)
 
     @Get
     @Authentication(["auth-jwt"])
@@ -96,6 +99,7 @@ class UserController {
     @Delete("{id}")
     @Authentication(["auth-jwt"])
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        projectService.deleteByUser(ObjectId(id))
         return DeleteDto(userService.deleteById(id))
     }
 }
