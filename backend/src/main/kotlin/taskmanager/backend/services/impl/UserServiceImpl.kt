@@ -9,6 +9,7 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import taskmanager.backend.dtos.request.CreateUserDto
 import taskmanager.backend.dtos.request.UpdateUserCredentialsDto
 import taskmanager.backend.dtos.request.UpdateUserInfoDto
+import taskmanager.backend.enums.DBCollection
 import taskmanager.backend.exceptions.custom.EntityNotFoundException
 import taskmanager.backend.models.User
 import taskmanager.backend.services.UserService
@@ -16,8 +17,8 @@ import java.util.*
 
 class UserServiceImpl(database: CoroutineDatabase) : UserService {
 
-    private val collection: CoroutineCollection<User> = database.getCollection("users")
-    private val notFoundException = EntityNotFoundException("Пользователь")
+    private val collection: CoroutineCollection<User> = database.getCollection(DBCollection.USER.nameInDB)
+    private val notFoundException = EntityNotFoundException(DBCollection.USER.entityName)
 
     override suspend fun getAll(): List<User> {
         return collection.find().toList()
