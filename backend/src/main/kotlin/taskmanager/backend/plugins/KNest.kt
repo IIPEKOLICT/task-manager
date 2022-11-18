@@ -5,9 +5,7 @@ import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import org.bson.types.ObjectId
-import taskmanager.backend.controllers.AuthController
-import taskmanager.backend.controllers.MainController
-import taskmanager.backend.controllers.UserController
+import taskmanager.backend.controllers.*
 import taskmanager.backend.exceptions.ExceptionContainer
 import taskmanager.backend.plugins.injectors.JwtUserInjector
 import taskmanager.backend.plugins.injectors.LocalUserInjector
@@ -23,7 +21,9 @@ fun Application.configureKNest() {
             setControllers(
                 MainController(),
                 UserController(),
-                AuthController()
+                AuthController(),
+                ProjectController(),
+                TagController()
             )
 
             addPropertyInjectors(JwtUserInjector::class, LocalUserInjector::class)

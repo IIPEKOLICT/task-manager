@@ -12,4 +12,4 @@ data class Project(
     val tags: Set<ObjectId> = emptySet(),
 
     var name: String,
-) : BaseEntity<Project>()
+) : BaseEntity()

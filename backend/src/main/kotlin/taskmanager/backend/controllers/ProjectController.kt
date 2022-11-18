@@ -14,13 +14,16 @@ import taskmanager.backend.dtos.request.*
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.models.Project
+import taskmanager.backend.models.Tag
 import taskmanager.backend.models.User
 import taskmanager.backend.services.ProjectService
+import taskmanager.backend.services.TagService
 
 @Controller("projects")
 class ProjectController {
 
     private val projectService by inject<ProjectService>(ProjectService::class.java)
+    private val tagService by inject<TagService>(TagService::class.java)
 
     @Get
     @Authentication(["auth-jwt"])
@@ -34,6 +37,12 @@ class ProjectController {
         return projectService.getById(id)
     }
 
+    @Get("{id}/tags")
+    @Authentication(["auth-jwt"])
+    suspend fun getProjectTags(@Param("id") id: String): List<Tag> {
+        return tagService.getByProject(id)
+    }
+
     @Post
     @Authentication(["auth-jwt"])
     suspend fun create(
@@ -41,6 +50,16 @@ class ProjectController {
         @Body(type = CreateProjectDto::class) dto: CreateProjectDto
     ): Project {
         return projectService.create(user._id, dto)
+    }
+
+    @Post("{id}/tags")
+    @Authentication(["auth-jwt"])
+    suspend fun createProjectTag(
+        @JwtUser user: User,
+        @Param("id") id: String,
+        @Body("name") name: String
+    ): Tag {
+        return tagService.create(user._id, projectService.getById(id)._id, name)
     }
 
     @Patch("{id}/name")
@@ -81,6 +100,7 @@ class ProjectController {
             throw ForbiddenException("Вы не можете удалить этот проект")
         }
 
+        tagService.deleteByProject(id)
         return DeleteDto(projectService.deleteById(id))
     }
 }

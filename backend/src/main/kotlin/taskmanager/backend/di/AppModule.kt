@@ -21,6 +21,7 @@ object AppModule {
             single<UserService> { UserServiceImpl(get()) }
             single<AuthService> { AuthServiceImpl(get()) }
             single<ProjectService> { ProjectServiceImpl(get()) }
+            single<TagService> { TagServiceImpl(get()) }
 
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }

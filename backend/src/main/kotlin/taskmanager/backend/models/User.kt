@@ -17,7 +17,7 @@ data class User(
     var firstName: String,
     var lastName: String,
     var picturePath: String? = null,
-) : BaseEntity<User>() {
+) : BaseEntity() {
 
     fun hashPassword(): User {
         password = BCrypt
