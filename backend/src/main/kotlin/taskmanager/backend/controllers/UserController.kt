@@ -7,6 +7,7 @@ import com.github.iipekolict.knest.annotations.properties.File
 import com.github.iipekolict.knest.annotations.properties.Param
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.plugins.annotations.JwtUser
@@ -70,7 +71,7 @@ class UserController {
         @Param("id") id: String,
         @File("picture") picture: PartData.FileItem?
     ): UserResponseDto {
-        if (picture == null) throw RuntimeException()
+        if (picture == null) throw BadRequestException("Нет файла картинки")
 
         val picturePath = "/users/pictures/${user._id}.png"
 

@@ -13,6 +13,7 @@ import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.plugins.annotations.LocalUser
 import taskmanager.backend.dtos.request.AuthDto
 import taskmanager.backend.dtos.request.CreateUserDto
+import taskmanager.backend.exceptions.custom.UnauthorizedException
 import taskmanager.backend.models.User
 import taskmanager.backend.services.AuthService
 import taskmanager.backend.services.UserService
@@ -38,7 +39,7 @@ class AuthController {
         val candidate: User? = userService.getByEmailOrNull(dto.email)
 
         if (candidate != null) {
-            throw RuntimeException()
+            throw UnauthorizedException("Пользователь с таким E-mail уже существует")
         }
 
         val user: User = userService.create(dto)

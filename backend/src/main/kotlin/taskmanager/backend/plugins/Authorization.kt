@@ -37,7 +37,10 @@ fun Application.configureAuthorization() {
             }
 
             challenge { defaultScheme, realm ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+                call.respond(
+                    status = HttpStatusCode.Unauthorized,
+                    message = "Токен не валиден или его срок действия истек"
+                )
             }
         }
     }

@@ -6,6 +6,7 @@ import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.*
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
+import taskmanager.backend.exceptions.custom.AWSException
 import taskmanager.backend.services.S3Service
 import taskmanager.backend.shared.Configuration
 import java.time.Duration
@@ -30,8 +31,8 @@ class S3ServiceImpl(private val configuration: Configuration) : S3Service {
 
             println(response)
         } catch (e: S3Exception) {
-            println(e.stackTraceToString())
-            throw RuntimeException()
+            println("AWS S3 file save exception: ${e.stackTraceToString()}")
+            throw AWSException("Ошибка сохранения файла в AWS S3")
         }
     }
 
@@ -46,8 +47,8 @@ class S3ServiceImpl(private val configuration: Configuration) : S3Service {
 
             return client.getObjectAsBytes(requestParams).asByteArray()
         } catch (e: S3Exception) {
-            println(e.stackTraceToString())
-            throw RuntimeException()
+            println("AWS S3 file get exception: ${e.stackTraceToString()}")
+            throw AWSException("Ошибка загрузки файла из AWS S3")
         }
     }
 
@@ -67,7 +68,7 @@ class S3ServiceImpl(private val configuration: Configuration) : S3Service {
 
             return presigner.presignGetObject(getObjectPresignRequest).url().toString()
         } catch (e: S3Exception) {
-            println("S3Error: ${e.stackTraceToString()}")
+            println("AWS S3 getUrl exception: ${e.stackTraceToString()}")
             return null
         }
     }
@@ -88,7 +89,7 @@ class S3ServiceImpl(private val configuration: Configuration) : S3Service {
             client.deleteObjects(deleteRequest)
             true
         } catch (e: S3Exception) {
-            println("S3Error: ${e.stackTraceToString()}")
+            println("AWS S3 file delete exception: ${e.stackTraceToString()}")
             false
         }
     }

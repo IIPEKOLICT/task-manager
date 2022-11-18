@@ -4,6 +4,7 @@ import com.github.iipekolict.knest.injectors.PropertyInjector
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import org.koin.java.KoinJavaComponent
+import taskmanager.backend.exceptions.custom.UnauthorizedException
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.User
 import taskmanager.backend.services.UserService
@@ -19,6 +20,6 @@ class JwtUserInjector : PropertyInjector<JwtUser, User>() {
 
     override suspend fun inject(): User {
         val principal: JWTPrincipal? = call.principal()
-        return userService.getById(principal?.get("_id") ?: throw RuntimeException())
+        return userService.getById(principal?.get("_id") ?: throw UnauthorizedException())
     }
 }

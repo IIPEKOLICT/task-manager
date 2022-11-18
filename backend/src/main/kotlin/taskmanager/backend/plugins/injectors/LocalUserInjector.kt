@@ -5,6 +5,8 @@ import io.ktor.server.request.*
 import org.koin.java.KoinJavaComponent
 import taskmanager.backend.plugins.annotations.LocalUser
 import taskmanager.backend.dtos.request.LoginDto
+import taskmanager.backend.exceptions.custom.ForbiddenException
+import taskmanager.backend.exceptions.custom.UnauthorizedException
 import taskmanager.backend.models.User
 import taskmanager.backend.services.UserService
 import kotlin.reflect.full.findAnnotation
@@ -19,10 +21,11 @@ class LocalUserInjector : PropertyInjector<LocalUser, User>() {
 
     override suspend fun inject(): User {
         val dto: LoginDto = call.receive()
-        val user: User =  userService.getByEmailOrNull(dto.email) ?: throw RuntimeException()
+        val user: User = userService.getByEmailOrNull(dto.email)
+            ?: throw UnauthorizedException("Пользователь с таким E-mail не существует")
 
         if (!user.comparePassword(dto.password)) {
-            throw RuntimeException()
+            throw ForbiddenException("Неверный пароль")
         }
 
         return user

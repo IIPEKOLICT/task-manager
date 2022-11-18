@@ -9,6 +9,7 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import taskmanager.backend.dtos.request.CreateUserDto
 import taskmanager.backend.dtos.request.UpdateUserCredentialsDto
 import taskmanager.backend.dtos.request.UpdateUserInfoDto
+import taskmanager.backend.exceptions.custom.EntityNotFoundException
 import taskmanager.backend.models.User
 import taskmanager.backend.services.UserService
 import java.util.*
@@ -16,13 +17,14 @@ import java.util.*
 class UserServiceImpl(database: CoroutineDatabase) : UserService {
 
     private val collection: CoroutineCollection<User> = database.getCollection("users")
+    private val notFoundException = EntityNotFoundException("Пользователь")
 
     override suspend fun getAll(): List<User> {
         return collection.find().toList()
     }
 
     override suspend fun getById(id: String): User {
-        return collection.findOneById(ObjectId(id)) ?: throw RuntimeException("Not found")
+        return collection.findOneById(ObjectId(id)) ?: throw notFoundException
     }
 
     override suspend fun getByEmailOrNull(email: String): User? {
@@ -54,7 +56,7 @@ class UserServiceImpl(database: CoroutineDatabase) : UserService {
                 ),
                 options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
             )
-            ?: throw RuntimeException("Not found")
+            ?: throw notFoundException
     }
 
     override suspend fun updateInfo(id: String, dto: UpdateUserInfoDto): User {
@@ -68,7 +70,7 @@ class UserServiceImpl(database: CoroutineDatabase) : UserService {
                 ),
                 options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
             )
-            ?: throw RuntimeException("Not found")
+            ?: throw notFoundException
     }
 
     override suspend fun updatePicture(id: String, picturePath: String?): User {
@@ -81,11 +83,11 @@ class UserServiceImpl(database: CoroutineDatabase) : UserService {
                 ),
                 options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
             )
-            ?: throw RuntimeException("Not found")
+            ?: throw notFoundException
     }
 
     override suspend fun deleteById(id: String): String {
         return collection.findOneAndDelete(User::_id eq ObjectId(id))?._id?.toString()
-            ?: throw RuntimeException()
+            ?: throw notFoundException
     }
 }

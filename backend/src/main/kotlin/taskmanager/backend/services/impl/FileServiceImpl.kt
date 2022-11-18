@@ -1,6 +1,7 @@
 package taskmanager.backend.services.impl
 
 import io.ktor.http.content.*
+import taskmanager.backend.exceptions.custom.InternalServerException
 import taskmanager.backend.services.FileService
 
 class FileServiceImpl : FileService {
@@ -9,7 +10,7 @@ class FileServiceImpl : FileService {
         try {
             return file.streamProvider().use { it.readBytes() }
         } catch (e: Exception) {
-            throw RuntimeException()
+            throw InternalServerException("Ошибка чтения файла")
         }
     }
 }
