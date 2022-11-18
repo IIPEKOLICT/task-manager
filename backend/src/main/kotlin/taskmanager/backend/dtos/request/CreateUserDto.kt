@@ -1,4 +1,4 @@
-package taskmanager.backend.dtos
+package taskmanager.backend.dtos.request
 
 data class CreateUserDto(
     val email: String,

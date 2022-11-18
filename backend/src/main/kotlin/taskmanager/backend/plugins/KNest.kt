@@ -8,12 +8,12 @@ import org.bson.types.ObjectId
 import taskmanager.backend.controllers.AuthController
 import taskmanager.backend.controllers.MainController
 import taskmanager.backend.controllers.UserController
-import taskmanager.backend.injectors.JwtUserInjector
-import taskmanager.backend.injectors.LocalUserInjector
-import taskmanager.backend.serialization.DateDeserializer
-import taskmanager.backend.serialization.DateSerializer
-import taskmanager.backend.serialization.ObjectIdDeserializer
-import taskmanager.backend.serialization.ObjectIdSerializer
+import taskmanager.backend.plugins.injectors.JwtUserInjector
+import taskmanager.backend.plugins.injectors.LocalUserInjector
+import taskmanager.backend.plugins.serialization.DateDeserializer
+import taskmanager.backend.plugins.serialization.DateSerializer
+import taskmanager.backend.plugins.serialization.ObjectIdDeserializer
+import taskmanager.backend.plugins.serialization.ObjectIdSerializer
 import java.util.Date
 
 fun Application.configureKNest() {

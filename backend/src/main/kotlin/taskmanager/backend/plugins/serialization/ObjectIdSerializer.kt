@@ -1,4 +1,4 @@
-package taskmanager.backend.serialization
+package taskmanager.backend.plugins.serialization
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive

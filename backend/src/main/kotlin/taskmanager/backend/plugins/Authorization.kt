@@ -8,12 +8,12 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import org.koin.ktor.ext.inject
-import taskmanager.backend.services.interfaces.IUserService
+import taskmanager.backend.services.UserService
 import taskmanager.backend.shared.Configuration
 
 fun Application.configureAuthorization() {
     val configuration by inject<Configuration>()
-    val userService by inject<IUserService>()
+    val userService by inject<UserService>()
 
     authentication {
         jwt("auth-jwt") {

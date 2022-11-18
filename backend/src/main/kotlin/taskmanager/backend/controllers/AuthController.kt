@@ -9,25 +9,28 @@ import io.ktor.server.auth.*
 import io.ktor.server.config.*
 import io.ktor.server.response.*
 import org.koin.java.KoinJavaComponent.inject
-import taskmanager.backend.annotations.JwtUser
-import taskmanager.backend.annotations.LocalUser
-import taskmanager.backend.dtos.AuthDto
-import taskmanager.backend.dtos.CreateUserDto
+import taskmanager.backend.plugins.annotations.JwtUser
+import taskmanager.backend.plugins.annotations.LocalUser
+import taskmanager.backend.dtos.request.AuthDto
+import taskmanager.backend.dtos.request.CreateUserDto
 import taskmanager.backend.models.User
-import taskmanager.backend.services.interfaces.IAuthService
-import taskmanager.backend.services.interfaces.IUserService
+import taskmanager.backend.services.AuthService
+import taskmanager.backend.services.UserService
 import java.util.*
 
 @Controller("auth")
 class AuthController {
 
-    private val authService by inject<IAuthService>(IAuthService::class.java)
-    private val userService by inject<IUserService>(IUserService::class.java)
+    private val authService by inject<AuthService>(AuthService::class.java)
+    private val userService by inject<UserService>(UserService::class.java)
 
     @Post("refresh")
     @Authentication(["auth-jwt"])
     suspend fun refreshToken(@JwtUser user: User): AuthDto {
-        return AuthDto(authService.generateToken(user._id.toString(), user.email))
+        return AuthDto(
+            token = authService.generateToken(user._id.toString(), user.email),
+            user = user.toResponseDto()
+        )
     }
 
     @Post("register")
@@ -42,7 +45,7 @@ class AuthController {
 
         return AuthDto(
             token = authService.generateToken(user._id.toString(), user.email),
-            user = user
+            user = user.toResponseDto()
         )
     }
 
@@ -50,7 +53,7 @@ class AuthController {
     suspend fun create(@LocalUser user: User): AuthDto {
         return AuthDto(
             token = authService.generateToken(user._id.toString(), user.email),
-            user = user
+            user = user.toResponseDto()
         )
     }
 }

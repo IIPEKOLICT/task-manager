@@ -6,6 +6,7 @@ val kotlinVersion: String by project
 val logbackVersion: String by project
 val swaggerVersion: String by project
 val bcryptVersion: String by project
+val awsSdkVersion: String by project
 
 plugins {
     application
@@ -53,6 +54,9 @@ dependencies {
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
 
     implementation("org.litote.kmongo:kmongo-coroutine:$kMongoVersion")
+
+    implementation(platform("software.amazon.awssdk:bom:$awsSdkVersion"))
+    implementation("software.amazon.awssdk:s3")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")

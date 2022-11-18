@@ -19,4 +19,7 @@ class Configuration(private val appConfig: ApplicationConfig) {
 
     val bcryptStrength: Int
         get() = getStringParam("bcrypt.strength").toInt()
+
+    val s3BucketName: String
+        get() = getStringParam("s3.name")
 }

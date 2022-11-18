@@ -25,6 +25,7 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 - `AWS_ACCESS_KEY_ID` access key id for use AWS
 - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
 - `AWS_ENVIRONMENT_NAME` environment name on AWS
+- `AWS_S3_BUCKET_NAME` AWS S3 bucket name
 - `AWS_DEFAULT_REGION` AWS region
 - `DATABASE_URL` used database url
 - `JWT_SECRET` used jwt secret
@@ -40,6 +41,9 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 ### Environment variables
 
 > Backend
+- `AWS_ACCESS_KEY_ID` access key id for use AWS
+- `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
+- `AWS_S3_BUCKET_NAME` AWS S3 bucket name
 - `PORT` used port by backend
 - `DATABASE_URL` db url string
 - `JWT_SECRET` used jwt secret

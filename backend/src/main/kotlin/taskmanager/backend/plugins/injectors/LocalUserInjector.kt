@@ -1,17 +1,17 @@
-package taskmanager.backend.injectors
+package taskmanager.backend.plugins.injectors
 
 import com.github.iipekolict.knest.injectors.PropertyInjector
 import io.ktor.server.request.*
 import org.koin.java.KoinJavaComponent
-import taskmanager.backend.annotations.LocalUser
-import taskmanager.backend.dtos.LoginDto
+import taskmanager.backend.plugins.annotations.LocalUser
+import taskmanager.backend.dtos.request.LoginDto
 import taskmanager.backend.models.User
-import taskmanager.backend.services.interfaces.IUserService
+import taskmanager.backend.services.UserService
 import kotlin.reflect.full.findAnnotation
 
 class LocalUserInjector : PropertyInjector<LocalUser, User>() {
 
-    private val userService by KoinJavaComponent.inject<IUserService>(IUserService::class.java)
+    private val userService by KoinJavaComponent.inject<UserService>(UserService::class.java)
 
     override fun findAnnotation(): LocalUser? {
         return parameter.findAnnotation()

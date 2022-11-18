@@ -1,11 +1,10 @@
-package taskmanager.backend
+package taskmanager.backend.shared
 
 import com.mongodb.ConnectionString
 import org.litote.kmongo.coroutine.CoroutineClient
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
-import taskmanager.backend.shared.Configuration
 
 class DatabaseManager(private val configuration: Configuration) {
 
