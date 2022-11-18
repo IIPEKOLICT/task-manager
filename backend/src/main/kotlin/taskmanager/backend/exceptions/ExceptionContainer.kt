@@ -46,7 +46,7 @@ object ExceptionContainer {
         @Exc exception: AWSException
     ) {
         call.respond(
-            status = HttpStatusCode.ServiceUnavailable,
+            status = exception.statusCode,
             message = exception.toResponseDto()
         )
     }
@@ -57,7 +57,7 @@ object ExceptionContainer {
         @Exc exception: ForbiddenException
     ) {
         call.respond(
-            status = HttpStatusCode.Forbidden,
+            status = exception.statusCode,
             message = exception.toResponseDto()
         )
     }
@@ -68,7 +68,7 @@ object ExceptionContainer {
         @Exc exception: InternalServerException
     ) {
         call.respond(
-            status = HttpStatusCode.InternalServerError,
+            status = exception.statusCode,
             message = exception.toResponseDto()
         )
     }
@@ -79,7 +79,7 @@ object ExceptionContainer {
         @Exc exception: NotFoundException
     ) {
         call.respond(
-            status = HttpStatusCode.NotFound,
+            status = exception.statusCode,
             message = exception.toResponseDto()
         )
     }
@@ -90,7 +90,7 @@ object ExceptionContainer {
         @Exc exception: UnauthorizedException
     ) {
         call.respond(
-            status = HttpStatusCode.Unauthorized,
+            status = exception.statusCode,
             message = exception.toResponseDto()
         )
     }
@@ -101,7 +101,7 @@ object ExceptionContainer {
         @Exc exception: EntityNotFoundException
     ) {
         call.respond(
-            status = HttpStatusCode.BadRequest,
+            status = exception.statusCode,
             message = exception.toResponseDto()
         )
     }
