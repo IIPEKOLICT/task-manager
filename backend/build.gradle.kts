@@ -45,6 +45,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
     implementation("io.ktor:ktor-serialization-gson-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
 
     implementation("com.github.IIPEKOLICT:knest:$kNestVersion")
     implementation("io.github.smiley4:ktor-swagger-ui:$swaggerVersion")
@@ -59,8 +60,7 @@ dependencies {
     implementation("software.amazon.awssdk:s3")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
 
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
 }
