@@ -37,6 +37,10 @@ object AppModule {
                 TaskServiceImpl(database.getCollection(CollectionInfo.TASK.collectionName))
             }
 
+            single<WorkService> {
+                WorkServiceImpl(database.getCollection(CollectionInfo.WORK.collectionName))
+            }
+
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }
 
@@ -45,7 +49,8 @@ object AppModule {
             single { UserController(get(), get(), get(), get()) }
             single { ProjectController(get(), get(), get()) }
             single { TagController(get()) }
-            single { TaskController(get()) }
+            single { TaskController(get(), get()) }
+            single { WorkController(get()) }
         }
     }
 }

@@ -16,15 +16,36 @@ import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.models.Task
 import taskmanager.backend.models.User
+import taskmanager.backend.models.Work
 import taskmanager.backend.services.TaskService
+import taskmanager.backend.services.WorkService
 
 @Controller("tasks")
-class TaskController(private val taskService: TaskService) {
+class TaskController(
+    private val taskService: TaskService,
+    private val workService: WorkService
+) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
     suspend fun getById(@Param("id") id: String): Task {
         return taskService.getById(ObjectId(id))
+    }
+
+    @Get("{id}/works")
+    @Authentication(["auth-jwt"])
+    suspend fun getTaskWorks(@Param("id") id: String): List<Work> {
+        return workService.getByTask(ObjectId(id))
+    }
+
+    @Post("{id}/works")
+    @Authentication(["auth-jwt"])
+    suspend fun createTaskWork(
+        @JwtUser user: User,
+        @Param("id") id: String,
+        @Body(type = WorkDto::class) dto: WorkDto
+    ): Work {
+        return workService.create(user._id, ObjectId(id), dto)
     }
 
     @Patch("{id}/info")
