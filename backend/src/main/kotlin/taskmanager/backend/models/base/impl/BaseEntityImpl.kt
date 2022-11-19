@@ -1,8 +1,8 @@
-package taskmanager.backend.models.base
+package taskmanager.backend.models.base.impl
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import taskmanager.backend.models.interfaces.BaseEntity
+import taskmanager.backend.models.base.BaseEntity
 import java.util.*
 
 abstract class BaseEntityImpl(

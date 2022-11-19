@@ -1,7 +1,7 @@
 package taskmanager.backend.models
 
 import org.bson.types.ObjectId
-import taskmanager.backend.models.base.BaseEntityImpl
+import taskmanager.backend.models.base.impl.BaseEntityImpl
 import taskmanager.backend.models.interfaces.CreatedByUserEntity
 
 data class Project(

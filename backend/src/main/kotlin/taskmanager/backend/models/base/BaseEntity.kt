@@ -1,4 +1,4 @@
-package taskmanager.backend.models.interfaces
+package taskmanager.backend.models.base
 
 import org.bson.types.ObjectId
 import java.util.*

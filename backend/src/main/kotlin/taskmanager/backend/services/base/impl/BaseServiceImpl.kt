@@ -5,8 +5,8 @@ import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.eq
 import taskmanager.backend.enums.CollectionInfo
 import taskmanager.backend.exceptions.custom.EntityNotFoundException
-import taskmanager.backend.models.base.BaseEntityImpl
-import taskmanager.backend.models.interfaces.BaseEntity
+import taskmanager.backend.models.base.impl.BaseEntityImpl
+import taskmanager.backend.models.base.BaseEntity
 import taskmanager.backend.services.base.BaseService
 
 abstract class BaseServiceImpl<E : BaseEntity>(

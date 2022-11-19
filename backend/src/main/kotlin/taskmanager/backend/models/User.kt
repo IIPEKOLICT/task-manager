@@ -3,7 +3,7 @@ package taskmanager.backend.models
 import at.favre.lib.crypto.bcrypt.BCrypt
 import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.dtos.response.UserResponseDto
-import taskmanager.backend.models.base.BaseEntityImpl
+import taskmanager.backend.models.base.impl.BaseEntityImpl
 import taskmanager.backend.services.S3Service
 import taskmanager.backend.shared.Configuration
 
