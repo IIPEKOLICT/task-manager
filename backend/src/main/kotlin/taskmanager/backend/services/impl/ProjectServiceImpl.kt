@@ -1,7 +1,5 @@
 package taskmanager.backend.services.impl
 
-import com.mongodb.client.model.FindOneAndUpdateOptions
-import com.mongodb.client.model.ReturnDocument
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
@@ -10,7 +8,6 @@ import taskmanager.backend.enums.CollectionInfo
 import taskmanager.backend.models.Project
 import taskmanager.backend.services.ProjectService
 import taskmanager.backend.services.base.impl.CreatedByUserEntityServiceImpl
-import java.util.*
 
 class ProjectServiceImpl(
     override val collection: CoroutineCollection<Project>
@@ -34,29 +31,11 @@ class ProjectServiceImpl(
     }
 
     override suspend fun updateName(id: ObjectId, name: String): Project {
-        return collection
-            .findOneAndUpdate(
-                filter = Project::_id eq id,
-                update = set(
-                    SetTo(Project::name, name),
-                    SetTo(Project::updatedAt, Date())
-                ),
-                options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
-            )
-            ?: throw notFoundException
+        return updateById(id, setValue(Project::name, name))
     }
 
     override suspend fun updateMembers(id: ObjectId, members: List<ObjectId>): Project {
-        return collection
-            .findOneAndUpdate(
-                filter = Project::_id eq id,
-                update = set(
-                    SetTo(Project::members, members.toSet()),
-                    SetTo(Project::updatedAt, Date())
-                ),
-                options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
-            )
-            ?: throw notFoundException
+        return updateById(id, setValue(Project::members, members.toSet()))
     }
 
     override suspend fun deleteByUser(userId: ObjectId) {

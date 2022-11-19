@@ -3,6 +3,7 @@ package taskmanager.backend.models
 import org.bson.types.ObjectId
 import taskmanager.backend.models.base.impl.BaseEntityImpl
 import taskmanager.backend.models.interfaces.CreatedByUserEntity
+import taskmanager.backend.shared.ColorGenerator
 import java.util.Date
 
 data class Task(
@@ -18,6 +19,7 @@ data class Task(
 
     var title: String,
     var description: String,
+    var color: String = ColorGenerator.generateHexColor(),
     var priority: String,
     var status: String,
     var expectedTime: Date? = null

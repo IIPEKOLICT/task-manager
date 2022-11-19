@@ -16,10 +16,7 @@ data class User(
 ) : BaseEntityImpl() {
 
     fun hashPassword(): User {
-        password = BCrypt
-            .withDefaults()
-            .hashToString(configuration.bcryptStrength, password.toCharArray())
-
+        password = Companion.hashPassword(password)
         return this
     }
 
@@ -42,5 +39,11 @@ data class User(
 
         private val configuration by inject<Configuration>(Configuration::class.java)
         private val s3Service by inject<S3Service>(S3Service::class.java)
+
+        fun hashPassword(password: String): String {
+            return BCrypt
+                .withDefaults()
+                .hashToString(configuration.bcryptStrength, password.toCharArray())
+        }
     }
 }
