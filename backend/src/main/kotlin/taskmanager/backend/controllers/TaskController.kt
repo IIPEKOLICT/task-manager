@@ -14,16 +14,19 @@ import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.exceptions.custom.ForbiddenException
+import taskmanager.backend.models.Comment
 import taskmanager.backend.models.Task
 import taskmanager.backend.models.User
 import taskmanager.backend.models.Work
+import taskmanager.backend.services.CommentService
 import taskmanager.backend.services.TaskService
 import taskmanager.backend.services.WorkService
 
 @Controller("tasks")
 class TaskController(
     private val taskService: TaskService,
-    private val workService: WorkService
+    private val workService: WorkService,
+    private val commentService: CommentService
 ) {
 
     @Get("{id}")
@@ -38,6 +41,12 @@ class TaskController(
         return workService.getByTask(ObjectId(id))
     }
 
+    @Get("{id}/comments")
+    @Authentication(["auth-jwt"])
+    suspend fun getTaskComments(@Param("id") id: String): List<Comment> {
+        return commentService.getByTask(ObjectId(id))
+    }
+
     @Post("{id}/works")
     @Authentication(["auth-jwt"])
     suspend fun createTaskWork(
@@ -46,6 +55,16 @@ class TaskController(
         @Body(type = WorkDto::class) dto: WorkDto
     ): Work {
         return workService.create(user._id, ObjectId(id), dto)
+    }
+
+    @Post("{id}/comments")
+    @Authentication(["auth-jwt"])
+    suspend fun createTaskComment(
+        @JwtUser user: User,
+        @Param("id") id: String,
+        @Body("text") text: String
+    ): Comment {
+        return commentService.create(user._id, ObjectId(id), text)
     }
 
     @Patch("{id}/info")

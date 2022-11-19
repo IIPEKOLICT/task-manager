@@ -12,17 +12,17 @@ import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.exceptions.custom.ForbiddenException
+import taskmanager.backend.models.Comment
 import taskmanager.backend.models.User
-import taskmanager.backend.models.Work
-import taskmanager.backend.services.WorkService
+import taskmanager.backend.services.CommentService
 
-@Controller("works")
-class WorkController(private val workService: WorkService) {
+@Controller("comments")
+class CommentController(private val commentService: CommentService) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun getById(@Param("id") id: String): Work {
-        return workService.getById(ObjectId(id))
+    suspend fun getById(@Param("id") id: String): Comment {
+        return commentService.getById(ObjectId(id))
     }
 
     @Put("{id}")
@@ -30,15 +30,15 @@ class WorkController(private val workService: WorkService) {
     suspend fun updateById(
         @JwtUser user: User,
         @Param("id") id: String,
-        @Body(type = WorkDto::class) dto: WorkDto
-    ): Work {
+        @Body("text") text: String
+    ): Comment {
         val objectId = ObjectId(id)
 
-        if (!workService.isOwner(workService.getById(objectId), user._id)) {
-            throw ForbiddenException("Вы не можете изменять это время")
+        if (!commentService.isOwner(commentService.getById(objectId), user._id)) {
+            throw ForbiddenException("Вы не можете изменять этот комментарий")
         }
 
-        return workService.updateById(objectId, dto)
+        return commentService.updateById(objectId, text)
     }
 
     @Delete("{id}")
@@ -49,10 +49,10 @@ class WorkController(private val workService: WorkService) {
     ): DeleteDto {
         val objectId = ObjectId(id)
 
-        if (!workService.isOwner(workService.getById(objectId), user._id)) {
-            throw ForbiddenException("Вы не можете удалить это время")
+        if (!commentService.isOwner(commentService.getById(objectId), user._id)) {
+            throw ForbiddenException("Вы не можете удалить этот комментарий")
         }
 
-        return DeleteDto(workService.deleteById(objectId))
+        return DeleteDto(commentService.deleteById(objectId))
     }
 }

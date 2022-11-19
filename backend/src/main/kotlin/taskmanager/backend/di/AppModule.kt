@@ -41,6 +41,10 @@ object AppModule {
                 WorkServiceImpl(database.getCollection(CollectionInfo.WORK.collectionName))
             }
 
+            single<CommentService> {
+                CommentServiceImpl(database.getCollection(CollectionInfo.COMMENT.collectionName))
+            }
+
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }
 
@@ -49,8 +53,9 @@ object AppModule {
             single { UserController(get(), get(), get(), get()) }
             single { ProjectController(get(), get(), get()) }
             single { TagController(get()) }
-            single { TaskController(get(), get()) }
+            single { TaskController(get(), get(), get()) }
             single { WorkController(get()) }
+            single { CommentController(get()) }
         }
     }
 }
