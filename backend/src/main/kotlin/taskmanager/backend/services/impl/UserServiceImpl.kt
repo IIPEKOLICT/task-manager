@@ -17,15 +17,18 @@ import java.util.*
 
 class UserServiceImpl(database: CoroutineDatabase) : UserService {
 
-    private val collection: CoroutineCollection<User> = database.getCollection(DBCollection.USER.nameInDB)
+    private val collection: CoroutineCollection<User> = database.getCollection(
+        DBCollection.USER.collectionName
+    )
+
     private val notFoundException = EntityNotFoundException(DBCollection.USER.entityName)
 
     override suspend fun getAll(): List<User> {
         return collection.find().toList()
     }
 
-    override suspend fun getById(id: String): User {
-        return collection.findOneById(ObjectId(id)) ?: throw notFoundException
+    override suspend fun getById(id: ObjectId): User {
+        return collection.findOneById(id) ?: throw notFoundException
     }
 
     override suspend fun getByEmailOrNull(email: String): User? {
@@ -44,12 +47,12 @@ class UserServiceImpl(database: CoroutineDatabase) : UserService {
         return user
     }
 
-    override suspend fun updateCredentials(id: String, dto: UpdateUserCredentialsDto): User {
+    override suspend fun updateCredentials(id: ObjectId, dto: UpdateUserCredentialsDto): User {
         val user: User = getById(id)
 
         return collection
             .findOneAndUpdate(
-                filter = User::_id eq ObjectId(id),
+                filter = User::_id eq id,
                 update = set(
                     SetTo(User::email, dto.email ?: user.email),
                     SetTo(User::password, dto.password ?: user.password),
@@ -60,10 +63,10 @@ class UserServiceImpl(database: CoroutineDatabase) : UserService {
             ?: throw notFoundException
     }
 
-    override suspend fun updateInfo(id: String, dto: UpdateUserInfoDto): User {
+    override suspend fun updateInfo(id: ObjectId, dto: UpdateUserInfoDto): User {
         return collection
             .findOneAndUpdate(
-                filter = User::_id eq ObjectId(id),
+                filter = User::_id eq id,
                 update = set(
                     SetTo(User::firstName, dto.firstName),
                     SetTo(User::lastName, dto.lastName),
@@ -74,10 +77,10 @@ class UserServiceImpl(database: CoroutineDatabase) : UserService {
             ?: throw notFoundException
     }
 
-    override suspend fun updatePicture(id: String, picturePath: String?): User {
+    override suspend fun updatePicture(id: ObjectId, picturePath: String?): User {
         return collection
             .findOneAndUpdate(
-                filter = User::_id eq ObjectId(id),
+                filter = User::_id eq id,
                 update = set(
                     SetTo(User::picturePath, picturePath),
                     SetTo(User::updatedAt, Date())
@@ -87,8 +90,8 @@ class UserServiceImpl(database: CoroutineDatabase) : UserService {
             ?: throw notFoundException
     }
 
-    override suspend fun deleteById(id: String): String {
-        return collection.findOneAndDelete(User::_id eq ObjectId(id))?._id?.toString()
+    override suspend fun deleteById(id: ObjectId): String {
+        return collection.findOneAndDelete(User::_id eq id)?._id?.toString()
             ?: throw notFoundException
     }
 }

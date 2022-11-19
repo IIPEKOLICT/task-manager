@@ -10,12 +10,17 @@ import taskmanager.backend.dtos.request.CreateProjectDto
 import taskmanager.backend.enums.DBCollection
 import taskmanager.backend.exceptions.custom.EntityNotFoundException
 import taskmanager.backend.models.Project
-import taskmanager.backend.models.User
 import taskmanager.backend.services.ProjectService
+import taskmanager.backend.services.base.impl.CreatedByUserEntityServiceImpl
 
-class ProjectServiceImpl(database: CoroutineDatabase) : ProjectService {
+class ProjectServiceImpl(
+    database: CoroutineDatabase
+) : CreatedByUserEntityServiceImpl<Project>(), ProjectService {
 
-    private val collection: CoroutineCollection<Project> = database.getCollection(DBCollection.PROJECT.nameInDB)
+    private val collection: CoroutineCollection<Project> = database.getCollection(
+        DBCollection.PROJECT.collectionName
+    )
+
     private val notFoundException = EntityNotFoundException(DBCollection.PROJECT.entityName)
 
     override suspend fun getAll(): List<Project> {
@@ -23,15 +28,13 @@ class ProjectServiceImpl(database: CoroutineDatabase) : ProjectService {
     }
 
     override suspend fun getByUser(userId: ObjectId): List<Project> {
-        return collection.find(User::_id eq userId).toList()
+        return collection
+            .find(or(Project::createdBy eq userId, Project::members contains userId))
+            .toList()
     }
 
-    override suspend fun getById(id: String): Project {
-        return collection.findOneById(ObjectId(id)) ?: throw notFoundException
-    }
-
-    override suspend fun isOwner(id: String, userId: ObjectId): Boolean {
-        return getById(id).createdBy.toString() == userId.toString()
+    override suspend fun getById(id: ObjectId): Project {
+        return collection.findOneById(id) ?: throw notFoundException
     }
 
     override suspend fun create(userId: ObjectId, dto: CreateProjectDto): Project {
@@ -45,28 +48,28 @@ class ProjectServiceImpl(database: CoroutineDatabase) : ProjectService {
         return project
     }
 
-    override suspend fun updateName(id: String, name: String): Project {
+    override suspend fun updateName(id: ObjectId, name: String): Project {
         return collection
             .findOneAndUpdate(
-                filter = Project::_id eq ObjectId(id),
+                filter = Project::_id eq id,
                 update = setValue(Project::name, name),
                 options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
             )
             ?: throw notFoundException
     }
 
-    override suspend fun updateMembers(id: String, members: List<ObjectId>): Project {
+    override suspend fun updateMembers(id: ObjectId, members: List<ObjectId>): Project {
         return collection
             .findOneAndUpdate(
-                filter = Project::_id eq ObjectId(id),
+                filter = Project::_id eq id,
                 update = setValue(Project::members, members.toSet()),
                 options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
             )
             ?: throw notFoundException
     }
 
-    override suspend fun deleteById(id: String): String {
-        return collection.findOneAndDelete(Project::_id eq ObjectId(id))?._id?.toString()
+    override suspend fun deleteById(id: ObjectId): String {
+        return collection.findOneAndDelete(Project::_id eq id)?._id?.toString()
             ?: throw notFoundException
     }
 

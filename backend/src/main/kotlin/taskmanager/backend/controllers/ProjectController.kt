@@ -15,15 +15,18 @@ import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.models.Project
 import taskmanager.backend.models.Tag
+import taskmanager.backend.models.Task
 import taskmanager.backend.models.User
 import taskmanager.backend.services.ProjectService
 import taskmanager.backend.services.TagService
+import taskmanager.backend.services.TaskService
 
 @Controller("projects")
 class ProjectController {
 
     private val projectService by inject<ProjectService>(ProjectService::class.java)
     private val tagService by inject<TagService>(TagService::class.java)
+    private val taskService by inject<TaskService>(TaskService::class.java)
 
     @Get
     @Authentication(["auth-jwt"])
@@ -34,13 +37,19 @@ class ProjectController {
     @Get("{id}")
     @Authentication(["auth-jwt"])
     suspend fun getById(@Param("id") id: String): Project {
-        return projectService.getById(id)
+        return projectService.getById(ObjectId(id))
     }
 
     @Get("{id}/tags")
     @Authentication(["auth-jwt"])
     suspend fun getProjectTags(@Param("id") id: String): List<Tag> {
-        return tagService.getByProject(id)
+        return tagService.getByProject(ObjectId(id))
+    }
+
+    @Get("{id}/tasks")
+    @Authentication(["auth-jwt"])
+    suspend fun getProjectTasks(@Param("id") id: String): List<Task> {
+        return taskService.getByProject(ObjectId(id))
     }
 
     @Post
@@ -59,7 +68,17 @@ class ProjectController {
         @Param("id") id: String,
         @Body("name") name: String
     ): Tag {
-        return tagService.create(user._id, projectService.getById(id)._id, name)
+        return tagService.create(user._id, projectService.getById(ObjectId(id))._id, name)
+    }
+
+    @Post("{id}/tasks")
+    @Authentication(["auth-jwt"])
+    suspend fun createProjectTask(
+        @JwtUser user: User,
+        @Param("id") id: String,
+        @Body(type = CreateTaskDto::class) dto: CreateTaskDto
+    ): Task {
+        return taskService.create(user._id, projectService.getById(ObjectId(id))._id, dto)
     }
 
     @Patch("{id}/name")
@@ -69,11 +88,13 @@ class ProjectController {
         @Param("id") id: String,
         @Body("name") name: String
     ): Project {
-        if (!projectService.isOwner(id, user._id)) {
+        val project: Project = projectService.getById(ObjectId(id))
+
+        if (!projectService.isOwner(project, user._id)) {
             throw ForbiddenException("Вы не можете изменять этот проект")
         }
 
-        return projectService.updateName(id, name)
+        return projectService.updateName(project._id, name)
     }
 
     @Patch("{id}/members")
@@ -83,11 +104,13 @@ class ProjectController {
         @Param("id") id: String,
         @Body("members") members: List<String>
     ): Project {
-        if (!projectService.isOwner(id, user._id)) {
+        val project: Project = projectService.getById(ObjectId(id))
+
+        if (!projectService.isOwner(project, user._id)) {
             throw ForbiddenException("Вы не можете изменять этот проект")
         }
 
-        return projectService.updateMembers(id, members.map { ObjectId(it) })
+        return projectService.updateMembers(project._id, members.map { ObjectId(it) })
     }
 
     @Delete("{id}")
@@ -96,11 +119,13 @@ class ProjectController {
         @JwtUser user: User,
         @Param("id") id: String
     ): DeleteDto {
-        if (!projectService.isOwner(id, user._id)) {
+        val project: Project = projectService.getById(ObjectId(id))
+
+        if (!projectService.isOwner(project, user._id)) {
             throw ForbiddenException("Вы не можете удалить этот проект")
         }
 
-        tagService.deleteByProject(id)
-        return DeleteDto(projectService.deleteById(id))
+        tagService.deleteByProject(project._id)
+        return DeleteDto(projectService.deleteById(project._id))
     }
 }

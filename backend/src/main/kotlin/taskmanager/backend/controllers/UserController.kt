@@ -17,6 +17,7 @@ import taskmanager.backend.dtos.request.DeleteDto
 import taskmanager.backend.dtos.request.UpdateUserCredentialsDto
 import taskmanager.backend.dtos.request.UpdateUserInfoDto
 import taskmanager.backend.dtos.response.UserResponseDto
+import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.models.User
 import taskmanager.backend.services.FileService
 import taskmanager.backend.services.ProjectService
@@ -40,7 +41,7 @@ class UserController {
     @Get("{id}")
     @Authentication(["auth-jwt"])
     suspend fun getById(@Param("id") id: String): UserResponseDto {
-        return userService.getById(id).toResponseDto()
+        return userService.getById(ObjectId(id)).toResponseDto()
     }
 
     @Post
@@ -55,7 +56,7 @@ class UserController {
         @Param("id") id: String,
         @Body(type = UpdateUserCredentialsDto::class) dto: UpdateUserCredentialsDto
     ): UserResponseDto {
-        return userService.updateCredentials(id, dto).toResponseDto()
+        return userService.updateCredentials(ObjectId(id), dto).toResponseDto()
     }
 
     @Patch("{id}/info")
@@ -64,7 +65,7 @@ class UserController {
         @Param("id") id: String,
         @Body(type = UpdateUserInfoDto::class) dto: UpdateUserInfoDto
     ): UserResponseDto {
-        return userService.updateInfo(id, dto).toResponseDto()
+        return userService.updateInfo(ObjectId(id), dto).toResponseDto()
     }
 
     @Patch("{id}/picture")
@@ -83,7 +84,7 @@ class UserController {
             content = fileService.convertFileItemToByteArray(picture)
         )
 
-        return userService.updatePicture(id, picturePath).toResponseDto()
+        return userService.updatePicture(ObjectId(id), picturePath).toResponseDto()
     }
 
     @Delete("{id}/picture")
@@ -93,13 +94,21 @@ class UserController {
         @Param("id") id: String
     ): UserResponseDto {
         s3Service.delete("/users/pictures/${user._id}.png")
-        return userService.updatePicture(id, null).toResponseDto()
+        return userService.updatePicture(ObjectId(id), null).toResponseDto()
     }
 
     @Delete("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun deleteById(@Param("id") id: String): DeleteDto {
-        projectService.deleteByUser(ObjectId(id))
-        return DeleteDto(userService.deleteById(id))
+    suspend fun deleteById(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): DeleteDto {
+        if (id == user._id.toString()) {
+            throw ForbiddenException("Нельзя удалить самого себя")
+        }
+
+        val objectId = ObjectId(id)
+        projectService.deleteByUser(objectId)
+        return DeleteDto(userService.deleteById(objectId))
     }
 }

@@ -1,8 +1,6 @@
 package taskmanager.backend.models
 
 import at.favre.lib.crypto.bcrypt.BCrypt
-import org.bson.codecs.pojo.annotations.BsonId
-import org.bson.types.ObjectId
 import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.dtos.response.UserResponseDto
 import taskmanager.backend.models.base.BaseEntity
@@ -10,8 +8,6 @@ import taskmanager.backend.services.S3Service
 import taskmanager.backend.shared.Configuration
 
 data class User(
-    @BsonId val _id: ObjectId = ObjectId(),
-
     var email: String,
     var password: String,
     var firstName: String,

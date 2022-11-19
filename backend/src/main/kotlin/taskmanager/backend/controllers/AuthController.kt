@@ -29,7 +29,7 @@ class AuthController {
     @Authentication(["auth-jwt"])
     suspend fun refreshToken(@JwtUser user: User): AuthDto {
         return AuthDto(
-            token = authService.generateToken(user._id.toString(), user.email),
+            token = authService.generateToken(user._id, user.email),
             user = user.toResponseDto()
         )
     }
@@ -45,7 +45,7 @@ class AuthController {
         val user: User = userService.create(dto)
 
         return AuthDto(
-            token = authService.generateToken(user._id.toString(), user.email),
+            token = authService.generateToken(user._id, user.email),
             user = user.toResponseDto()
         )
     }
@@ -53,7 +53,7 @@ class AuthController {
     @Post("login")
     suspend fun create(@LocalUser user: User): AuthDto {
         return AuthDto(
-            token = authService.generateToken(user._id.toString(), user.email),
+            token = authService.generateToken(user._id, user.email),
             user = user.toResponseDto()
         )
     }

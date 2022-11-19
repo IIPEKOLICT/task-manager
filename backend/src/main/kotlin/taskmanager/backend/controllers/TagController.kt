@@ -8,6 +8,7 @@ import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
+import org.bson.types.ObjectId
 import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.plugins.annotations.JwtUser
@@ -24,7 +25,7 @@ class TagController {
     @Get("{id}")
     @Authentication(["auth-jwt"])
     suspend fun getById(@Param("id") id: String): Tag {
-        return tagService.getById(id)
+        return tagService.getById(ObjectId(id))
     }
 
     @Patch("{id}/name")
@@ -34,11 +35,13 @@ class TagController {
         @Param("id") id: String,
         @Body("name") name: String
     ): Tag {
-        if (!tagService.isOwner(id, user._id)) {
+        val objectId = ObjectId(id)
+
+        if (!tagService.isOwner(tagService.getById(objectId), user._id)) {
             throw ForbiddenException("Вы не можете изменять этот тег")
         }
 
-        return tagService.updateById(id, name)
+        return tagService.updateById(objectId, name)
     }
 
     @Delete("{id}")
@@ -47,10 +50,12 @@ class TagController {
         @JwtUser user: User,
         @Param("id") id: String
     ): DeleteDto {
-        if (!tagService.isOwner(id, user._id)) {
+        val objectId = ObjectId(id)
+
+        if (!tagService.isOwner(tagService.getById(objectId), user._id)) {
             throw ForbiddenException("Вы не можете удалить этот тег")
         }
 
-        return DeleteDto(tagService.deleteById(id))
+        return DeleteDto(tagService.deleteById(objectId))
     }
 }

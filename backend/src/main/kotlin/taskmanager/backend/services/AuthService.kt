@@ -1,5 +1,7 @@
 package taskmanager.backend.services
 
+import org.bson.types.ObjectId
+
 interface AuthService {
-    fun generateToken(id: String, email: String): String
+    fun generateToken(id: ObjectId, email: String): String
 }
