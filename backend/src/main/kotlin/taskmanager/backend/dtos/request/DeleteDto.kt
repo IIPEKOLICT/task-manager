@@ -1,3 +1,5 @@
 package taskmanager.backend.dtos.request
 
-data class DeleteDto(val _id: String)
+import org.bson.types.ObjectId
+
+data class DeleteDto(val _id: ObjectId)

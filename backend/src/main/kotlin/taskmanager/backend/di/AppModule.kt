@@ -3,6 +3,8 @@ package taskmanager.backend.di
 import io.ktor.server.application.*
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import taskmanager.backend.controllers.*
+import taskmanager.backend.enums.CollectionInfo
 import taskmanager.backend.services.*
 import taskmanager.backend.services.impl.*
 import taskmanager.backend.shared.DatabaseManager
@@ -11,20 +13,39 @@ import taskmanager.backend.shared.Configuration
 object AppModule {
 
     fun get(environment: ApplicationEnvironment): Module {
-        return module {
-            single { Configuration(environment.config) }
+        val configuration = Configuration(environment.config)
+        val database = DatabaseManager(configuration).init().getDatabase()
 
-            single {
-                DatabaseManager(get()).init().getDatabase()
+        return module {
+            single { configuration }
+
+            single<AuthService> { AuthServiceImpl(get()) }
+
+            single<UserService> {
+                UserServiceImpl(database.getCollection(CollectionInfo.USER.collectionName))
             }
 
-            single<UserService> { UserServiceImpl(get()) }
-            single<AuthService> { AuthServiceImpl(get()) }
-            single<ProjectService> { ProjectServiceImpl(get()) }
-            single<TagService> { TagServiceImpl(get()) }
+            single<ProjectService> {
+                ProjectServiceImpl(database.getCollection(CollectionInfo.PROJECT.collectionName))
+            }
+
+            single<TagService> {
+                TagServiceImpl(database.getCollection(CollectionInfo.TAG.collectionName))
+            }
+
+            single<TaskService> {
+                TaskServiceImpl(database.getCollection(CollectionInfo.TASK.collectionName))
+            }
 
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }
+
+            single { MainController() }
+            single { AuthController(get(), get()) }
+            single { UserController(get(), get(), get(), get()) }
+            single { ProjectController(get(), get(), get()) }
+            single { TagController(get()) }
+            single { TaskController(get()) }
         }
     }
 }

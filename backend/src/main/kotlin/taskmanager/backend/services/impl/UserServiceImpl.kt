@@ -5,31 +5,18 @@ import com.mongodb.client.model.ReturnDocument
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
-import org.litote.kmongo.coroutine.CoroutineDatabase
 import taskmanager.backend.dtos.request.CreateUserDto
 import taskmanager.backend.dtos.request.UpdateUserCredentialsDto
 import taskmanager.backend.dtos.request.UpdateUserInfoDto
-import taskmanager.backend.enums.DBCollection
-import taskmanager.backend.exceptions.custom.EntityNotFoundException
+import taskmanager.backend.enums.CollectionInfo
 import taskmanager.backend.models.User
 import taskmanager.backend.services.UserService
+import taskmanager.backend.services.base.impl.BaseServiceImpl
 import java.util.*
 
-class UserServiceImpl(database: CoroutineDatabase) : UserService {
-
-    private val collection: CoroutineCollection<User> = database.getCollection(
-        DBCollection.USER.collectionName
-    )
-
-    private val notFoundException = EntityNotFoundException(DBCollection.USER.entityName)
-
-    override suspend fun getAll(): List<User> {
-        return collection.find().toList()
-    }
-
-    override suspend fun getById(id: ObjectId): User {
-        return collection.findOneById(id) ?: throw notFoundException
-    }
+class UserServiceImpl(
+    override val collection: CoroutineCollection<User>
+) : BaseServiceImpl<User>(collection, CollectionInfo.USER), UserService {
 
     override suspend fun getByEmailOrNull(email: String): User? {
         return collection.findOne(User::email eq email)
@@ -87,11 +74,6 @@ class UserServiceImpl(database: CoroutineDatabase) : UserService {
                 ),
                 options = FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
             )
-            ?: throw notFoundException
-    }
-
-    override suspend fun deleteById(id: ObjectId): String {
-        return collection.findOneAndDelete(User::_id eq id)?._id?.toString()
             ?: throw notFoundException
     }
 }

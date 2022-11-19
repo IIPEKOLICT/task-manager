@@ -5,6 +5,7 @@ import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import org.bson.types.ObjectId
+import org.koin.ktor.ext.inject
 import taskmanager.backend.controllers.*
 import taskmanager.backend.exceptions.ExceptionContainer
 import taskmanager.backend.plugins.injectors.JwtUserInjector
@@ -16,14 +17,22 @@ import taskmanager.backend.plugins.serialization.ObjectIdSerializer
 import java.util.Date
 
 fun Application.configureKNest() {
+    val mainController by inject<MainController>()
+    val authController by inject<AuthController>()
+    val userController by inject<UserController>()
+    val projectController by inject<ProjectController>()
+    val tagController by inject<TagController>()
+    val taskController by inject<TaskController>()
+
     install(KNest) {
         framework {
             setControllers(
-                MainController(),
-                UserController(),
-                AuthController(),
-                ProjectController(),
-                TagController()
+                mainController,
+                userController,
+                authController,
+                projectController,
+                tagController,
+                taskController
             )
 
             addPropertyInjectors(JwtUserInjector::class, LocalUserInjector::class)

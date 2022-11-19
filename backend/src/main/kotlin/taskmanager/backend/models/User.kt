@@ -3,7 +3,7 @@ package taskmanager.backend.models
 import at.favre.lib.crypto.bcrypt.BCrypt
 import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.dtos.response.UserResponseDto
-import taskmanager.backend.models.base.BaseEntity
+import taskmanager.backend.models.base.BaseEntityImpl
 import taskmanager.backend.services.S3Service
 import taskmanager.backend.shared.Configuration
 
@@ -13,7 +13,7 @@ data class User(
     var firstName: String,
     var lastName: String,
     var picturePath: String? = null,
-) : BaseEntity() {
+) : BaseEntityImpl() {
 
     fun hashPassword(): User {
         password = BCrypt

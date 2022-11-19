@@ -9,7 +9,6 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
-import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.exceptions.custom.ForbiddenException
@@ -18,9 +17,7 @@ import taskmanager.backend.models.User
 import taskmanager.backend.services.TagService
 
 @Controller("tags")
-class TagController {
-
-    private val tagService by inject<TagService>(TagService::class.java)
+class TagController(private val tagService: TagService) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])

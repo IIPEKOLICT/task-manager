@@ -7,7 +7,9 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import org.bson.types.ObjectId
 import org.koin.ktor.ext.inject
+import taskmanager.backend.dtos.response.ExceptionResponseDto
 import taskmanager.backend.services.UserService
 import taskmanager.backend.shared.Configuration
 
@@ -29,7 +31,7 @@ fun Application.configureAuthorization() {
                     val userId = credentials.payload.getClaim("_id")?.asString()
                         ?: throw RuntimeException()
 
-                    userService.getById(userId)
+                    userService.getById(ObjectId(userId))
                     JWTPrincipal(credentials.payload)
                 } catch (e: Exception) {
                     null
@@ -39,7 +41,10 @@ fun Application.configureAuthorization() {
             challenge { defaultScheme, realm ->
                 call.respond(
                     status = HttpStatusCode.Unauthorized,
-                    message = "Токен не валиден или его срок действия истек"
+                    message = ExceptionResponseDto(
+                        code = HttpStatusCode.Unauthorized.value,
+                        message = "Токен не валиден или его срок действия истек"
+                    )
                 )
             }
         }

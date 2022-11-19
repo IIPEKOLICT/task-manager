@@ -9,7 +9,6 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
-import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
@@ -20,9 +19,7 @@ import taskmanager.backend.models.User
 import taskmanager.backend.services.TaskService
 
 @Controller("tasks")
-class TaskController {
-
-    private val taskService by inject<TaskService>(TaskService::class.java)
+class TaskController(private val taskService: TaskService) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])

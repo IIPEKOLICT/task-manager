@@ -1,7 +1,7 @@
 package taskmanager.backend.models
 
 import org.bson.types.ObjectId
-import taskmanager.backend.models.base.BaseEntity
+import taskmanager.backend.models.base.BaseEntityImpl
 import taskmanager.backend.models.interfaces.CreatedByUserEntity
 
 data class Tag(
@@ -10,7 +10,7 @@ data class Tag(
 
     var name: String,
     var color: String = generateColor()
-) : BaseEntity(), CreatedByUserEntity {
+) : BaseEntityImpl(), CreatedByUserEntity {
 
     companion object {
         fun generateColor(): String {

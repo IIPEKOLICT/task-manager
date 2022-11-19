@@ -8,7 +8,6 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.config.*
 import io.ktor.server.response.*
-import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.plugins.annotations.LocalUser
 import taskmanager.backend.dtos.request.AuthDto
@@ -20,10 +19,10 @@ import taskmanager.backend.services.UserService
 import java.util.*
 
 @Controller("auth")
-class AuthController {
-
-    private val authService by inject<AuthService>(AuthService::class.java)
-    private val userService by inject<UserService>(UserService::class.java)
+class AuthController(
+    private val authService: AuthService,
+    private val userService: UserService
+) {
 
     @Post("refresh")
     @Authentication(["auth-jwt"])

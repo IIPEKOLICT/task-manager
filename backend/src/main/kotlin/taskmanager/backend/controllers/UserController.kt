@@ -10,14 +10,12 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
-import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.dtos.request.CreateUserDto
 import taskmanager.backend.dtos.request.DeleteDto
 import taskmanager.backend.dtos.request.UpdateUserCredentialsDto
 import taskmanager.backend.dtos.request.UpdateUserInfoDto
 import taskmanager.backend.dtos.response.UserResponseDto
-import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.models.User
 import taskmanager.backend.services.FileService
 import taskmanager.backend.services.ProjectService
@@ -25,12 +23,12 @@ import taskmanager.backend.services.S3Service
 import taskmanager.backend.services.UserService
 
 @Controller("users")
-class UserController {
-
-    private val fileService by inject<FileService>(FileService::class.java)
-    private val s3Service by inject<S3Service>(S3Service::class.java)
-    private val userService by inject<UserService>(UserService::class.java)
-    private val projectService by inject<ProjectService>(ProjectService::class.java)
+class UserController(
+    private val fileService: FileService,
+    private val s3Service: S3Service,
+    private val userService: UserService,
+    private val projectService: ProjectService
+) {
 
     @Get
     @Authentication(["auth-jwt"])
@@ -99,14 +97,7 @@ class UserController {
 
     @Delete("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun deleteById(
-        @JwtUser user: User,
-        @Param("id") id: String
-    ): DeleteDto {
-        if (id == user._id.toString()) {
-            throw ForbiddenException("Нельзя удалить самого себя")
-        }
-
+    suspend fun deleteById(@Param("id") id: String): DeleteDto {
         val objectId = ObjectId(id)
         projectService.deleteByUser(objectId)
         return DeleteDto(userService.deleteById(objectId))

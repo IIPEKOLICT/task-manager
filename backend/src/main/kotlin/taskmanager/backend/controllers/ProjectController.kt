@@ -9,7 +9,6 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
-import org.koin.java.KoinJavaComponent.inject
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.exceptions.custom.ForbiddenException
@@ -22,11 +21,11 @@ import taskmanager.backend.services.TagService
 import taskmanager.backend.services.TaskService
 
 @Controller("projects")
-class ProjectController {
-
-    private val projectService by inject<ProjectService>(ProjectService::class.java)
-    private val tagService by inject<TagService>(TagService::class.java)
-    private val taskService by inject<TaskService>(TaskService::class.java)
+class ProjectController(
+    private val projectService: ProjectService,
+    private val tagService: TagService,
+    private val taskService: TaskService
+) {
 
     @Get
     @Authentication(["auth-jwt"])
@@ -78,6 +77,7 @@ class ProjectController {
         @Param("id") id: String,
         @Body(type = CreateTaskDto::class) dto: CreateTaskDto
     ): Task {
+        dto.validate()
         return taskService.create(user._id, projectService.getById(ObjectId(id))._id, dto)
     }
 

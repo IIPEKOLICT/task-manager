@@ -1,7 +1,7 @@
 package taskmanager.backend.models
 
 import org.bson.types.ObjectId
-import taskmanager.backend.models.base.BaseEntity
+import taskmanager.backend.models.base.BaseEntityImpl
 import taskmanager.backend.models.interfaces.CreatedByUserEntity
 import java.util.Date
 
@@ -21,4 +21,4 @@ data class Task(
     var priority: String,
     var status: String,
     var expectedTime: Date? = null
-) : BaseEntity(), CreatedByUserEntity
+) : BaseEntityImpl(), CreatedByUserEntity

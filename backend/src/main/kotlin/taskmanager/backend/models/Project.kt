@@ -1,7 +1,7 @@
 package taskmanager.backend.models
 
 import org.bson.types.ObjectId
-import taskmanager.backend.models.base.BaseEntity
+import taskmanager.backend.models.base.BaseEntityImpl
 import taskmanager.backend.models.interfaces.CreatedByUserEntity
 
 data class Project(
@@ -11,4 +11,4 @@ data class Project(
     val tags: Set<ObjectId> = emptySet(),
 
     var name: String,
-) : BaseEntity(), CreatedByUserEntity
+) : BaseEntityImpl(), CreatedByUserEntity

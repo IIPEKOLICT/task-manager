@@ -9,9 +9,7 @@ import taskmanager.backend.models.Task
 import taskmanager.backend.services.base.CreatedByUserEntityService
 
 interface TaskService : CreatedByUserEntityService<Task> {
-    suspend fun getAll(): List<Task>
     suspend fun getByProject(projectId: ObjectId): List<Task>
-    suspend fun getById(id: ObjectId): Task
     suspend fun create(userId: ObjectId, projectId: ObjectId, dto: CreateTaskDto): Task
     suspend fun updateInfo(id: ObjectId, dto: UpdateTaskInfoDto): Task
     suspend fun updateStatus(id: ObjectId, status: Status): Task
@@ -26,6 +24,5 @@ interface TaskService : CreatedByUserEntityService<Task> {
     suspend fun removeComment(id: ObjectId, commentId: ObjectId)
     suspend fun removeNote(id: ObjectId, noteId: ObjectId)
     suspend fun removeAttachment(id: ObjectId, attachmentId: ObjectId)
-    suspend fun deleteById(id: ObjectId): String
     suspend fun deleteByProject(projectId: ObjectId)
 }
