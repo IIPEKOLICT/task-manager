@@ -25,6 +25,7 @@ fun Application.configureKNest() {
     val taskController by inject<TaskController>()
     val workController by inject<WorkController>()
     val commentController by inject<CommentController>()
+    val noteController by inject<NoteController>()
 
     install(KNest) {
         framework {
@@ -36,7 +37,8 @@ fun Application.configureKNest() {
                 tagController,
                 taskController,
                 workController,
-                commentController
+                commentController,
+                noteController
             )
 
             addPropertyInjectors(JwtUserInjector::class, LocalUserInjector::class)

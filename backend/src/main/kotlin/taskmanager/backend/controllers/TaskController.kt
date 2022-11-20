@@ -14,11 +14,9 @@ import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.exceptions.custom.ForbiddenException
-import taskmanager.backend.models.Comment
-import taskmanager.backend.models.Task
-import taskmanager.backend.models.User
-import taskmanager.backend.models.Work
+import taskmanager.backend.models.*
 import taskmanager.backend.services.CommentService
+import taskmanager.backend.services.NoteService
 import taskmanager.backend.services.TaskService
 import taskmanager.backend.services.WorkService
 
@@ -26,7 +24,8 @@ import taskmanager.backend.services.WorkService
 class TaskController(
     private val taskService: TaskService,
     private val workService: WorkService,
-    private val commentService: CommentService
+    private val commentService: CommentService,
+    private val noteService: NoteService
 ) {
 
     @Get("{id}")
@@ -47,6 +46,12 @@ class TaskController(
         return commentService.getByTask(ObjectId(id))
     }
 
+    @Get("{id}/notes")
+    @Authentication(["auth-jwt"])
+    suspend fun getTaskNotes(@Param("id") id: String): List<Note> {
+        return noteService.getByTask(ObjectId(id))
+    }
+
     @Post("{id}/works")
     @Authentication(["auth-jwt"])
     suspend fun createTaskWork(
@@ -65,6 +70,16 @@ class TaskController(
         @Body("text") text: String
     ): Comment {
         return commentService.create(user._id, ObjectId(id), text)
+    }
+
+    @Post("{id}/notes")
+    @Authentication(["auth-jwt"])
+    suspend fun createTaskNote(
+        @JwtUser user: User,
+        @Param("id") id: String,
+        @Body(type = NoteDto::class) dto: NoteDto
+    ): Note {
+        return noteService.create(user._id, ObjectId(id), dto)
     }
 
     @Patch("{id}/info")
