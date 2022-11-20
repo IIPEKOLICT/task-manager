@@ -22,34 +22,53 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 ### Repository secrets
 
 > Backend
-- `AWS_ACCESS_KEY_ID` access key id for use AWS
-- `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
-- `AWS_ENVIRONMENT_NAME` environment name on AWS
-- `AWS_S3_BUCKET_NAME` AWS S3 bucket name
-- `AWS_DEFAULT_REGION` AWS region
-- `DATABASE_URL` used database url
-- `JWT_SECRET` used jwt secret
-- `BCRYPT_STRENGTH` used for bcrypt library strength
+> - `AWS_ACCESS_KEY_ID` access key id for use AWS
+> - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
+> - `AWS_ENVIRONMENT_NAME` environment name on AWS
+> - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
+> - `AWS_REGION` AWS region
+> - `DATABASE_URL` used database url
+> - `JWT_SECRET` used jwt secret
+> - `BCRYPT_STRENGTH` used for bcrypt library strength
+
 > Frontend
-- `BACKEND_URL` deployed backend url
-- `KEYSTORE_GIT_REPOSITORY` name of git repository with keystore
-- `KEYSTORE_ACCESS_TOKEN` token for get access to keystore repository
-- `KEYSTORE_PASSWORD` password of used keystore
-- `RELEASE_SIGN_KEY_ALIAS` used alias for sign app using keystore
-- `RELEASE_SIGN_KEY_PASSWORD` used password for sign app using keystore
+> - `BACKEND_URL` deployed backend url
+> - `KEYSTORE_GIT_REPOSITORY` name of git repository with keystore
+> - `KEYSTORE_ACCESS_TOKEN` token for get access to keystore repository
+> - `KEYSTORE_PASSWORD` password of used keystore
+> - `RELEASE_SIGN_KEY_ALIAS` used alias for sign app using keystore
+> - `RELEASE_SIGN_KEY_PASSWORD` used password for sign app using keystore
 
 ### Environment variables
 
-> Backend
-- `AWS_ACCESS_KEY_ID` access key id for use AWS
-- `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
-- `AWS_S3_BUCKET_NAME` AWS S3 bucket name
-- `PORT` used port by backend
-- `DATABASE_URL` db url string
-- `JWT_SECRET` used jwt secret
-- `BCRYPT_STRENGTH` used for bcrypt library strength
-> Frontend
-- `BACKEND_URL` backend url used by frontend
+>Required
+>>Backend (local)
+>> - `AWS_ACCESS_KEY_ID` access key id for use AWS
+>> - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
+>> - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
+>
+>> Backend (production)
+>> - `AWS_ACCESS_KEY_ID` access key id for use AWS
+>> - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
+>> - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
+>> - `PORT` used port by backend
+>> - `DATABASE_URL` db url string
+>
+>> Frontend
+>> - `BACKEND_URL` backend url used by frontend
+
+> Optional
+>> Backend (local)
+>> - `AWS_REGION` AWS region
+>> - `PORT` used port by backend
+>> - `DATABASE_URL` db url string
+>> - `JWT_SECRET` used jwt secret
+>> - `BCRYPT_STRENGTH` used for bcrypt library strength
+>
+>> Backend (production)
+>> - `AWS_REGION` AWS region
+>> - `JWT_SECRET` used jwt secret
+>> - `BCRYPT_STRENGTH` used for bcrypt library strength
 
 ### Load project
 
