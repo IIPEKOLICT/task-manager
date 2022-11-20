@@ -1,3 +1,8 @@
+def keystoreProperties = new Properties()
+def keystoreFile = file('keystore/keystore.properties')
+def hasKeystore = keystoreFile.exists() || System.getenv('KEYSTORE_PASSWORD')
+def backendUrl = System.getenv("BACKEND_URL") ?: "http://localhost:5000"
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -43,8 +48,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "todo.frontend.frontend"
+        applicationId "taskmanager.frontend"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion flutter.minSdkVersion
@@ -53,11 +57,39 @@ android {
         versionName flutterVersionName
     }
 
+    if (hasKeystore) {
+        signingConfigs {
+            release {
+                if (keystoreFile.exists()) {
+                    file('keystore/keystore.properties').withInputStream {
+                        keystoreProperties.load(it)
+                    }
+
+                    storeFile file("$keystoreProperties.storeFile")
+                    storePassword "$keystoreProperties.storePassword"
+                    keyAlias "$keystoreProperties.keyAlias"
+                    keyPassword "$keystoreProperties.keyPassword"
+                } else {
+                    storeFile file('keystore/android_keystore.keystore')
+                    storePassword System.getenv('KEYSTORE_PASSWORD')
+                    keyAlias System.getenv('RELEASE_SIGN_KEY_ALIAS')
+                    keyPassword System.getenv('RELEASE_SIGN_KEY_PASSWORD')
+                }
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            buildConfigField("String", "BACKEND_URL", "\"$backendUrl\"")
+        }
+
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            if (hasKeystore) {
+                signingConfig signingConfigs.release
+            }
+
+            buildConfigField("String", "BACKEND_URL", "\"$backendUrl\"")
         }
     }
 }

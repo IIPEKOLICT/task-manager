@@ -4,10 +4,14 @@ rm -rf build
 mkdir build
 cd backend || exit
 
-echo Build fatJAR file...
+echo Test backend...
+
+./gradlew test
+
+echo Build backend fat jar...
 
 ./gradlew buildFatJar
 
-echo Move output backend file to build directory...
+echo Move output fat jar to build directory...
 
-mv "build/libs/backend.jar" "../build/$1.jar"
+mv build/libs/backend.jar ../build/backend.jar
