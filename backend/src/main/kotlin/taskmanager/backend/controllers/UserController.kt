@@ -75,7 +75,7 @@ class UserController(
     ): UserResponseDto {
         if (picture == null) throw BadRequestException("Нет файла картинки")
 
-        val picturePath = "/users/pictures/${user._id}.png"
+        val picturePath: String = user.getProfilePicturePath()
 
         s3Service.save(
             path = picturePath,
@@ -91,7 +91,7 @@ class UserController(
         @JwtUser user: User,
         @Param("id") id: String
     ): UserResponseDto {
-        s3Service.delete("/users/pictures/${user._id}.png")
+        s3Service.delete(user.getProfilePicturePath())
         return userService.updatePicture(ObjectId(id), null).toResponseDto()
     }
 

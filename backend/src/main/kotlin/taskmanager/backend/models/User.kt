@@ -25,6 +25,10 @@ data class User(
         return BCrypt.verifyer().verify(checkedPassword.toCharArray(), password).verified
     }
 
+    fun getProfilePicturePath(): String {
+        return "/users/pictures/${_id}.png"
+    }
+
     fun toResponseDto(): UserResponseDto {
         return UserResponseDto(
             _id = _id.toString(),

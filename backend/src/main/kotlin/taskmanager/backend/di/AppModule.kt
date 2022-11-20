@@ -49,6 +49,10 @@ object AppModule {
                 NoteServiceImpl(database.getCollection(CollectionInfo.NOTE.collectionName))
             }
 
+            single<AttachmentService> {
+                AttachmentServiceImpl(database.getCollection(CollectionInfo.ATTACHMENT.collectionName))
+            }
+
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }
 
@@ -57,10 +61,11 @@ object AppModule {
             single { UserController(get(), get(), get(), get()) }
             single { ProjectController(get(), get(), get()) }
             single { TagController(get()) }
-            single { TaskController(get(), get(), get(), get()) }
+            single { TaskController(get(), get(), get(), get(), get(), get(), get()) }
             single { WorkController(get()) }
             single { CommentController(get()) }
             single { NoteController(get()) }
+            single { AttachmentController(get()) }
         }
     }
 }
