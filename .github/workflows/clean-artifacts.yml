@@ -1,0 +1,16 @@
+name: Clean artifacts
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  clean-artifacts:
+    name: Clean artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: kolpav/purge-artifacts-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          expire-in: 1days
