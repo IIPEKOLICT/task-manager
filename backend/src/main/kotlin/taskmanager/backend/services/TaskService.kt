@@ -6,10 +6,9 @@ import taskmanager.backend.dtos.request.UpdateTaskInfoDto
 import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
 import taskmanager.backend.models.Task
-import taskmanager.backend.services.base.CreatedByUserEntityService
+import taskmanager.backend.services.base.AttachedToProjectEntityService
 
-interface TaskService : CreatedByUserEntityService<Task> {
-    suspend fun getByProject(projectId: ObjectId): List<Task>
+interface TaskService : AttachedToProjectEntityService<Task> {
     suspend fun create(userId: ObjectId, projectId: ObjectId, dto: CreateTaskDto): Task
     suspend fun updateInfo(id: ObjectId, dto: UpdateTaskInfoDto): Task
     suspend fun updateStatus(id: ObjectId, status: Status): Task
@@ -24,5 +23,4 @@ interface TaskService : CreatedByUserEntityService<Task> {
     suspend fun removeComment(id: ObjectId, commentId: ObjectId)
     suspend fun removeNote(id: ObjectId, noteId: ObjectId)
     suspend fun removeAttachment(id: ObjectId, attachmentId: ObjectId)
-    suspend fun deleteByProject(projectId: ObjectId)
 }

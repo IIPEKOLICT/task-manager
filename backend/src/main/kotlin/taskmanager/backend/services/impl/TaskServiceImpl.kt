@@ -10,16 +10,12 @@ import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
 import taskmanager.backend.models.Task
 import taskmanager.backend.services.TaskService
-import taskmanager.backend.services.base.impl.CreatedByUserEntityServiceImpl
+import taskmanager.backend.services.base.impl.AttachedToProjectEntityServiceImpl
 import java.text.SimpleDateFormat
 
 class TaskServiceImpl(
     override val collection: CoroutineCollection<Task>
-) : CreatedByUserEntityServiceImpl<Task>(collection, CollectionInfo.TASK), TaskService {
-
-    override suspend fun getByProject(projectId: ObjectId): List<Task> {
-        return collection.find(Task::project eq projectId).toList()
-    }
+) : AttachedToProjectEntityServiceImpl<Task>(collection, CollectionInfo.TASK), TaskService {
 
     override suspend fun create(userId: ObjectId, projectId: ObjectId, dto: CreateTaskDto): Task {
         val expectedTime = if (dto.expectedTime != null) {
@@ -101,9 +97,5 @@ class TaskServiceImpl(
 
     override suspend fun removeAttachment(id: ObjectId, attachmentId: ObjectId) {
         updateById(id, pull(Task::attachments, attachmentId))
-    }
-
-    override suspend fun deleteByProject(projectId: ObjectId) {
-        collection.deleteMany(Task::project eq projectId)
     }
 }
