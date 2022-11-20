@@ -41,12 +41,14 @@ jobs:
             AWS_S3_BUCKET_NAME=$AWS_S3_BUCKET_NAME /
             AWS_REGION=$AWS_REGION /
             DATABASE_URL=$DATABASE_URL /
+            DATABASE_NAME=$DATABASE_NAME /
             BACKEND_URL=$BACKEND_URL /
             JWT_SECRET=$JWT_SECRET /
             BCRYPT_STRENGTH=$BCRYPT_STRENGTH
         env:
           AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           BCRYPT_STRENGTH: ${{ secrets.BCRYPT_STRENGTH }}
 

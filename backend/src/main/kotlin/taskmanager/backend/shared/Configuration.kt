@@ -17,6 +17,9 @@ class Configuration(private val appConfig: ApplicationConfig) {
     val databaseUrl: String
         get() = getStringParam("database.url")
 
+    val databaseName: String
+        get() = getStringParam("database.name")
+
     val bcryptStrength: Int
         get() = getStringParam("bcrypt.strength").toInt()
 

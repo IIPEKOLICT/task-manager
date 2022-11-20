@@ -28,6 +28,7 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 > - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
 > - `AWS_REGION` AWS region
 > - `DATABASE_URL` used database url
+> - `DATABASE_NAME` used database name
 > - `JWT_SECRET` used jwt secret
 > - `BCRYPT_STRENGTH` used for bcrypt library strength
 
@@ -53,6 +54,7 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 >> - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
 >> - `PORT` used port by backend
 >> - `DATABASE_URL` db url string
+>> - `DATABASE_NAME` used database name
 >
 >> Frontend
 >> - `BACKEND_URL` backend url used by frontend
@@ -62,6 +64,7 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 >> - `AWS_REGION` AWS region
 >> - `PORT` used port by backend
 >> - `DATABASE_URL` db url string
+>> - `DATABASE_NAME` used database name
 >> - `JWT_SECRET` used jwt secret
 >> - `BCRYPT_STRENGTH` used for bcrypt library strength
 >
@@ -96,5 +99,5 @@ cd backend
 
 ```shell
 cd backend
-deploy --staged $AWS_ENVIRONMENT_NAME
+eb deploy --staged $AWS_ENVIRONMENT_NAME
 ```

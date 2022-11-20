@@ -14,14 +14,14 @@ class DatabaseManager(private val configuration: Configuration) {
     fun init(): DatabaseManager {
         try {
             client = KMongo.createClient(ConnectionString(configuration.databaseUrl)).coroutine
-            database = client!!.getDatabase("task-manager")
+            database = client!!.getDatabase(configuration.databaseName)
             return this
         } catch (e: Exception) {
-            throw RuntimeException("Cannot connect to MongoDB")
+            throw RuntimeException("Cannot connect to database")
         }
     }
 
     fun getDatabase(): CoroutineDatabase {
-        return database ?: throw RuntimeException("Mongo database unavailable")
+        return database ?: throw RuntimeException("Database unavailable")
     }
 }
