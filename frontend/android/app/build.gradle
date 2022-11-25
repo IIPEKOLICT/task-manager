@@ -1,7 +1,6 @@
 def keystoreProperties = new Properties()
 def keystoreFile = file('keystore/keystore.properties')
 def hasKeystore = keystoreFile.exists() || System.getenv('KEYSTORE_PASSWORD')
-def backendUrl = System.getenv("BACKEND_URL") ?: "http://localhost:5000"
 
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
@@ -49,8 +48,6 @@ android {
 
     defaultConfig {
         applicationId "taskmanager.frontend"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -80,16 +77,12 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField("String", "BACKEND_URL", "\"$backendUrl\"")
-        }
-
         release {
             if (hasKeystore) {
                 signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
             }
-
-            buildConfigField("String", "BACKEND_URL", "\"$backendUrl\"")
         }
     }
 }

@@ -2,7 +2,7 @@
 
 rm -rf build
 mkdir build
-cd frontend/android || exit
+cd frontend || exit
 
 echo Install dependencies...
 
@@ -19,5 +19,5 @@ flutter build appbundle
 
 echo Move output client files to build directory...
 
-mv "../build/app/outputs/apk/release/app-release.apk" "../../build/$1.apk"
-mv "../build/app/outputs/bundle/release/app-release.aab" "../../build/$1.aab"
+mv "build/app/outputs/flutter-apk/app-release.apk" "../build/$1.apk"
+mv "build/app/outputs/bundle/release/app-release.aab" "../build/$1.aab"
