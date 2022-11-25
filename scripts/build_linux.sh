@@ -17,7 +17,7 @@ flutter test
 
 echo Build linux version...
 
-flutter build linux
+flutter build linux --dart-define=BACKEND_URL="$BACKEND_URL"
 
 echo Move output linux files to build directory...
 

@@ -1,5 +1,5 @@
 class User {
-  String _id;
+  String id;
   String email;
   String firstName;
   String lastName;
@@ -7,20 +7,19 @@ class User {
   DateTime createdAt;
   DateTime? updatedAt;
 
-  User(
-    this._id,
-    {
-      this.email = '',
-      this.firstName = '',
-      this.lastName = '',
-      this.profilePicture,
-      required this.createdAt,
-      this.updatedAt,
-    });
+  User({
+    this.id = '',
+    this.email = '',
+    this.firstName = '',
+    this.lastName = '',
+    this.profilePicture,
+    required this.createdAt,
+    this.updatedAt,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      json['_id'],
+      id: json['_id'],
       email: json['email'],
       firstName: json['firstName'],
       lastName: json['lastName'],
@@ -32,7 +31,7 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': _id,
+      '_id': id,
       'email': email,
       'firstName': firstName,
       'lastName': lastName,

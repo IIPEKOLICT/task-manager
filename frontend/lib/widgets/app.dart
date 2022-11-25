@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/presentation/widgets/pages/home.page.dart';
+import 'package:frontend/widgets/pages/login.page.dart';
+
+import '../../constants/ui.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -7,12 +9,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Задачи',
+      title: appName,
       theme: ThemeData(
         colorScheme: const ColorScheme.dark(),
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      home: Scaffold(
+        appBar: AppBar(title: const Text(appHeader)),
+        body: LoginPage.create(),
+      )
     );
   }
 }

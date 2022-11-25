@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-import 'package:frontend/presentation/widgets/app.dart';
+import 'package:frontend/di/app.module.dart';
+import 'package:frontend/widgets/app.dart';
 
 void main() async {
-  await dotenv.load();
+  await configureDependencies();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const App());
 }
