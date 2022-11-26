@@ -7,6 +7,7 @@ cd frontend || exit
 echo Install dependencies...
 
 flutter pub get
+flutter packages pub run build_runner build
 
 echo Test code...
 
