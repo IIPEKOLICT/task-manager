@@ -59,7 +59,7 @@ class RegisterViewModel extends BaseViewModel {
       await _storageService.saveToken(data.token);
       _storageService.saveUserId(data.user.id).then((_) => context.go(RouteEnum.home.value));
     } catch (e) {
-      onException('Ошибка регистрации');
+      onException(e, message: 'Ошибка регистрации');
     } finally {
       notifyListeners();
     }

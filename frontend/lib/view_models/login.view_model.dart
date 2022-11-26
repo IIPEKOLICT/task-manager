@@ -41,7 +41,7 @@ class LoginViewModel extends BaseViewModel {
       await _storageService.saveToken(data.token);
       _storageService.saveUserId(data.user.id).then((_) => context.go(RouteEnum.home.value));
     } catch (e) {
-      onException('Неверный E-mail или пароль');
+      onException(e, message: 'Неверный E-mail или пароль');
     } finally {
       notifyListeners();
     }
