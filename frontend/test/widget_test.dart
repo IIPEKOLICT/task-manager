@@ -1,13 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/di/app.module.dart';
 import 'package:frontend/widgets/app.dart';
 
-void main() {
+void main() async {
+  await configureDependencies();
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('home page test', (WidgetTester tester) async {
     await tester.pumpWidget(App());
-
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
   });
 }
