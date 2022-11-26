@@ -1,34 +1,37 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../di/app.module.dart';
+import 'package:flutter/material.dart';
+import 'package:frontend/services/storage.service.dart';
 
 abstract class BaseRepository {
+  @protected
   final Dio httpClient;
-  final Future<SharedPreferences> sharedPreferences = injector.getAsync();
 
+  @protected
+  final StorageService storageService;
+
+  @protected
   abstract final String endpoint;
 
-  BaseRepository(this.httpClient);
+  BaseRepository(this.httpClient, this.storageService);
 
   _getHeaders() async {
-    return { 'Authorization': 'Bearer ${(await sharedPreferences).get('TOKEN') ?? ''}' };
+    return { 'Authorization': 'Bearer ${await storageService.getToken() ?? ''}' };
   }
 
   String _getUri(String path) {
-    return endpoint.isEmpty ? path : '$endpoint/$path';
+    return endpoint.isEmpty ? '/$path' : '/$endpoint/$path';
   }
 
   Future<T> _sendRequest<T>(String method, {String path = '', dynamic body = const Object()}) async {
-    Response<dynamic> response = await httpClient.request(
-        _getUri(path),
-        data: body,
-        options: Options(headers: _getHeaders(), method: method)
+    Response<T> response = await httpClient.request(
+      _getUri(path),
+      data: body,
+      options: Options(headers: await _getHeaders(), method: method)
     );
 
-    return jsonDecode(response.data) as T;
+    return response.data ?? Object() as T;
   }
 
   Future<T> get<T>({String path = ''}) async {

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/di/app.module.dart';
 import 'package:frontend/enums/route.enum.dart';
-import 'package:frontend/view_models/login.view_model.dart';
-import 'package:frontend/widgets/components/default.button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/ui.dart';
+import '../../view_models/register.view_model.dart';
+import '../components/default.button.dart';
 import '../components/text.input.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var loginViewModel = context.watch<LoginViewModel>();
+    var registerViewModel = context.watch<RegisterViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -33,32 +33,46 @@ class LoginPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: TextInput(
-                        onInput: loginViewModel.setEmail,
+                        onInput: registerViewModel.setEmail,
                         hintText: 'E-mail'
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: TextInput(
-                        onInput: loginViewModel.setPassword,
+                        onInput: registerViewModel.setPassword,
                         hintText: 'Пароль',
                         isPassword: true
                     ),
                   ),
-                  Container(
-                    width: double.infinity,
+                  Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: DefaultButton(
-                      title: 'Зарегистрироваться',
-                      onTap: () => context.go(RouteEnum.register.value)
+                    child: TextInput(
+                        onInput: registerViewModel.setFirstName,
+                        hintText: 'Имя'
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: TextInput(
+                        onInput: registerViewModel.setLastName,
+                        hintText: 'Фамилия'
                     ),
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: DefaultButton(
-                      title: 'Войти',
-                      onTap: loginViewModel.isValid ? loginViewModel.login : null
+                        title: 'Уже есть аккаунт',
+                        onTap: () => context.go(RouteEnum.login.value)
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: DefaultButton(
+                        title: 'Регистрация',
+                        onTap: registerViewModel.isValid ? registerViewModel.onSubmit : null
                     ),
                   ),
                 ],
@@ -72,8 +86,8 @@ class LoginPage extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<LoginViewModel>(param1: context),
-      child: const LoginPage(),
+      create: (BuildContext context) => injector.get<RegisterViewModel>(param1: context),
+      child: const RegisterPage(),
     );
   }
 }

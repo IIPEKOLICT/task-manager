@@ -6,7 +6,7 @@ import 'base/base.repository.dart';
 
 @LazySingleton()
 class MainRepository extends BaseRepository {
-  MainRepository(super.httpClient);
+  MainRepository(super.httpClient, super.storageService);
 
   @override
   String get endpoint => '';

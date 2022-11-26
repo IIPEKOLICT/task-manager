@@ -4,7 +4,7 @@ class User {
   String firstName;
   String lastName;
   String? profilePicture;
-  DateTime createdAt;
+  DateTime? createdAt;
   DateTime? updatedAt;
 
   User({
@@ -13,7 +13,7 @@ class User {
     this.firstName = '',
     this.lastName = '',
     this.profilePicture,
-    required this.createdAt,
+    this.createdAt,
     this.updatedAt,
   });
 
@@ -24,8 +24,8 @@ class User {
       firstName: json['firstName'],
       lastName: json['lastName'],
       profilePicture: json['profilePicture'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt'])
+      createdAt: json['createdAt'] == null ? null : DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] == null ? null : DateTime.parse(json['updatedAt']),
     );
   }
 
@@ -36,7 +36,7 @@ class User {
       'firstName': firstName,
       'lastName': lastName,
       'profilePicture': profilePicture,
-      'createdAt': createdAt.toString(),
+      'createdAt': createdAt?.toString(),
       'updatedAt': updatedAt?.toString()
     };
   }

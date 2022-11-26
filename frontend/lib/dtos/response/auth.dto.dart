@@ -1,4 +1,4 @@
-import '../models/user.dart';
+import '../../models/user.dart';
 
 class AuthDto {
   final String token;

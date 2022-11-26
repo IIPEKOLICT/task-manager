@@ -80,7 +80,7 @@ git clone git@github.com:IIPEKOLICT/task-manager.git
 cd task-manager
 ```
 
-### Start backend locally (needed 11+ Java)
+### Start backend locally (needed Java 11+)
 
 ```shell
 cd backend
@@ -88,7 +88,7 @@ cd backend
 ./gradlew bootRun
 ```
 
-### Build backend fatJar (needed 11+ Java)
+### Build backend fatJar (needed Java 11+)
 
 ```shell
 cd backend
@@ -100,4 +100,18 @@ cd backend
 ```shell
 cd backend
 eb deploy --staged $AWS_ENVIRONMENT_NAME
+```
+
+### Update frontend DI dependencies with active watcher (needed Flutter 3+)
+
+```shell
+flutter pub get
+flutter packages pub run build_runner watch
+```
+
+### Update frontend DI dependencies (needed Flutter 3+)
+
+```shell
+flutter pub get
+flutter packages pub run build_runner build
 ```

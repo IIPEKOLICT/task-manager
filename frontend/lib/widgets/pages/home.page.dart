@@ -1,48 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/constants/ui.dart';
+import 'package:frontend/enums/route.enum.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+import '../../di/app.module.dart';
+import '../../view_models/auth.view_model.dart';
 
-  final String title;
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var authViewModel = context.watch<AuthViewModel>();
+
+    const loader = CircularProgressIndicator(
+      value: null,
+      strokeWidth: 5,
+    );
+
+    final logoutButton = ElevatedButton(
+        onPressed: () => authViewModel.logout(() => context.go(RouteEnum.login.value)),
+        child: const Text('Выйти')
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text(appHeader),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          children: [authViewModel.isLoaded ? loader : logoutButton],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
+
+  static Widget onCreate() {
+     return ChangeNotifierProvider(
+       create: (BuildContext context) => injector.get<AuthViewModel>(param1: context),
+       child: const HomePage(),
+     );
+   }
 }

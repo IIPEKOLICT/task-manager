@@ -6,7 +6,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(const App());
+    await tester.pumpWidget(App());
 
     expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsNothing);
