@@ -13,11 +13,15 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 - MongoDB
 - Koin
 - SwaggerUI
+- Bcrypt
 
 ### Frontend tech stack
 
 - Dart
 - Flutter
+- Provider
+- Dio
+- Injectable
 
 ### Repository secrets
 
@@ -105,6 +109,7 @@ eb deploy --staged $AWS_ENVIRONMENT_NAME
 ### Update frontend DI dependencies with active watcher (needed Flutter 3+)
 
 ```shell
+cd frontend
 flutter pub get
 flutter packages pub run build_runner watch
 ```
@@ -112,6 +117,32 @@ flutter packages pub run build_runner watch
 ### Update frontend DI dependencies (needed Flutter 3+)
 
 ```shell
+cd frontend
 flutter pub get
 flutter packages pub run build_runner build
 ```
+
+### Build frontend web-version (needed Flutter 3+)
+
+```shell
+cd frontend
+flutter pub get
+flutter packages pub run build_runner build
+flutter build web --release --base-href "/$BASE_URL/" --dart-define=BACKEND_URL="$BACKEND_URL"
+```
+
+You can find generated bundle in `build/web` location
+
+### Build frontend android-version (needed Flutter 3+)
+
+```shell
+cd frontend
+flutter pub get
+flutter packages pub run build_runner build
+flutter build apk --dart-define=BACKEND_URL="$BACKEND_URL"
+flutter build appbundle --dart-define=BACKEND_URL="$BACKEND_URL"
+```
+
+You can find:
+- generated APK file in `build/app/outputs/flutter-apk/app-release.apk` location
+- generated AAB file in `build/app/outputs/bundle/release/app-release.aab` location
