@@ -3,70 +3,58 @@ import 'package:frontend/di/app.module.dart';
 import 'package:frontend/dtos/response/auth.dto.dart';
 import 'package:frontend/repositories/auth.repository.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
+import 'package:frontend/view_models/state/auth.state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
 import '../enums/route.enum.dart';
 import '../models/user.dart';
-import '../services/storage.service.dart';
 
 @Injectable()
 class AuthViewModel extends BaseViewModel {
   AuthViewModel(@factoryParam super.context) {
-    _onInit(() => context.go(RouteEnum.login.value));
+    if (!_authState.isAuth) {
+      _onInit(() => context.go(RouteEnum.login.value));
+    }
   }
 
+  final AuthState _authState = injector.get();
   final AuthRepository _authRepository = injector.get();
-  final StorageService _storageService = injector.get();
-  
-  String? _token;
-  User? _user;
-  bool _isLoaded = true;
+
+  bool _isLoaded = false;
 
   bool get isLoaded {
     return _isLoaded;
   }
 
   bool get isAuth {
-    return _user != null;
+    return _authState.isAuth;
   }
 
-  String? getToken() => _token;
-  User? getUser() => _user;
-
-  void setAuthData(AuthDto data) {
-    _user = data.user;
-    _token = data.token;
-    notifyListeners();
-  }
+  String? getToken() => _authState.getToken();
+  User? getUser() => _authState.getUser();
 
   Future<void> logout(VoidCallback teleport) async {
-    _user = null;
-    _token = null;
-    await _handleToken();
+    await _authState.reset();
     notifyListeners();
     teleport();
   }
 
   Future<void> _onInit(VoidCallback teleport) async {
-    String? token = await _storageService.getToken();
-    String? userId = await _storageService.getUserId();
+    _isLoaded = true;
+    await _authState.onInit();
 
-    if (token == null) {
-      _clearState();
+    if (!_authState.hasToken) {
       _isLoaded = false;
       return teleport();
     }
 
-    if (userId == null) {
+    if (!_authState.hasUserId) {
       try {
         AuthDto data = await _authRepository.refreshToken();
-        _user = data.user;
-        _token = data.token;
-        await _storageService.saveToken(data.token);
-        await _storageService.saveUserId(data.user.id);
+        await _authState.setUserData(data);
       } catch (e) {
-        _clearState();
+        await _authState.reset();
       } finally {
         _isLoaded = false;
         notifyListeners();
@@ -74,19 +62,6 @@ class AuthViewModel extends BaseViewModel {
       }
     } else {
       _isLoaded = false;
-    }
-  }
-
-  void _clearState() {
-    _token = null;
-    _user = null;
-  }
-
-  Future<void> _handleToken({String? token}) async {
-    if (token == null) {
-      await _storageService.removeToken();
-    } else {
-      await _storageService.saveToken(token);
     }
   }
 }
