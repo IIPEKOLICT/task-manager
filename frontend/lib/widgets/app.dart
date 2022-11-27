@@ -33,8 +33,9 @@ class App extends StatelessWidget {
     return MaterialApp.router(
       title: appName,
       theme: ThemeData(
-        colorScheme: const ColorScheme.dark(),
-        primarySwatch: Colors.blue,
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.blue,
+        ),
       ),
       routerConfig: _router,
     );
