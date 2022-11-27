@@ -13,11 +13,15 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 - MongoDB
 - Koin
 - SwaggerUI
+- Bcrypt
 
 ### Frontend tech stack
 
 - Dart
 - Flutter
+- Provider
+- Dio
+- Injectable
 
 ### Repository secrets
 
@@ -80,7 +84,7 @@ git clone git@github.com:IIPEKOLICT/task-manager.git
 cd task-manager
 ```
 
-### Start backend locally (needed 11+ Java)
+### Start backend locally (needed Java 11+)
 
 ```shell
 cd backend
@@ -88,7 +92,7 @@ cd backend
 ./gradlew bootRun
 ```
 
-### Build backend fatJar (needed 11+ Java)
+### Build backend fatJar (needed Java 11+)
 
 ```shell
 cd backend
@@ -101,3 +105,44 @@ cd backend
 cd backend
 eb deploy --staged $AWS_ENVIRONMENT_NAME
 ```
+
+### Update frontend DI dependencies with active watcher (needed Flutter 3+)
+
+```shell
+cd frontend
+flutter pub get
+flutter packages pub run build_runner watch
+```
+
+### Update frontend DI dependencies (needed Flutter 3+)
+
+```shell
+cd frontend
+flutter pub get
+flutter packages pub run build_runner build
+```
+
+### Build frontend web-version (needed Flutter 3+)
+
+```shell
+cd frontend
+flutter pub get
+flutter packages pub run build_runner build
+flutter build web --release --base-href "/$BASE_URL/" --dart-define=BACKEND_URL="$BACKEND_URL"
+```
+
+You can find generated bundle in `build/web` location
+
+### Build frontend android-version (needed Flutter 3+)
+
+```shell
+cd frontend
+flutter pub get
+flutter packages pub run build_runner build
+flutter build apk --dart-define=BACKEND_URL="$BACKEND_URL"
+flutter build appbundle --dart-define=BACKEND_URL="$BACKEND_URL"
+```
+
+You can find:
+- generated APK file in `build/app/outputs/flutter-apk/app-release.apk` location
+- generated AAB file in `build/app/outputs/bundle/release/app-release.aab` location

@@ -1,4 +1,4 @@
-package taskmanager.frontend.frontend
+package taskmanager.frontend
 
 import io.flutter.embedding.android.FlutterActivity
 
