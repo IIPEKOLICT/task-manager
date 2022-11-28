@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/dtos/response/exception.dto.dart';
@@ -11,11 +13,15 @@ abstract class BaseViewModel extends ChangeNotifier {
   BaseViewModel(this.context);
 
   ExceptionDto? _parseExceptionResponse(e) {
-    if (e.runtimeType != DioError || e.response?.data == null) {
-      return null;
+    if (e is DioError && e.response?.data != null) {
+      return ExceptionDto.fromJSON(e.response!.data);
     }
 
-    return ExceptionDto.fromJSON(e.response.data);
+    if (e is DioError) {
+      return ExceptionDto(HttpStatus.internalServerError, e.message);
+    }
+
+    return null;
   }
 
   @protected
