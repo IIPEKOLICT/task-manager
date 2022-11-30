@@ -1,21 +1,21 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/services/storage.service.dart';
+import 'package:frontend/view_models/state/auth.state.dart';
 
 abstract class BaseRepository {
   @protected
   final Dio httpClient;
 
   @protected
-  final StorageService storageService;
+  final AuthState authState;
 
   @protected
   abstract final String endpoint;
 
-  BaseRepository(this.httpClient, this.storageService);
+  BaseRepository(this.httpClient, this.authState);
 
-  _getHeaders() async {
-    return { 'Authorization': 'Bearer ${await storageService.getToken() ?? ''}' };
+  get _headers {
+    return { 'Authorization': 'Bearer ${authState.getToken() ?? ''}' };
   }
 
   String _getUri(String path) {
@@ -26,7 +26,7 @@ abstract class BaseRepository {
     Response<T> response = await httpClient.request(
       _getUri(path),
       data: body,
-      options: Options(headers: await _getHeaders(), method: method)
+      options: Options(headers: _headers, method: method)
     );
 
     return response.data ?? Object() as T;

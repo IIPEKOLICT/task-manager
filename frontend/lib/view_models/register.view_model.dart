@@ -1,19 +1,25 @@
-import 'package:frontend/di/app.module.dart';
 import 'package:frontend/dtos/request/create_user.dto.dart';
-import 'package:frontend/dtos/response/auth.dto.dart';
-import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/repositories/auth.repository.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/state/auth.state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
+import '../enums/route.enum.dart';
+
 @Injectable()
 class RegisterViewModel extends BaseViewModel {
-  RegisterViewModel(@factoryParam super.context);
+  final AuthState _authState;
+  final AuthRepository _authRepository;
 
-  final AuthState _authState = injector.get();
-  final AuthRepository _authRepository = injector.get();
+  RegisterViewModel(@factoryParam super.context, this._authState, this._authRepository) {
+    _authState.isAuth$.subscribe(_isAuthSubscription);
+  }
+
+  void _isAuthSubscription(bool isAuth) {
+    notifyListeners();
+    context.go((isAuth ? RouteEnum.home : RouteEnum.login).value);
+  }
 
   String _email = '';
   String _password = '';
@@ -51,15 +57,22 @@ class RegisterViewModel extends BaseViewModel {
 
   Future<void> onSubmit() async {
     try {
-      AuthDto data = await _authRepository.register(
-        CreateUserDto(_email, _password, _firstName, _lastName)
+      await _authState.setUserData(
+        await _authRepository.register(
+          CreateUserDto(_email, _password, _firstName, _lastName)
+        )
       );
-
-      _authState.setUserData(data).then((_) => context.go(RouteEnum.home.value));
     } catch (e) {
       onException(e, message: 'Ошибка регистрации');
     } finally {
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _authState.isAuth$.unsubscribe(_isAuthSubscription);
+
+    super.dispose();
   }
 }

@@ -1,15 +1,12 @@
-import 'dart:collection';
-
 import 'package:injectable/injectable.dart';
 
 import '../dtos/request/create_user.dto.dart';
 import '../dtos/response/auth.dto.dart';
-import '../models/user.dart';
 import 'base/base.repository.dart';
 
 @LazySingleton()
 class AuthRepository extends BaseRepository {
-  AuthRepository(super.httpClient, super.storageService);
+  AuthRepository(super.httpClient, super.authState);
 
   @override
   String get endpoint => 'auth';
@@ -29,7 +26,7 @@ class AuthRepository extends BaseRepository {
 
   Future<AuthDto> login(String email, String password) async {
     return AuthDto.fromJSON(
-      await post<LinkedHashMap<String, dynamic>>(
+      await post<Map<String, dynamic>>(
         path: 'login',
         body: { 'email': email, 'password': password }
       )

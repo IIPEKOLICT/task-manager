@@ -1,29 +1,36 @@
-import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../di/app.module.dart';
 import '../../dtos/response/auth.dto.dart';
 import '../../models/user.dart';
 import '../../services/storage.service.dart';
+import 'base/observable.dart';
+import 'base/stream.dart';
 
 @LazySingleton()
-class AuthState extends ChangeNotifier {
-  AuthState() {
-    onInit();
-  }
+class AuthState {
+  final StorageService _storageService;
 
-  final StorageService _storageService = injector.get();
+  AuthState(this._storageService) {
+    _onInit();
+  }
   
   String? _token;
   String? _userId;
   User? _user;
 
-  String? get userId {
-    return _user?.id;
+  final Stream<bool> _hasInitialized$ = Stream(false);
+  final Stream<bool> _isAuth$ = Stream(false);
+
+  Observable<bool> get hasInitialized$ {
+    return _hasInitialized$;
   }
 
-  bool get isAuth {
-    return _user != null && _token != null;
+  Observable<bool> get isAuth$ {
+    return _isAuth$;
+  }
+
+  String? get userId {
+    return _user?.id;
   }
 
   bool get hasToken {
@@ -45,11 +52,16 @@ class AuthState extends ChangeNotifier {
 
     await _onChangeToken(value.token);
     await _onChangeUserId(value.user.id);
+
+    _isAuth$.set(true);
   }
 
-  Future<void> onInit() async {
+  Future<void> _onInit() async {
     _token = await _storageService.getToken();
     _userId = await _storageService.getUserId();
+
+    _hasInitialized$.set(true);
+    _isAuth$.set(_token != null && _userId != null);
   }
 
   Future<void> reset() async {
@@ -59,6 +71,8 @@ class AuthState extends ChangeNotifier {
 
     await _storageService.removeToken();
     await _storageService.removeUserId();
+
+    _isAuth$.set(false);
   }
 
   Future<void> _onChangeToken(String? token) async {

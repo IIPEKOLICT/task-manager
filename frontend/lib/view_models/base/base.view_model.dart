@@ -14,7 +14,13 @@ abstract class BaseViewModel extends ChangeNotifier {
 
   ExceptionDto? _parseExceptionResponse(e) {
     if (e is DioError && e.response?.data != null) {
-      return ExceptionDto.fromJSON(e.response!.data);
+      try {
+        return ExceptionDto.fromJSON(e.response!.data);
+      } catch (exc) {
+        final String body = e.response!.data!.toString();
+        if (body.isEmpty) return null;
+        return ExceptionDto(HttpStatus.internalServerError, body);
+      }
     }
 
     if (e is DioError) {

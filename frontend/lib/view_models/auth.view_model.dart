@@ -1,7 +1,9 @@
-import 'package:flutter/foundation.dart';
-import 'package:frontend/di/app.module.dart';
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 import 'package:frontend/dtos/response/auth.dto.dart';
 import 'package:frontend/repositories/auth.repository.dart';
+import 'package:frontend/repositories/main.repository.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/state/auth.state.dart';
 import 'package:go_router/go_router.dart';
@@ -12,56 +14,93 @@ import '../models/user.dart';
 
 @Injectable()
 class AuthViewModel extends BaseViewModel {
-  AuthViewModel(@factoryParam super.context) {
-    if (!_authState.isAuth) {
-      _onInit(() => context.go(RouteEnum.login.value));
+  final AuthState _authState;
+  final MainRepository _mainRepository;
+  final AuthRepository _authRepository;
+
+  AuthViewModel(
+    @factoryParam super.context,
+    this._authState,
+    this._mainRepository,
+    this._authRepository
+  ) {
+    _authState.hasInitialized$.subscribe(_hasInitializedSubscription);
+    _authState.isAuth$.subscribe(_isAuthSubscription);
+  }
+
+  void _isAuthSubscription(bool isAuth) {
+    notifyListeners();
+
+    if (_authState.hasInitialized$.get() && !_isLoading) {
+      context.go((isAuth ? RouteEnum.home : RouteEnum.login).value);
     }
   }
 
-  final AuthState _authState = injector.get();
-  final AuthRepository _authRepository = injector.get();
+  void _hasInitializedSubscription(bool hasInitialized) {
+    if (hasInitialized) {
+      _isLoading = true;
+      notifyListeners();
 
-  bool _isLoaded = false;
+      _mainRepository.healthCheck()
+        .then((bool hasConnection) {
+          if (!hasConnection) {
+            _onBadConnection(Exception());
+            return;
+          }
 
-  bool get isLoaded {
-    return _isLoaded;
+          if (!_authState.isAuth$.get()) {
+            _isLoading = false;
+            _authState.reset();
+            return notifyListeners();
+          }
+
+          _tryRefreshToken();
+        })
+        .catchError(_onBadConnection);
+    }
+  }
+
+  FutureOr<void> _onBadConnection(exception) {
+    _isLoading = false;
+    onException(exception, message: 'Нет подключения к серверу');
+    notifyListeners();
+    Future.delayed(const Duration(seconds: 2), () => SystemNavigator.pop(animated: true));
+  }
+
+  bool _isLoading = false;
+
+  bool get isLoading {
+    return _isLoading;
   }
 
   bool get isAuth {
-    return _authState.isAuth;
+    return _authState.isAuth$.get();
   }
 
   String? getToken() => _authState.getToken();
   User? getUser() => _authState.getUser();
 
-  Future<void> logout(VoidCallback teleport) async {
-    await _authState.reset();
-    notifyListeners();
-    teleport();
+  void logout() {
+    _authState.reset();
   }
 
-  Future<void> _onInit(VoidCallback teleport) async {
-    _isLoaded = true;
-    await _authState.onInit();
-
-    if (!_authState.hasToken) {
-      _isLoaded = false;
-      return teleport();
+  Future<void> _tryRefreshToken() async {
+    try {
+      AuthDto data = await _authRepository.refreshToken();
+      await _authState.setUserData(data);
+    } catch (e) {
+      await _authState.reset();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
+  }
 
-    if (!_authState.hasUserId) {
-      try {
-        AuthDto data = await _authRepository.refreshToken();
-        await _authState.setUserData(data);
-      } catch (e) {
-        await _authState.reset();
-      } finally {
-        _isLoaded = false;
-        notifyListeners();
-        teleport();
-      }
-    } else {
-      _isLoaded = false;
-    }
+  @override
+  void dispose() {
+    _authState.hasInitialized$.unsubscribe(_hasInitializedSubscription);
+    _authState.isAuth$.unsubscribe(_isAuthSubscription);
+
+    super.dispose();
   }
 }
