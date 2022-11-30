@@ -1,5 +1,3 @@
-import 'package:frontend/di/app.module.dart';
-import 'package:frontend/dtos/response/auth.dto.dart';
 import 'package:frontend/repositories/auth.repository.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/state/auth.state.dart';
@@ -10,10 +8,17 @@ import '../enums/route.enum.dart';
 
 @Injectable()
 class LoginViewModel extends BaseViewModel {
-  LoginViewModel(@factoryParam super.context);
+  final AuthState _authState;
+  final AuthRepository _authRepository;
 
-  final AuthState _authState = injector.get();
-  final AuthRepository _authRepository = injector.get();
+  LoginViewModel(@factoryParam super.context, this._authState, this._authRepository) {
+    _authState.isAuth$.subscribe(_isAuthSubscription);
+  }
+
+  void _isAuthSubscription(bool isAuth) {
+    notifyListeners();
+    context.go((isAuth ? RouteEnum.home : RouteEnum.login).value);
+  }
 
   String _email = '';
   String _password = '';
@@ -37,12 +42,18 @@ class LoginViewModel extends BaseViewModel {
 
   Future<void> login() async {
     try {
-      AuthDto data = await _authRepository.login(_email, _password);
-      _authState.setUserData(data).then((_) => context.go(RouteEnum.home.value));
+      await _authState.setUserData(await _authRepository.login(_email, _password));
     } catch (e) {
       onException(e, message: 'Неверный E-mail или пароль');
     } finally {
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _authState.isAuth$.unsubscribe(_isAuthSubscription);
+
+    super.dispose();
   }
 }

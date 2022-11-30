@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants/ui.dart';
-import 'package:frontend/enums/route.enum.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../di/app.module.dart';
@@ -20,7 +18,7 @@ class HomePage extends StatelessWidget {
     );
 
     final logoutButton = ElevatedButton(
-        onPressed: () => authViewModel.logout(() => context.go(RouteEnum.login.value)),
+        onPressed: authViewModel.logout,
         child: const Text('Выйти')
     );
 
@@ -31,7 +29,7 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [authViewModel.isLoaded ? loader : logoutButton],
+          children: [authViewModel.isLoading ? loader : logoutButton],
         ),
       ),
     );
