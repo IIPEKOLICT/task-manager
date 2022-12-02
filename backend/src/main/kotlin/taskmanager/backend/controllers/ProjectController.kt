@@ -10,12 +10,13 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
+import taskmanager.backend.dtos.response.ProjectResponseDto
+import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.plugins.annotations.JwtUser
-import taskmanager.backend.exceptions.custom.ForbiddenException
-import taskmanager.backend.models.Project
 import taskmanager.backend.models.Tag
 import taskmanager.backend.models.Task
 import taskmanager.backend.models.User
+import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.ProjectService
 import taskmanager.backend.services.TagService
 import taskmanager.backend.services.TaskService
@@ -29,14 +30,17 @@ class ProjectController(
 
     @Get
     @Authentication(["auth-jwt"])
-    suspend fun getAll(@JwtUser user: User): List<Project> {
-        return projectService.getByUser(user._id)
+    suspend fun getAll(@JwtUser user: User): List<ProjectResponseDto> {
+        return projectService.getByUser(user._id).map { it.toResponse(user._id) }
     }
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun getById(@Param("id") id: String): Project {
-        return projectService.getById(ObjectId(id))
+    suspend fun getById(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): ProjectResponseDto {
+        return projectService.getById(ObjectId(id)).toResponse(user._id)
     }
 
     @Get("{id}/tags")
@@ -55,9 +59,9 @@ class ProjectController(
     @Authentication(["auth-jwt"])
     suspend fun create(
         @JwtUser user: User,
-        @Body(type = CreateProjectDto::class) dto: CreateProjectDto
-    ): Project {
-        return projectService.create(user._id, dto)
+        @Body(type = ProjectDto::class) dto: ProjectDto
+    ): ProjectResponseDto {
+        return projectService.create(user._id, dto).toResponse(user._id)
     }
 
     @Post("{id}/tags")
@@ -81,51 +85,23 @@ class ProjectController(
         return taskService.create(user._id, projectService.getById(ObjectId(id))._id, dto)
     }
 
-    @Patch("{id}/name")
+    @Put("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun updateName(
+    @EditAccess(EditableEntity.PROJECT, "Вы не можете изменять этот проект")
+    suspend fun updateById(
         @JwtUser user: User,
         @Param("id") id: String,
-        @Body("name") name: String
-    ): Project {
-        val project: Project = projectService.getById(ObjectId(id))
-
-        if (!projectService.isOwner(project, user._id)) {
-            throw ForbiddenException("Вы не можете изменять этот проект")
-        }
-
-        return projectService.updateName(project._id, name)
-    }
-
-    @Patch("{id}/members")
-    @Authentication(["auth-jwt"])
-    suspend fun updateInfo(
-        @JwtUser user: User,
-        @Param("id") id: String,
-        @Body("members") members: List<String>
-    ): Project {
-        val project: Project = projectService.getById(ObjectId(id))
-
-        if (!projectService.isOwner(project, user._id)) {
-            throw ForbiddenException("Вы не можете изменять этот проект")
-        }
-
-        return projectService.updateMembers(project._id, members.map { ObjectId(it) })
+        @Body(type = ProjectDto::class) dto: ProjectDto
+    ): ProjectResponseDto {
+        return projectService.updateById(ObjectId(id), dto).toResponse(user._id)
     }
 
     @Delete("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun deleteById(
-        @JwtUser user: User,
-        @Param("id") id: String
-    ): DeleteDto {
-        val project: Project = projectService.getById(ObjectId(id))
-
-        if (!projectService.isOwner(project, user._id)) {
-            throw ForbiddenException("Вы не можете удалить этот проект")
-        }
-
-        tagService.deleteByProject(project._id)
-        return DeleteDto(projectService.deleteById(project._id))
+    @EditAccess(EditableEntity.PROJECT, "Вы не можете удалить этот проект")
+    suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        val objectId = ObjectId(id)
+        tagService.deleteByProject(objectId)
+        return DeleteDto(projectService.deleteById(objectId))
     }
 }

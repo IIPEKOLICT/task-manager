@@ -30,50 +30,40 @@ class RegisterPage extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(
-                        onInput: registerViewModel.setEmail,
-                        hintText: 'E-mail'
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      'Регистрация',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 32),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(
-                        onInput: registerViewModel.setPassword,
-                        hintText: 'Пароль',
-                        isPassword: true
-                    ),
+                    child: TextInput(onInput: registerViewModel.setEmail, hintText: 'E-mail'),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(
-                        onInput: registerViewModel.setFirstName,
-                        hintText: 'Имя'
-                    ),
+                    child: TextInput(onInput: registerViewModel.setPassword, hintText: 'Пароль', isPassword: true),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(
-                        onInput: registerViewModel.setLastName,
-                        hintText: 'Фамилия'
-                    ),
+                    child: TextInput(onInput: registerViewModel.setFirstName, hintText: 'Имя'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: TextInput(onInput: registerViewModel.setLastName, hintText: 'Фамилия'),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: DefaultButton(title: 'Уже есть аккаунт', onTap: () => context.go(RouteEnum.login.value)),
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: DefaultButton(
-                        title: 'Уже есть аккаунт',
-                        onTap: () => context.go(RouteEnum.login.value)
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: DefaultButton(
-                        title: 'Регистрация',
-                        onTap: registerViewModel.isValid ? registerViewModel.onSubmit : null
-                    ),
+                        title: 'Регистрация', onTap: registerViewModel.isValid ? registerViewModel.onSubmit : null),
                   ),
                 ],
               ),

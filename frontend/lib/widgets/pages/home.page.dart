@@ -1,44 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/constants/ui.dart';
-import 'package:provider/provider.dart';
+import 'package:frontend/widgets/bottom_bar_page.dart';
+import 'package:frontend/widgets/pages/project.page.dart';
 
-import '../../di/app.module.dart';
-import '../../view_models/auth.view_model.dart';
+import '../../data/bottom_bar.data.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var authViewModel = context.watch<AuthViewModel>();
-
-    const loader = CircularProgressIndicator(
-      value: null,
-      strokeWidth: 5,
-    );
-
-    final logoutButton = ElevatedButton(
-        onPressed: authViewModel.logout,
-        child: const Text('Выйти')
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(appHeader),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [authViewModel.isLoading ? loader : logoutButton],
-        ),
-      ),
-    );
+    return BottomBarPage(items: _tabItems);
   }
 
-  static Widget onCreate() {
-     return ChangeNotifierProvider(
-       create: (BuildContext context) => injector.get<AuthViewModel>(param1: context),
-       child: const HomePage(),
-     );
-   }
+  static final List<BottomBarData> _tabItems = [
+    BottomBarData('Проекты', Colors.lightBlue, const Icon(Icons.folder), ProjectPage.onCreate()),
+    BottomBarData('Статистика', Colors.lightGreen, Icon(Icons.query_stats), Text('1')),
+    BottomBarData('Аккаунт', Colors.limeAccent, Icon(Icons.account_circle), Text('3'))
+  ];
 }

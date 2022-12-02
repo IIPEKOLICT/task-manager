@@ -1,20 +1,19 @@
-class User {
-  String id;
+import 'package:frontend/models/base/base_entity.dart';
+
+class User extends BaseEntity {
   String email;
   String firstName;
   String lastName;
   String? profilePicture;
-  DateTime? createdAt;
-  DateTime? updatedAt;
 
   User({
-    this.id = '',
+    super.id,
     this.email = '',
     this.firstName = '',
     this.lastName = '',
     this.profilePicture,
-    this.createdAt,
-    this.updatedAt,
+    super.createdAt,
+    super.updatedAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -24,8 +23,8 @@ class User {
       firstName: json['firstName'],
       lastName: json['lastName'],
       profilePicture: json['profilePicture'],
-      createdAt: json['createdAt'] == null ? null : DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] == null ? null : DateTime.parse(json['updatedAt']),
+      createdAt: BaseEntity.parseDateFromJson(json['createdAt']),
+      updatedAt: BaseEntity.parseDateFromJson(json['updatedAt']),
     );
   }
 

@@ -10,6 +10,7 @@ import taskmanager.backend.controllers.*
 import taskmanager.backend.exceptions.ExceptionContainer
 import taskmanager.backend.plugins.injectors.JwtUserInjector
 import taskmanager.backend.plugins.injectors.LocalUserInjector
+import taskmanager.backend.plugins.middlewares.MiddlewareContainer
 import taskmanager.backend.plugins.serialization.DateDeserializer
 import taskmanager.backend.plugins.serialization.DateSerializer
 import taskmanager.backend.plugins.serialization.ObjectIdDeserializer
@@ -27,6 +28,8 @@ fun Application.configureKNest() {
     val commentController by inject<CommentController>()
     val noteController by inject<NoteController>()
     val attachmentController by inject<AttachmentController>()
+
+    val middlewareContainer by inject<MiddlewareContainer>()
 
     install(KNest) {
         framework {
@@ -48,6 +51,10 @@ fun Application.configureKNest() {
 
         exceptionHandling {
             setContainers(ExceptionContainer)
+        }
+
+        middleware {
+            setContainers(middlewareContainer)
         }
 
         cors {

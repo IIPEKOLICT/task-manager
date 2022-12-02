@@ -5,23 +5,26 @@ class TextInput extends StatelessWidget {
   final bool autofocus;
   final String? hintText;
   final Function(String)? onInput;
+  final String value;
 
-  const TextInput({
-    super.key,
-    this.isPassword = false,
-    this.autofocus = false,
-    this.hintText,
-    this.onInput,
-  });
+  final _controller = TextEditingController();
+
+  TextInput({super.key, this.isPassword = false, this.autofocus = false, this.hintText, this.onInput, this.value = ''});
+
+  void setValue(String value) {
+    _controller.text = value;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       autofocus: autofocus,
       onChanged: onInput,
+      initialValue: value,
       obscureText: isPassword,
       enableSuggestions: !isPassword,
       autocorrect: false,
+      // controller: _controller,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: hintText,

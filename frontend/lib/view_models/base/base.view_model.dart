@@ -33,9 +33,8 @@ abstract class BaseViewModel extends ChangeNotifier {
   @protected
   void onException(exception, {String message = 'Неизвестная ошибка'}) {
     ExceptionDto? exceptionDto = _parseExceptionResponse(exception);
-    String? backendMessage = exceptionDto != null
-        ? '${exceptionDto.code}: ${exceptionDto.message ?? 'Неизвестная ошибка'}'
-        : null;
+    String? backendMessage =
+        exceptionDto != null ? '${exceptionDto.code}: ${exceptionDto.message ?? 'Неизвестная ошибка'}' : null;
 
     ExceptionSnackbar.show(backendMessage ?? message, context);
   }

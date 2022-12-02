@@ -30,36 +30,32 @@ class LoginPage extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(
-                        onInput: loginViewModel.setEmail,
-                        hintText: 'E-mail'
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      'Вход в аккаунт',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 32),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(
-                        onInput: loginViewModel.setPassword,
-                        hintText: 'Пароль',
-                        isPassword: true
-                    ),
+                    child: TextInput(onInput: loginViewModel.setEmail, hintText: 'E-mail'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: TextInput(onInput: loginViewModel.setPassword, hintText: 'Пароль', isPassword: true),
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: DefaultButton(
-                      title: 'Зарегистрироваться',
-                      onTap: () => context.go(RouteEnum.register.value)
-                    ),
+                    child:
+                        DefaultButton(title: 'Зарегистрироваться', onTap: () => context.go(RouteEnum.register.value)),
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: DefaultButton(
-                      title: 'Войти',
-                      onTap: loginViewModel.isValid ? loginViewModel.login : null
-                    ),
+                    child: DefaultButton(title: 'Войти', onTap: loginViewModel.isValid ? loginViewModel.login : null),
                   ),
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/pages/auth.page.dart';
 import 'package:frontend/widgets/pages/home.page.dart';
 import 'package:frontend/widgets/pages/login.page.dart';
 import 'package:frontend/widgets/pages/register.page.dart';
@@ -11,11 +12,11 @@ class App extends StatelessWidget {
   App({super.key});
 
   final _router = GoRouter(
-    initialLocation: RouteEnum.home.value,
+    initialLocation: RouteEnum.auth.value,
     routes: [
       GoRoute(
-        path: RouteEnum.home.value,
-        builder: (context, state) => HomePage.onCreate(),
+        path: RouteEnum.auth.value,
+        builder: (context, state) => AuthPage.onCreate(),
       ),
       GoRoute(
         path: RouteEnum.login.value,
@@ -24,6 +25,10 @@ class App extends StatelessWidget {
       GoRoute(
         path: RouteEnum.register.value,
         builder: (context, state) => RegisterPage.onCreate(),
+      ),
+      GoRoute(
+        path: RouteEnum.home.value,
+        builder: (context, state) => const HomePage(),
       ),
     ],
   );

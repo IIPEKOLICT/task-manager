@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/view_models/state/auth.state.dart';
@@ -15,21 +17,28 @@ abstract class BaseRepository {
   BaseRepository(this.httpClient, this.authState);
 
   get _headers {
-    return { 'Authorization': 'Bearer ${authState.getToken() ?? ''}' };
+    return {
+      HttpHeaders.authorizationHeader: 'Bearer ${authState.getToken() ?? ''}',
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
   }
 
   String _getUri(String path) {
+    if (path.isEmpty) return endpoint.isEmpty ? '' : '/$endpoint';
     return endpoint.isEmpty ? '/$path' : '/$endpoint/$path';
   }
 
-  Future<T> _sendRequest<T>(String method, {String path = '', dynamic body = const Object()}) async {
+  Future<T> _sendRequest<T>(String method, {String path = '', dynamic body}) async {
     Response<T> response = await httpClient.request(
       _getUri(path),
       data: body,
-      options: Options(headers: _headers, method: method)
+      options: Options(
+        headers: _headers,
+        method: method,
+      ),
     );
 
-    return response.data ?? Object() as T;
+    return (response.data ?? Object()) as T;
   }
 
   Future<T> get<T>({String path = ''}) async {
@@ -48,7 +57,7 @@ abstract class BaseRepository {
     return _sendRequest('PUT', path: path, body: body);
   }
 
-  Future<T> delete<T>({String path = '', dynamic body = const Object()}) async {
-    return _sendRequest('DELETE', path: path, body: body);
+  Future<T> delete<T>({String path = ''}) async {
+    return _sendRequest('DELETE', path: path);
   }
 }

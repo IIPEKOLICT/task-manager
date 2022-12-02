@@ -13,7 +13,7 @@ class AuthState {
   AuthState(this._storageService) {
     _onInit();
   }
-  
+
   String? _token;
   String? _userId;
   User? _user;
@@ -27,10 +27,6 @@ class AuthState {
 
   Observable<bool> get isAuth$ {
     return _isAuth$;
-  }
-
-  String? get userId {
-    return _user?.id;
   }
 
   bool get hasToken {

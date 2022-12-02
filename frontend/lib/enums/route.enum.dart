@@ -1,7 +1,9 @@
 enum RouteEnum {
-  home('/'),
+  auth('/'),
+  home('/home'),
   login('/login'),
-  register('/register');
+  register('/register'),
+  project('/project');
 
   final String value;
 

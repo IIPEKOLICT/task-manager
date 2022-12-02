@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
 import '../enums/route.enum.dart';
-import '../models/user.dart';
 
 @Injectable()
 class AuthViewModel extends BaseViewModel {
@@ -29,18 +28,13 @@ class AuthViewModel extends BaseViewModel {
   }
 
   void _isAuthSubscription(bool isAuth) {
-    notifyListeners();
-
-    if (_authState.hasInitialized$.get() && !_isLoading) {
+    if (_authState.hasInitialized$.get()) {
       context.go((isAuth ? RouteEnum.home : RouteEnum.login).value);
     }
   }
 
   void _hasInitializedSubscription(bool hasInitialized) {
     if (hasInitialized) {
-      _isLoading = true;
-      notifyListeners();
-
       _mainRepository.healthCheck()
         .then((bool hasConnection) {
           if (!hasConnection) {
@@ -49,36 +43,22 @@ class AuthViewModel extends BaseViewModel {
           }
 
           if (!_authState.isAuth$.get()) {
-            _isLoading = false;
             _authState.reset();
-            return notifyListeners();
+            return;
           }
 
           _tryRefreshToken();
         })
-        .catchError(_onBadConnection);
+        .catchError((exception) {
+          _onBadConnection(exception);
+        });
     }
   }
 
-  FutureOr<void> _onBadConnection(exception) {
-    _isLoading = false;
+  void _onBadConnection(exception) {
     onException(exception, message: 'Нет подключения к серверу');
-    notifyListeners();
     Future.delayed(const Duration(seconds: 2), () => SystemNavigator.pop(animated: true));
   }
-
-  bool _isLoading = false;
-
-  bool get isLoading {
-    return _isLoading;
-  }
-
-  bool get isAuth {
-    return _authState.isAuth$.get();
-  }
-
-  String? getToken() => _authState.getToken();
-  User? getUser() => _authState.getUser();
 
   void logout() {
     _authState.reset();
@@ -90,9 +70,6 @@ class AuthViewModel extends BaseViewModel {
       await _authState.setUserData(data);
     } catch (e) {
       await _authState.reset();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 
