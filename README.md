@@ -28,6 +28,7 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 > Backend
 > - `AWS_ACCESS_KEY_ID` access key id for use AWS
 > - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
+> - `AWS_APPLICATION_NAME` application name on AWS
 > - `AWS_ENVIRONMENT_NAME` environment name on AWS
 > - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
 > - `AWS_REGION` AWS region
