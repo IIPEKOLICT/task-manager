@@ -18,14 +18,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-      AWS_ENVIRONMENT_NAME: ${{ secrets.AWS_ENVIRONMENT_NAME }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      BCRYPT_STRENGTH: ${{ secrets.BCRYPT_STRENGTH }}
 
     steps:
       - uses: actions/checkout@v3
@@ -41,22 +34,39 @@ jobs:
         run: |
           chmod +x ./scripts/load_backend_env_vars.sh
           ./scripts/load_backend_env_vars.sh
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          BCRYPT_STRENGTH: ${{ secrets.BCRYPT_STRENGTH }}
       - name: Set used AWS Elastic Beanstalk environment
         uses: hmanzur/actions-aws-eb@v1.0.0
         with:
-          command: 'use ${{ env.AWS_ENVIRONMENT_NAME }} --region ${{ env.AWS_REGION }}'
+          command: 'use ${{ secrets.AWS_ENVIRONMENT_NAME }} --region ${{ secrets.AWS_REGION }}'
+      - name: Set used AWS Elastic Beanstalk platform
+        uses: hmanzur/actions-aws-eb@v1.0.0
+        with:
+          command: 'platform use "Corretto 17 running on 64bit Amazon Linux 2"'
       - name: Set environment variables
         uses: hmanzur/actions-aws-eb@v1.0.0
         with:
           command: 'setenv ${{ env.BACKEND_ENV_VARS }}'
-      - name: Deploy fatJar
-        uses: hmanzur/actions-aws-eb@v1.0.0
+      - name: Deploy
+        uses: einaregilsson/beanstalk-deploy@v21
         with:
-          command: 'deploy --staged ${{ env.AWS_ENVIRONMENT_NAME }} --region ${{ env.AWS_REGION }}'
+          aws_access_key: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ secrets.AWS_APPLICATION_NAME }}
+          environment_name: ${{ secrets.AWS_ENVIRONMENT_NAME }}
+          version_label: ${{ github.sha }}
+          region: ${{ secrets.AWS_REGION }}
+          deployment_package: build/backend.jar
       - name: Show health
         uses: hmanzur/actions-aws-eb@v1.0.0
         with:
-          command: 'health ${{ env.AWS_ENVIRONMENT_NAME }}'
+          command: 'health ${{ secrets.AWS_ENVIRONMENT_NAME }}'
 
   Web:
     runs-on: ubuntu-latest
