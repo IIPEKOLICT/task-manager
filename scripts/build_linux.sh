@@ -9,7 +9,7 @@ echo Install dependencies...
 sudo apt-get update -y
 sudo apt-get install -y ninja-build libgtk-3-dev
 flutter pub get
-flutter packages pub run build_runner build
+flutter packages pub run build_runner build --delete-conflicting-outputs
 flutter config --enable-linux-desktop
 
 echo Test code...

@@ -26,6 +26,7 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 ### Repository secrets
 
 > Backend
+>
 > - `AWS_ACCESS_KEY_ID` access key id for use AWS
 > - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
 > - `AWS_ENVIRONMENT_NAME` environment name on AWS
@@ -37,6 +38,7 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 > - `BCRYPT_STRENGTH` used for bcrypt library strength
 
 > Frontend
+>
 > - `BACKEND_URL` deployed backend url
 > - `KEYSTORE_GIT_REPOSITORY` name of git repository with keystore
 > - `KEYSTORE_ACCESS_TOKEN` token for get access to keystore repository
@@ -46,36 +48,43 @@ Cross-platform app for manage tasks (Main diploma in BSUIR)
 
 ### Environment variables
 
->Required
->>Backend (local)
->> - `AWS_ACCESS_KEY_ID` access key id for use AWS
->> - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
->> - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
+> Required
 >
->> Backend (production)
->> - `AWS_ACCESS_KEY_ID` access key id for use AWS
->> - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
->> - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
->> - `PORT` used port by backend
->> - `DATABASE_URL` db url string
->> - `DATABASE_NAME` used database name
+> > Backend (local)
+> >
+> > - `AWS_ACCESS_KEY_ID` access key id for use AWS
+> > - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
+> > - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
 >
->> Frontend
->> - `BACKEND_URL` backend url used by frontend
+> > Backend (production)
+> >
+> > - `AWS_ACCESS_KEY_ID` access key id for use AWS
+> > - `AWS_SECRET_ACCESS_KEY` secret access key for use AWS
+> > - `AWS_S3_BUCKET_NAME` AWS S3 bucket name
+> > - `PORT` used port by backend
+> > - `DATABASE_URL` db url string
+> > - `DATABASE_NAME` used database name
+>
+> > Frontend
+> >
+> > - `BACKEND_URL` backend url used by frontend
 
 > Optional
->> Backend (local)
->> - `AWS_REGION` AWS region
->> - `PORT` used port by backend
->> - `DATABASE_URL` db url string
->> - `DATABASE_NAME` used database name
->> - `JWT_SECRET` used jwt secret
->> - `BCRYPT_STRENGTH` used for bcrypt library strength
 >
->> Backend (production)
->> - `AWS_REGION` AWS region
->> - `JWT_SECRET` used jwt secret
->> - `BCRYPT_STRENGTH` used for bcrypt library strength
+> > Backend (local)
+> >
+> > - `AWS_REGION` AWS region
+> > - `PORT` used port by backend
+> > - `DATABASE_URL` db url string
+> > - `DATABASE_NAME` used database name
+> > - `JWT_SECRET` used jwt secret
+> > - `BCRYPT_STRENGTH` used for bcrypt library strength
+>
+> > Backend (production)
+> >
+> > - `AWS_REGION` AWS region
+> > - `JWT_SECRET` used jwt secret
+> > - `BCRYPT_STRENGTH` used for bcrypt library strength
 
 ### Load project
 
@@ -119,7 +128,7 @@ flutter packages pub run build_runner watch
 ```shell
 cd frontend
 flutter pub get
-flutter packages pub run build_runner build
+flutter packages pub run build_runner build --delete-conflicting-outputs
 ```
 
 ### Build frontend web-version (needed Flutter 3+)
@@ -127,7 +136,7 @@ flutter packages pub run build_runner build
 ```shell
 cd frontend
 flutter pub get
-flutter packages pub run build_runner build
+flutter packages pub run build_runner build --delete-conflicting-outputs
 flutter build web --release --base-href "/$BASE_URL/" --dart-define=BACKEND_URL="$BACKEND_URL"
 ```
 
@@ -138,11 +147,12 @@ You can find generated bundle in `build/web` location
 ```shell
 cd frontend
 flutter pub get
-flutter packages pub run build_runner build
+flutter packages pub run build_runner build --delete-conflicting-outputs
 flutter build apk --dart-define=BACKEND_URL="$BACKEND_URL"
 flutter build appbundle --dart-define=BACKEND_URL="$BACKEND_URL"
 ```
 
 You can find:
+
 - generated APK file in `build/app/outputs/flutter-apk/app-release.apk` location
 - generated AAB file in `build/app/outputs/bundle/release/app-release.aab` location
