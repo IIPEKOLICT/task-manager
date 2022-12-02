@@ -18,14 +18,9 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
       AWS_ENVIRONMENT_NAME: ${{ secrets.AWS_ENVIRONMENT_NAME }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      BCRYPT_STRENGTH: ${{ secrets.BCRYPT_STRENGTH }}
 
     steps:
       - uses: actions/checkout@v3
@@ -49,6 +44,12 @@ jobs:
         uses: hmanzur/actions-aws-eb@v1.0.0
         with:
           command: 'setenv ${{ env.BACKEND_ENV_VARS }}'
+        env:
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          BCRYPT_STRENGTH: ${{ secrets.BCRYPT_STRENGTH }}
       - name: Deploy fatJar
         uses: hmanzur/actions-aws-eb@v1.0.0
         with:
