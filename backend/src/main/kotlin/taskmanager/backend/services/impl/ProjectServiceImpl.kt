@@ -3,7 +3,7 @@ package taskmanager.backend.services.impl
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
-import taskmanager.backend.dtos.request.CreateProjectDto
+import taskmanager.backend.dtos.request.ProjectDto
 import taskmanager.backend.enums.CollectionInfo
 import taskmanager.backend.models.Project
 import taskmanager.backend.services.ProjectService
@@ -19,7 +19,7 @@ class ProjectServiceImpl(
             .toList()
     }
 
-    override suspend fun create(userId: ObjectId, dto: CreateProjectDto): Project {
+    override suspend fun create(userId: ObjectId, dto: ProjectDto): Project {
         val project = Project(
             createdBy = userId,
             members = dto.members.map { ObjectId(it) }.toSet(),
@@ -30,12 +30,14 @@ class ProjectServiceImpl(
         return project
     }
 
-    override suspend fun updateName(id: ObjectId, name: String): Project {
-        return updateById(id, setValue(Project::name, name))
-    }
-
-    override suspend fun updateMembers(id: ObjectId, members: List<ObjectId>): Project {
-        return updateById(id, setValue(Project::members, members.toSet()))
+    override suspend fun updateById(id: ObjectId, dto: ProjectDto): Project {
+        return updateById(
+            id,
+            set(
+                Project::name setTo dto.name,
+                Project::members setTo dto.members.map { ObjectId(it) }.toSet()
+            )
+        )
     }
 
     override suspend fun deleteByUser(userId: ObjectId) {

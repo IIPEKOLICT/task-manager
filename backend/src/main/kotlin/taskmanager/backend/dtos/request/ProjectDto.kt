@@ -1,6 +1,6 @@
 package taskmanager.backend.dtos.request
 
-data class CreateProjectDto(
+data class ProjectDto(
     val members: List<String>,
     val name: String
 )

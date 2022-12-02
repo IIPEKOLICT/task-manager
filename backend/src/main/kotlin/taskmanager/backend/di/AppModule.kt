@@ -5,6 +5,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import taskmanager.backend.controllers.*
 import taskmanager.backend.enums.CollectionInfo
+import taskmanager.backend.plugins.middlewares.MiddlewareContainer
 import taskmanager.backend.services.*
 import taskmanager.backend.services.impl.*
 import taskmanager.backend.shared.DatabaseManager
@@ -55,6 +56,8 @@ object AppModule {
 
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }
+
+            single { MiddlewareContainer(get()) }
 
             single { MainController() }
             single { AuthController(get(), get()) }
