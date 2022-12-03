@@ -51,8 +51,7 @@ class ProjectDialog extends StatelessWidget {
           child: const Text('Закрыть'),
         ),
         ElevatedButton(
-          onPressed:
-              !projectDialogViewModel.isNameValid && !_isEdit ? null : projectDialogViewModel.submitHandler(_isEdit),
+          onPressed: !projectDialogViewModel.isValid ? null : projectDialogViewModel.submitHandler(_isEdit),
           child: Text(_isEdit ? 'Изменить' : 'Создать'),
         ),
       ],

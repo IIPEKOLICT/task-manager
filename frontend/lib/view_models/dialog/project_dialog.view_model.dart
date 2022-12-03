@@ -32,7 +32,7 @@ class ProjectDialogViewModel extends BaseViewModel {
   List<String> getMembers() => _members;
   List<User> getUsers() => _users;
 
-  bool get isNameValid {
+  bool get isValid {
     return _name.isNotEmpty;
   }
 
