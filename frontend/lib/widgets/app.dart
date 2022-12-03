@@ -33,7 +33,10 @@ class App extends StatelessWidget {
       ),
       GoRoute(
         path: '${RouteEnum.projects.value}/:id',
-        builder: (context, state) => ProjectPage(state.params['id'], state.queryParams['canEdit'] == 'true'),
+        builder: (context, state) => ProjectPage(
+          state.params['id'],
+          state.queryParams['canEdit'] == 'true',
+        ),
       ),
     ],
   );

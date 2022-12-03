@@ -27,7 +27,7 @@ class ProjectPage extends StatelessWidget {
     );
   }
 
-  List<BottomBarData> _getPublicTabItems() {
+  static List<BottomBarData> _getPublicTabItems() {
     return [
       BottomBarData('Задачи', Colors.lightBlue, const Icon(Icons.task), Text('Нет контента')),
       BottomBarData('Статистика', Colors.lightGreen, const Icon(Icons.query_stats), Text('Нет контента')),

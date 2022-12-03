@@ -14,21 +14,21 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var registerViewModel = context.watch<RegisterViewModel>();
+    var viewModel = context.watch<RegisterViewModel>();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(appHeader),
       ),
-      body: Center(
-        child: Container(
-          width: 500,
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
+      body: ListView(
+        children: [
+          Center(
+            child: Container(
+              width: 500,
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 5),
@@ -40,36 +40,41 @@ class RegisterPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(onInput: registerViewModel.setEmail, hintText: 'E-mail'),
+                    child: TextInput(onInput: viewModel.setEmail, hintText: 'E-mail'),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(onInput: registerViewModel.setPassword, hintText: 'Пароль', isPassword: true),
+                    child: TextInput(onInput: viewModel.setPassword, hintText: 'Пароль', isPassword: true),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(onInput: registerViewModel.setFirstName, hintText: 'Имя'),
+                    child: TextInput(onInput: viewModel.setFirstName, hintText: 'Имя'),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(onInput: registerViewModel.setLastName, hintText: 'Фамилия'),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: DefaultButton(title: 'Уже есть аккаунт', onTap: () => context.go(RouteEnum.login.value)),
+                    child: TextInput(onInput: viewModel.setLastName, hintText: 'Фамилия'),
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: DefaultButton(
-                        title: 'Регистрация', onTap: registerViewModel.isValid ? registerViewModel.onSubmit : null),
+                      title: 'Уже есть аккаунт',
+                      onTap: () => context.go(RouteEnum.login.value),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: DefaultButton(
+                      title: 'Регистрация',
+                      onTap: viewModel.isValid ? viewModel.onSubmit : null,
+                    ),
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
