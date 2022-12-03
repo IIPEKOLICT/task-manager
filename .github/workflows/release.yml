@@ -36,6 +36,12 @@ jobs:
         run: |
           chmod +x ./scripts/load_backend_env_vars.sh
           ./scripts/load_backend_env_vars.sh
+        env:
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          BCRYPT_STRENGTH: ${{ secrets.BCRYPT_STRENGTH }}
       - name: Set used AWS Elastic Beanstalk environment
         uses: hmanzur/actions-aws-eb@v1.0.0
         with:
@@ -44,12 +50,6 @@ jobs:
         uses: hmanzur/actions-aws-eb@v1.0.0
         with:
           command: 'setenv ${{ env.BACKEND_ENV_VARS }}'
-        env:
-          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          BCRYPT_STRENGTH: ${{ secrets.BCRYPT_STRENGTH }}
       - name: Deploy fatJar
         uses: hmanzur/actions-aws-eb@v1.0.0
         with:
