@@ -17,12 +17,7 @@ class AuthViewModel extends BaseViewModel {
   final MainRepository _mainRepository;
   final AuthRepository _authRepository;
 
-  AuthViewModel(
-    @factoryParam super.context,
-    this._authState,
-    this._mainRepository,
-    this._authRepository
-  ) {
+  AuthViewModel(@factoryParam super.context, this._authState, this._mainRepository, this._authRepository) {
     _authState.hasInitialized$.subscribe(_hasInitializedSubscription);
     _authState.isAuth$.subscribe(_isAuthSubscription);
   }
@@ -35,33 +30,27 @@ class AuthViewModel extends BaseViewModel {
 
   void _hasInitializedSubscription(bool hasInitialized) {
     if (hasInitialized) {
-      _mainRepository.healthCheck()
-        .then((bool hasConnection) {
-          if (!hasConnection) {
-            _onBadConnection(Exception());
-            return;
-          }
+      _mainRepository.healthCheck().then((bool hasConnection) {
+        if (!hasConnection) {
+          _onBadConnection(Exception());
+          return;
+        }
 
-          if (!_authState.isAuth$.get()) {
-            _authState.reset();
-            return;
-          }
+        if (!_authState.isAuth$.get()) {
+          _authState.reset();
+          return;
+        }
 
-          _tryRefreshToken();
-        })
-        .catchError((exception) {
-          _onBadConnection(exception);
-        });
+        _tryRefreshToken();
+      }).catchError((exception) {
+        _onBadConnection(exception);
+      });
     }
   }
 
   void _onBadConnection(exception) {
     onException(exception, message: 'Нет подключения к серверу');
     Future.delayed(const Duration(seconds: 2), () => SystemNavigator.pop(animated: true));
-  }
-
-  void logout() {
-    _authState.reset();
   }
 
   Future<void> _tryRefreshToken() async {

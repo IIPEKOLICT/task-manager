@@ -7,7 +7,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i3;
 import 'package:flutter/material.dart' as _i14;
-import 'package:frontend/models/project.dart' as _i21;
+import 'package:frontend/models/project.dart' as _i22;
 import 'package:frontend/repositories/auth.repository.dart' as _i17;
 import 'package:frontend/repositories/main.repository.dart' as _i11;
 import 'package:frontend/repositories/project.repository.dart' as _i12;
@@ -17,10 +17,13 @@ import 'package:frontend/services/impl/file.service.impl.dart' as _i5;
 import 'package:frontend/services/impl/storage.service.impl.dart' as _i9;
 import 'package:frontend/services/storage.service.dart' as _i8;
 import 'package:frontend/view_models/auth.view_model.dart' as _i18;
-import 'package:frontend/view_models/login.view_model.dart' as _i19;
+import 'package:frontend/view_models/dialog/edit_user_dialog.view_model.dart'
+    as _i19;
+import 'package:frontend/view_models/dialog/project_dialog.view_model.dart'
+    as _i21;
+import 'package:frontend/view_models/login.view_model.dart' as _i20;
 import 'package:frontend/view_models/project.view_model.dart' as _i13;
-import 'package:frontend/view_models/project_dialog.view_model.dart' as _i20;
-import 'package:frontend/view_models/register.view_model.dart' as _i22;
+import 'package:frontend/view_models/register.view_model.dart' as _i23;
 import 'package:frontend/view_models/state/auth.state.dart' as _i10;
 import 'package:frontend/view_models/state/project.state.dart' as _i6;
 import 'package:frontend/view_models/user.view_model.dart' as _i16;
@@ -28,7 +31,7 @@ import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:shared_preferences/shared_preferences.dart' as _i7;
 
-import 'app.module.dart' as _i23;
+import 'app.module.dart' as _i24;
 
 /// ignore_for_file: unnecessary_lambdas
 /// ignore_for_file: lines_longer_than_80_chars
@@ -96,21 +99,30 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i11.MainRepository>(),
           gh<_i17.AuthRepository>(),
         ));
-    gh.factoryParam<_i19.LoginViewModel, _i14.BuildContext, dynamic>((
+    gh.factoryParam<_i19.EditUserDialogViewModel, _i14.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i19.LoginViewModel(
+        _i19.EditUserDialogViewModel(
+          context,
+          gh<_i15.UserRepository>(),
+          gh<_i10.AuthState>(),
+        ));
+    gh.factoryParam<_i20.LoginViewModel, _i14.BuildContext, dynamic>((
+      context,
+      _,
+    ) =>
+        _i20.LoginViewModel(
           context,
           gh<_i10.AuthState>(),
           gh<_i17.AuthRepository>(),
         ));
-    gh.factoryParam<_i20.ProjectDialogViewModel, _i14.BuildContext,
-        _i21.Project?>((
+    gh.factoryParam<_i21.ProjectDialogViewModel, _i14.BuildContext,
+        _i22.Project?>((
       context,
       _project,
     ) =>
-        _i20.ProjectDialogViewModel(
+        _i21.ProjectDialogViewModel(
           context,
           _project,
           gh<_i12.ProjectRepository>(),
@@ -118,11 +130,11 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i6.ProjectState>(),
           gh<_i10.AuthState>(),
         ));
-    gh.factoryParam<_i22.RegisterViewModel, _i14.BuildContext, dynamic>((
+    gh.factoryParam<_i23.RegisterViewModel, _i14.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i22.RegisterViewModel(
+        _i23.RegisterViewModel(
           context,
           gh<_i10.AuthState>(),
           gh<_i17.AuthRepository>(),
@@ -131,4 +143,4 @@ extension GetItInjectableX on _i1.GetIt {
   }
 }
 
-class _$AppModule extends _i23.AppModule {}
+class _$AppModule extends _i24.AppModule {}

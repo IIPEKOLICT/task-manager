@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/repositories/project.repository.dart';
 import 'package:frontend/repositories/user.repository.dart';
@@ -6,7 +7,7 @@ import 'package:frontend/view_models/state/auth.state.dart';
 import 'package:frontend/view_models/state/project.state.dart';
 import 'package:injectable/injectable.dart';
 
-import '../models/project.dart';
+import '../../models/project.dart';
 
 @Injectable()
 class ProjectDialogViewModel extends BaseViewModel {
@@ -81,7 +82,7 @@ class ProjectDialogViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> Function() submitHandler(bool isEdit, Function callback) {
+  Future<void> Function() submitHandler(bool isEdit) {
     return () async {
       try {
         if (isEdit) {
@@ -89,8 +90,10 @@ class ProjectDialogViewModel extends BaseViewModel {
         } else {
           await _createHandler();
         }
+      } catch (e) {
+        onException(e);
       } finally {
-        callback();
+        Navigator.of(context).pop();
       }
     };
   }

@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/state/auth.state.dart';
+import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
 import '../repositories/user.repository.dart';
@@ -51,6 +53,10 @@ class UserViewModel extends BaseViewModel {
     } catch (e) {
       onException(e);
     }
+  }
+
+  void logout() {
+    _authState.reset().then((_) => context.go(RouteEnum.login.value));
   }
 
   @override

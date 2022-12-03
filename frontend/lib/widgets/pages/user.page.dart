@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/view_models/user.view_model.dart';
+import 'package:frontend/widgets/dialogs/edit_user_credentials.dialog.dart';
+import 'package:frontend/widgets/dialogs/edit_user_info.dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../di/app.module.dart';
@@ -8,14 +10,21 @@ import '../../models/user.dart';
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
 
-  Null Function() _showDialog(BuildContext context) {
-    return () {
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext ctx) {
-      //     return ProjectDialog.onCreate(isEdit, project: project);
-      //   },
-      // );
+  Future<void> Function() _showEditCredentialsDialog(BuildContext context, User user, {bool isPassword = false}) {
+    return () async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext ctx) => EditUserCredentialsDialog.onCreate(user, isPassword),
+      );
+    };
+  }
+
+  Future<void> Function() _showEditInfoDialog(BuildContext context, User user) {
+    return () async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext ctx) => EditUserInfoDialog.onCreate(user),
+      );
     };
   }
 
@@ -75,52 +84,58 @@ class UserPage extends StatelessWidget {
     final viewModel = context.watch<UserViewModel>();
     final User? user = viewModel.getUserOrNull();
 
-    return ListView(
-      children: [
-        Center(
-          child: user == null
-              ? const LinearProgressIndicator()
-              : SizedBox(
-                  width: 500,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: _getProfilePicture(context, user.profilePicture),
-                      ),
-                      const Divider(),
-                      _getProfileItem(
-                        icon: Icons.email,
-                        label: 'E-mail',
-                        value: user.email,
-                        onEdit: () async {},
-                      ),
-                      const Divider(),
-                      _getProfileItem(
-                        icon: Icons.password,
-                        label: 'Пароль',
-                        value: '********',
-                        onEdit: () async {},
-                      ),
-                      const Divider(),
-                      _getProfileItem(
-                        icon: Icons.text_fields,
-                        label: 'Имя',
-                        value: user.firstName,
-                        onEdit: () async {},
-                      ),
-                      const Divider(),
-                      _getProfileItem(
-                        icon: Icons.text_fields,
-                        label: 'Фамилия',
-                        value: user.lastName,
-                        onEdit: () async {},
-                      ),
-                    ],
+    return Scaffold(
+      body: ListView(
+        children: [
+          Center(
+            child: user == null
+                ? const LinearProgressIndicator()
+                : SizedBox(
+                    width: 500,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: _getProfilePicture(context, user.profilePicture),
+                        ),
+                        const Divider(),
+                        _getProfileItem(
+                          icon: Icons.email,
+                          label: 'E-mail',
+                          value: user.email,
+                          onEdit: _showEditCredentialsDialog(context, user),
+                        ),
+                        const Divider(),
+                        _getProfileItem(
+                          icon: Icons.password,
+                          label: 'Пароль',
+                          value: '********',
+                          onEdit: _showEditCredentialsDialog(context, user, isPassword: true),
+                        ),
+                        const Divider(),
+                        _getProfileItem(
+                          icon: Icons.text_fields,
+                          label: 'Имя',
+                          value: user.firstName,
+                          onEdit: _showEditInfoDialog(context, user),
+                        ),
+                        const Divider(),
+                        _getProfileItem(
+                          icon: Icons.text_fields,
+                          label: 'Фамилия',
+                          value: user.lastName,
+                          onEdit: _showEditInfoDialog(context, user),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-        ),
-      ],
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: viewModel.logout,
+        child: const Icon(Icons.logout),
+      ),
     );
   }
 

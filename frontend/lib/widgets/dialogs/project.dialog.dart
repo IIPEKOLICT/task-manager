@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/project.dart';
-import 'package:frontend/view_models/project_dialog.view_model.dart';
+import 'package:frontend/view_models/dialog/project_dialog.view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../di/app.module.dart';
@@ -51,9 +51,8 @@ class ProjectDialog extends StatelessWidget {
           child: const Text('Закрыть'),
         ),
         ElevatedButton(
-          onPressed: !projectDialogViewModel.isNameValid && !_isEdit
-              ? null
-              : projectDialogViewModel.submitHandler(_isEdit, () => Navigator.of(context).pop()),
+          onPressed:
+              !projectDialogViewModel.isNameValid && !_isEdit ? null : projectDialogViewModel.submitHandler(_isEdit),
           child: Text(_isEdit ? 'Изменить' : 'Создать'),
         ),
       ],
