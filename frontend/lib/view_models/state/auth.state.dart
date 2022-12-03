@@ -16,10 +16,10 @@ class AuthState {
 
   String? _token;
   String? _userId;
-  User? _user;
 
   final Stream<bool> _hasInitialized$ = Stream(false);
   final Stream<bool> _isAuth$ = Stream(false);
+  final Stream<User?> _user$ = Stream(null);
 
   Observable<bool> get hasInitialized$ {
     return _hasInitialized$;
@@ -27,6 +27,10 @@ class AuthState {
 
   Observable<bool> get isAuth$ {
     return _isAuth$;
+  }
+
+  Observable<User?> get user$ {
+    return _user$;
   }
 
   bool get hasToken {
@@ -37,20 +41,24 @@ class AuthState {
     return _userId != null;
   }
 
-  String? getToken() => _token;
-  String? getUserId() => _userId;
-  User? getUser() => _user;
+  String? getTokenOrNull() => _token;
+  String? getUserIdOrNull() => _userId;
+  String getUserId() => _userId ?? (throw Exception());
+  User? getUserOrNull() => _user$.get();
+  User getUser() => _user$.get() ?? (throw Exception());
 
   Future<void> setUserData(AuthDto value) async {
     _token = value.token;
-    _user = value.user;
     _userId = value.user.id;
 
     await _onChangeToken(value.token);
     await _onChangeUserId(value.user.id);
 
     _isAuth$.set(true);
+    _user$.set(value.user);
   }
+
+  void setUser(User value) => _user$.set(value);
 
   Future<void> _onInit() async {
     _token = await _storageService.getToken();
@@ -62,13 +70,13 @@ class AuthState {
 
   Future<void> reset() async {
     _token = null;
-    _user = null;
     _userId = null;
 
     await _storageService.removeToken();
     await _storageService.removeUserId();
 
     _isAuth$.set(false);
+    _user$.set(null);
   }
 
   Future<void> _onChangeToken(String? token) async {

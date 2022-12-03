@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/bottom_bar_page.dart';
 import 'package:frontend/widgets/pages/project.page.dart';
+import 'package:frontend/widgets/pages/user.page.dart';
 
 import '../../data/bottom_bar.data.dart';
 
@@ -14,7 +15,6 @@ class HomePage extends StatelessWidget {
 
   static final List<BottomBarData> _tabItems = [
     BottomBarData('Проекты', Colors.lightBlue, const Icon(Icons.folder), ProjectPage.onCreate()),
-    BottomBarData('Статистика', Colors.lightGreen, Icon(Icons.query_stats), Text('1')),
-    BottomBarData('Аккаунт', Colors.limeAccent, Icon(Icons.account_circle), Text('3'))
+    BottomBarData('Аккаунт', Colors.limeAccent, const Icon(Icons.account_circle), UserPage.onCreate())
   ];
 }
