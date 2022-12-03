@@ -19,7 +19,7 @@ class ProjectCard extends StatelessWidget {
           leading: Icon(Icons.folder, color: project.canEdit ? Colors.blue : Colors.grey),
           title: Text(project.name),
           subtitle: Text('${project.members.length} других участников'),
-          onTap: () => context.go(RouteEnum.project.value),
+          onTap: () => context.go('${RouteEnum.projects.value}/${project.id}?canEdit=${project.canEdit}'),
           trailing: project.canEdit
               ? Row(
                   mainAxisSize: MainAxisSize.min,

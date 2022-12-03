@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:frontend/widgets/dialogs/project.dialog.dart';
 import 'package:provider/provider.dart';
 
-import '../../di/app.module.dart';
-import '../../models/project.dart';
-import '../../view_models/project.view_model.dart';
-import '../cards/project.card.dart';
+import '../../../../di/app.module.dart';
+import '../../../../models/project.dart';
+import '../../../../view_models/project.view_model.dart';
+import '../../../cards/project.card.dart';
 
-class ProjectPage extends StatelessWidget {
-  const ProjectPage({super.key});
+class ProjectListPage extends StatelessWidget {
+  const ProjectListPage({super.key});
 
   Null Function() _showProjectDialog(BuildContext context, bool isEdit, {Project? project}) {
     return () {
@@ -50,7 +50,7 @@ class ProjectPage extends StatelessWidget {
   static Widget onCreate() {
     return ChangeNotifierProvider(
       create: (BuildContext context) => injector.get<ProjectViewModel>(param1: context),
-      child: const ProjectPage(),
+      child: const ProjectListPage(),
     );
   }
 }

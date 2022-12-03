@@ -4,8 +4,8 @@ import 'package:frontend/widgets/dialogs/edit_user_credentials.dialog.dart';
 import 'package:frontend/widgets/dialogs/edit_user_info.dialog.dart';
 import 'package:provider/provider.dart';
 
-import '../../di/app.module.dart';
-import '../../models/user.dart';
+import '../../../../di/app.module.dart';
+import '../../../../models/user.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});

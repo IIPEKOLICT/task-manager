@@ -12,10 +12,12 @@ import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.ProjectService
+import taskmanager.backend.services.TagService
 import taskmanager.backend.services.base.CreatedByUserEntityService
 
 class MiddlewareContainer(
-    private val projectService: ProjectService
+    private val projectService: ProjectService,
+    private val tagService: TagService
 ) {
 
     @Middleware(EditAccess::class)
@@ -30,7 +32,8 @@ class MiddlewareContainer(
 
         val service: CreatedByUserEntityService<*> = when (annotation.entity) {
             EditableEntity.PROJECT -> projectService
-            else -> projectService
+            EditableEntity.TAG -> tagService
+            else -> throw RuntimeException("Unsupported entity type: ${annotation.entity}")
         }
 
         val canEdit: Boolean = service.canEdit(ObjectId(id), ObjectId(userId))

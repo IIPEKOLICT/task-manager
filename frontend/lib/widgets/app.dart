@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/pages/auth.page.dart';
-import 'package:frontend/widgets/pages/home.page.dart';
+import 'package:frontend/widgets/pages/home_page/home.page.dart';
 import 'package:frontend/widgets/pages/login.page.dart';
+import 'package:frontend/widgets/pages/project_page/project.page.dart';
 import 'package:frontend/widgets/pages/register.page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -29,6 +30,10 @@ class App extends StatelessWidget {
       GoRoute(
         path: RouteEnum.home.value,
         builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        path: '${RouteEnum.projects.value}/:id',
+        builder: (context, state) => ProjectPage(state.params['id'], state.queryParams['canEdit'] == 'true'),
       ),
     ],
   );

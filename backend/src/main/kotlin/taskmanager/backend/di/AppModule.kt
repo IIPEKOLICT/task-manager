@@ -57,7 +57,7 @@ object AppModule {
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }
 
-            single { MiddlewareContainer(get()) }
+            single { MiddlewareContainer(get(), get()) }
 
             single { MainController() }
             single { AuthController(get(), get()) }

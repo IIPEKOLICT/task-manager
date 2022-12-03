@@ -10,10 +10,9 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
-import taskmanager.backend.plugins.annotations.JwtUser
-import taskmanager.backend.exceptions.custom.ForbiddenException
+import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.models.Tag
-import taskmanager.backend.models.User
+import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.TagService
 
 @Controller("tags")
@@ -27,32 +26,18 @@ class TagController(private val tagService: TagService) {
 
     @Patch("{id}/name")
     @Authentication(["auth-jwt"])
+    @EditAccess(EditableEntity.TAG, "Вы не можете изменять этот тег")
     suspend fun updateName(
-        @JwtUser user: User,
         @Param("id") id: String,
         @Body("name") name: String
     ): Tag {
-        val objectId = ObjectId(id)
-
-        if (!tagService.isOwner(tagService.getById(objectId), user._id)) {
-            throw ForbiddenException("Вы не можете изменять этот тег")
-        }
-
-        return tagService.updateById(objectId, name)
+        return tagService.updateById(ObjectId(id), name)
     }
 
     @Delete("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun deleteById(
-        @JwtUser user: User,
-        @Param("id") id: String
-    ): DeleteDto {
-        val objectId = ObjectId(id)
-
-        if (!tagService.isOwner(tagService.getById(objectId), user._id)) {
-            throw ForbiddenException("Вы не можете удалить этот тег")
-        }
-
-        return DeleteDto(tagService.deleteById(objectId))
+    @EditAccess(EditableEntity.TAG, "Вы не можете удалить этот тег")
+    suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        return DeleteDto(tagService.deleteById(ObjectId(id)))
     }
 }
