@@ -57,7 +57,7 @@ class ProjectDialogViewModel extends BaseViewModel {
   }
 
   Future<void> _loadAllUsers() async {
-    _users = (await _userRepository.getAll()).where((User user) => user.id != _authState.getUserId()).toList();
+    _users = (await _userRepository.getAll()).where((User user) => user.id != _authState.getUserIdOrNull()).toList();
     notifyListeners();
   }
 

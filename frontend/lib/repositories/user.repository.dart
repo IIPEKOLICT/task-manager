@@ -45,18 +45,15 @@ class UserRepository extends BaseRepository {
   }
 
   Future<User> updatePicture(String id, File file) async {
-    return User.fromJson(
-      await patch<Map<String, dynamic>>(
-        path: '$id/picture',
-        body: FormData.fromMap({
-          'picture': MultipartFile.fromFile(
-            file.path,
-            filename: file.path.split('/').last,
-            contentType: MediaType('image', 'png'),
-          )
-        }),
-      ),
-    );
+    final formData = FormData.fromMap({
+      'picture': await MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
+        contentType: MediaType('image', 'png'),
+      )
+    });
+
+    return User.fromJson(await patch<Map<String, dynamic>>(path: '$id/picture', body: formData));
   }
 
   Future<User> deletePicture(String id) async {

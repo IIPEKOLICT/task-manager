@@ -7,8 +7,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i3;
 import 'package:flutter/material.dart' as _i14;
-import 'package:frontend/models/project.dart' as _i20;
-import 'package:frontend/repositories/auth.repository.dart' as _i16;
+import 'package:frontend/models/project.dart' as _i21;
+import 'package:frontend/repositories/auth.repository.dart' as _i17;
 import 'package:frontend/repositories/main.repository.dart' as _i11;
 import 'package:frontend/repositories/project.repository.dart' as _i12;
 import 'package:frontend/repositories/user.repository.dart' as _i15;
@@ -16,18 +16,19 @@ import 'package:frontend/services/file.service.dart' as _i4;
 import 'package:frontend/services/impl/file.service.impl.dart' as _i5;
 import 'package:frontend/services/impl/storage.service.impl.dart' as _i9;
 import 'package:frontend/services/storage.service.dart' as _i8;
-import 'package:frontend/view_models/auth.view_model.dart' as _i17;
-import 'package:frontend/view_models/login.view_model.dart' as _i18;
+import 'package:frontend/view_models/auth.view_model.dart' as _i18;
+import 'package:frontend/view_models/login.view_model.dart' as _i19;
 import 'package:frontend/view_models/project.view_model.dart' as _i13;
-import 'package:frontend/view_models/project_dialog.view_model.dart' as _i19;
-import 'package:frontend/view_models/register.view_model.dart' as _i21;
+import 'package:frontend/view_models/project_dialog.view_model.dart' as _i20;
+import 'package:frontend/view_models/register.view_model.dart' as _i22;
 import 'package:frontend/view_models/state/auth.state.dart' as _i10;
 import 'package:frontend/view_models/state/project.state.dart' as _i6;
+import 'package:frontend/view_models/user.view_model.dart' as _i16;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:shared_preferences/shared_preferences.dart' as _i7;
 
-import 'app.module.dart' as _i22;
+import 'app.module.dart' as _i23;
 
 /// ignore_for_file: unnecessary_lambdas
 /// ignore_for_file: lines_longer_than_80_chars
@@ -71,35 +72,45 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i3.Dio>(),
           gh<_i10.AuthState>(),
         ));
-    gh.lazySingleton<_i16.AuthRepository>(() => _i16.AuthRepository(
+    gh.factoryParam<_i16.UserViewModel, _i14.BuildContext, dynamic>((
+      context,
+      _,
+    ) =>
+        _i16.UserViewModel(
+          context,
+          gh<_i10.AuthState>(),
+          gh<_i15.UserRepository>(),
+          gh<_i4.FileService>(),
+        ));
+    gh.lazySingleton<_i17.AuthRepository>(() => _i17.AuthRepository(
           gh<_i3.Dio>(),
           gh<_i10.AuthState>(),
         ));
-    gh.factoryParam<_i17.AuthViewModel, _i14.BuildContext, dynamic>((
+    gh.factoryParam<_i18.AuthViewModel, _i14.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i17.AuthViewModel(
+        _i18.AuthViewModel(
           context,
           gh<_i10.AuthState>(),
           gh<_i11.MainRepository>(),
-          gh<_i16.AuthRepository>(),
+          gh<_i17.AuthRepository>(),
         ));
-    gh.factoryParam<_i18.LoginViewModel, _i14.BuildContext, dynamic>((
+    gh.factoryParam<_i19.LoginViewModel, _i14.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i18.LoginViewModel(
+        _i19.LoginViewModel(
           context,
           gh<_i10.AuthState>(),
-          gh<_i16.AuthRepository>(),
+          gh<_i17.AuthRepository>(),
         ));
-    gh.factoryParam<_i19.ProjectDialogViewModel, _i14.BuildContext,
-        _i20.Project?>((
+    gh.factoryParam<_i20.ProjectDialogViewModel, _i14.BuildContext,
+        _i21.Project?>((
       context,
       _project,
     ) =>
-        _i19.ProjectDialogViewModel(
+        _i20.ProjectDialogViewModel(
           context,
           _project,
           gh<_i12.ProjectRepository>(),
@@ -107,17 +118,17 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i6.ProjectState>(),
           gh<_i10.AuthState>(),
         ));
-    gh.factoryParam<_i21.RegisterViewModel, _i14.BuildContext, dynamic>((
+    gh.factoryParam<_i22.RegisterViewModel, _i14.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i21.RegisterViewModel(
+        _i22.RegisterViewModel(
           context,
           gh<_i10.AuthState>(),
-          gh<_i16.AuthRepository>(),
+          gh<_i17.AuthRepository>(),
         ));
     return this;
   }
 }
 
-class _$AppModule extends _i22.AppModule {}
+class _$AppModule extends _i23.AppModule {}
