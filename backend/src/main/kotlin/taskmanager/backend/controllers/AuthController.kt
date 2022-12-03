@@ -50,7 +50,7 @@ class AuthController(
     }
 
     @Post("login")
-    suspend fun create(@LocalUser user: User): AuthDto {
+    suspend fun login(@LocalUser user: User): AuthDto {
         return AuthDto(
             token = authService.generateToken(user._id, user.email),
             user = user.toResponseDto()
