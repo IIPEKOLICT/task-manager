@@ -67,15 +67,20 @@ class TaskCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
-                  children: task.tags.map((Tag tag) {
-                    return Chip(
-                      labelPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                      label: Text(tag.name),
-                      backgroundColor: tag.color,
-                      elevation: 10,
-                      shadowColor: Colors.grey[60],
-                    );
-                  }).toList(),
+                  children: task.tags.map(
+                    (Tag tag) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                        child: Chip(
+                          labelPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                          label: Text(tag.name),
+                          backgroundColor: tag.color,
+                          elevation: 5,
+                          shadowColor: Colors.grey[60],
+                        ),
+                      );
+                    },
+                  ).toList(),
                 ),
               ),
             ],

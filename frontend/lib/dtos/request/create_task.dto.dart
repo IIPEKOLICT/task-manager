@@ -1,21 +1,24 @@
+import 'package:frontend/enums/priority.enum.dart';
+import 'package:frontend/enums/status.enum.dart';
+
 class CreateTaskDto {
   final String assignedTo;
   final List<String> blockedBy;
   final List<String> tags;
   final String title;
   final String description;
-  final String priority;
-  final String status;
+  final PriorityEnum priority;
+  final StatusEnum status;
   final num? expectedHours;
 
   CreateTaskDto({
-    this.assignedTo = '',
+    required this.assignedTo,
     this.blockedBy = const [],
     this.tags = const [],
-    this.title = '',
-    this.description = '',
-    this.priority = 'NORMAL',
-    this.status = 'TODO',
+    required this.title,
+    required this.description,
+    required this.priority,
+    required this.status,
     this.expectedHours,
   });
 
@@ -26,8 +29,8 @@ class CreateTaskDto {
       'tags': tags,
       'title': title,
       'description': description,
-      'priority': priority,
-      'status': status,
+      'priority': priority.value,
+      'status': status.value,
       'expectedHours': expectedHours,
     };
   }

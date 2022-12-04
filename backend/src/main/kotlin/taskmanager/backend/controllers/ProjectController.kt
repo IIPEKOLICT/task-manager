@@ -12,22 +12,25 @@ import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.dtos.response.ProjectResponseDto
 import taskmanager.backend.dtos.response.TaskResponseDto
+import taskmanager.backend.dtos.response.UserResponseDto
 import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.mappers.TaskMapper
+import taskmanager.backend.models.Project
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.Tag
-import taskmanager.backend.models.Task
 import taskmanager.backend.models.User
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.ProjectService
 import taskmanager.backend.services.TagService
 import taskmanager.backend.services.TaskService
+import taskmanager.backend.services.UserService
 
 @Controller("projects")
 class ProjectController(
     private val projectService: ProjectService,
     private val tagService: TagService,
     private val taskService: TaskService,
+    private val userService: UserService,
     private val taskMapper: TaskMapper
 ) {
 
@@ -62,6 +65,14 @@ class ProjectController(
             userId = user._id,
             tasks = taskService.getByProject(ObjectId(id))
         )
+    }
+
+    @Get("{id}/users")
+    @Authentication(["auth-jwt"])
+    suspend fun getProjectUsers(@Param("id") id: String): List<UserResponseDto> {
+        val project: Project = projectService.getById(ObjectId(id))
+        val ids: List<ObjectId> = listOf(project.createdBy, *project.members.toTypedArray())
+        return userService.getByIds(ids).map { it.toResponseDto() }
     }
 
     @Post

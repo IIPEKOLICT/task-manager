@@ -1,6 +1,7 @@
 import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/models/project.dart';
 import 'package:frontend/models/tag.dart';
+import 'package:frontend/models/user.dart';
 import 'package:injectable/injectable.dart';
 
 import '../dtos/request/create_task.dto.dart';
@@ -28,6 +29,10 @@ class ProjectRepository extends BaseRepository {
 
   Future<List<Task>> getProjectTasks(String id) async {
     return (await get<List>(path: '$id/tasks')).map((json) => Task.fromJson(json)).toList();
+  }
+
+  Future<List<User>> getProjectUsers(String id) async {
+    return (await get<List>(path: '$id/users')).map((json) => User.fromJson(json)).toList();
   }
 
   Future<Project> create(String name, List<String> members) async {

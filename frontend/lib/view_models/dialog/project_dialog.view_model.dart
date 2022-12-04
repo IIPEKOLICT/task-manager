@@ -17,8 +17,14 @@ class ProjectDialogViewModel extends BaseViewModel {
   final UserRepository _userRepository;
   final Project? _project;
 
-  ProjectDialogViewModel(@factoryParam super.context, @factoryParam this._project, this._projectRepository,
-      this._userRepository, this._projectState, this._authState) {
+  ProjectDialogViewModel(
+    @factoryParam super.context,
+    @factoryParam this._project,
+    this._projectRepository,
+    this._userRepository,
+    this._projectState,
+    this._authState,
+  ) {
     _loadAllUsers();
     _members = _project?.members ?? [];
     _name = _project?.name ?? '';
@@ -82,19 +88,17 @@ class ProjectDialogViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> Function() submitHandler(bool isEdit) {
-    return () async {
-      try {
-        if (isEdit) {
-          await _updateHandler();
-        } else {
-          await _createHandler();
-        }
-      } catch (e) {
-        onException(e);
-      } finally {
-        Navigator.of(context).pop();
+  Future<void> submitHandler() async {
+    try {
+      if (_project != null) {
+        await _updateHandler();
+      } else {
+        await _createHandler();
       }
-    };
+    } catch (e) {
+      onException(e);
+    } finally {
+      Navigator.of(context).pop();
+    }
   }
 }

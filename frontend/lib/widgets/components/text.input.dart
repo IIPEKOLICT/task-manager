@@ -28,6 +28,7 @@ class TextInput extends StatelessWidget {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: hintText,
+        labelText: hintText,
       ),
     );
   }

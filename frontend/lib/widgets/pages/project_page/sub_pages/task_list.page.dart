@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../di/app.module.dart';
 import '../../../../enums/priority.enum.dart';
 import '../../../cards/task.card.dart';
+import '../../../dialogs/create_task.dialog.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({super.key});
@@ -19,6 +20,7 @@ class TaskListPage extends StatelessWidget {
         context: context,
         builder: (BuildContext ctx) {
           return AlertDialog(
+            scrollable: true,
             title: const Text('Изменить статус'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -46,6 +48,7 @@ class TaskListPage extends StatelessWidget {
         context: context,
         builder: (BuildContext ctx) {
           return AlertDialog(
+            scrollable: true,
             title: const Text('Изменить приоритет'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -69,7 +72,7 @@ class TaskListPage extends StatelessWidget {
     return () async {
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => const Text('Диалог'),
+        builder: (BuildContext ctx) => CreateTaskDialog.onCreate(),
       );
     };
   }

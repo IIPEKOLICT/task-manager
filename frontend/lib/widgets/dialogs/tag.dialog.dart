@@ -17,6 +17,7 @@ class TagDialog extends StatelessWidget {
     final viewModel = context.watch<TagDialogViewModel>();
 
     return AlertDialog(
+      scrollable: true,
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actionsPadding: const EdgeInsets.all(10),
       title: Center(

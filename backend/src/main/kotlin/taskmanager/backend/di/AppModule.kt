@@ -65,7 +65,7 @@ object AppModule {
             single { MainController() }
             single { AuthController(get(), get()) }
             single { UserController(get(), get(), get(), get()) }
-            single { ProjectController(get(), get(), get(), get()) }
+            single { ProjectController(get(), get(), get(), get(), get()) }
             single { TagController(get()) }
             single { TaskController(get(), get(), get(), get(), get(), get(), get(), get()) }
             single { WorkController(get()) }

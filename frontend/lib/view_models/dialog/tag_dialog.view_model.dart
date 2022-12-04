@@ -42,7 +42,7 @@ class TagDialogViewModel extends BaseViewModel {
 
   Future<void> _createHandler() async {
     try {
-      _tagState.addEntity(await _projectRepository.createProjectTag(_projectState.getCurrent().id, _name));
+      _tagState.addEntity(await _projectRepository.createProjectTag(_projectState.getCurrentId(), _name));
     } catch (e) {
       onException(e);
     }

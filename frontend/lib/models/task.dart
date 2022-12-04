@@ -48,7 +48,7 @@ class Task extends BaseEntity {
       id: json['_id'],
       createdBy: json['createdBy'],
       project: json['project'],
-      assignedTo: json['assignedTo'] == null ? User.fromJson(json['assignedTo'] as Map<String, dynamic>) : null,
+      assignedTo: json['assignedTo'] != null ? User.fromJson(json['assignedTo'] as Map<String, dynamic>) : null,
       blockedBy: (json['blockedBy'] as List)?.map((item) => item as String)?.toList() ?? [],
       trackedTime: json['trackedTime'],
       commentsAmount: json['commentsAmount'],
