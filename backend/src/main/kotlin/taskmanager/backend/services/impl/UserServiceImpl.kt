@@ -15,6 +15,10 @@ class UserServiceImpl(
     override val collection: CoroutineCollection<User>
 ) : BaseServiceImpl<User>(collection, CollectionInfo.USER), UserService {
 
+    override suspend fun getByIds(ids: List<ObjectId>): List<User> {
+        return collection.find(User::_id `in` ids).toList()
+    }
+
     override suspend fun getByEmailOrNull(email: String): User? {
         return collection.findOne(User::email eq email)
     }

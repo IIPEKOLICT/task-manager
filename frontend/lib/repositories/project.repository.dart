@@ -1,8 +1,10 @@
-import 'package:frontend/dtos/request/delete.dto.dart';
+import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/models/project.dart';
 import 'package:frontend/models/tag.dart';
 import 'package:injectable/injectable.dart';
 
+import '../dtos/request/create_task.dto.dart';
+import '../models/task.dart';
 import 'base/base.repository.dart';
 
 @LazySingleton()
@@ -24,12 +26,20 @@ class ProjectRepository extends BaseRepository {
     return (await get<List>(path: '$id/tags')).map((json) => Tag.fromJson(json)).toList();
   }
 
+  Future<List<Task>> getProjectTasks(String id) async {
+    return (await get<List>(path: '$id/tasks')).map((json) => Task.fromJson(json)).toList();
+  }
+
   Future<Project> create(String name, List<String> members) async {
     return Project.fromJson(await post<Map<String, dynamic>>(body: {'name': name, 'members': members}));
   }
 
   Future<Tag> createProjectTag(String projectId, String name) async {
     return Tag.fromJson(await post<Map<String, dynamic>>(path: '$projectId/tags', body: {'name': name}));
+  }
+
+  Future<Task> createProjectTask(String projectId, CreateTaskDto dto) async {
+    return Task.fromJson(await post<Map<String, dynamic>>(path: '$projectId/tasks', body: dto.json));
   }
 
   Future<Project> updateById(String id, String name, List<String> members) async {

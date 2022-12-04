@@ -1,4 +1,4 @@
-import 'package:frontend/dtos/request/delete.dto.dart';
+import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/models/tag.dart';
 import 'package:injectable/injectable.dart';
 

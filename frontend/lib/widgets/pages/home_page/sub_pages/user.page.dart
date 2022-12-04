@@ -40,7 +40,7 @@ class UserPage extends StatelessWidget {
       onTap: () {
         showDialog(
           context: context,
-          builder: (BuildContext context) {
+          builder: (BuildContext ctx) {
             return AlertDialog(
               content: Column(
                 mainAxisSize: MainAxisSize.min,

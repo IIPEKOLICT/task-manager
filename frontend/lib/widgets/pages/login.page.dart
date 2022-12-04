@@ -20,53 +20,49 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(appHeader),
       ),
-      body: ListView(
-        children: [
-          Center(
-            child: Container(
-              width: 500,
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    child: Text(
-                      'Вход в аккаунт',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 32),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(onInput: viewModel.setEmail, hintText: 'E-mail'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(onInput: viewModel.setPassword, hintText: 'Пароль', isPassword: true),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: DefaultButton(
-                      title: 'Зарегистрироваться',
-                      onTap: () => context.go(RouteEnum.register.value),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: DefaultButton(
-                      title: 'Войти',
-                      onTap: viewModel.isValid ? viewModel.login : null,
-                    ),
-                  ),
-                ],
+      body: Center(
+        child: Container(
+          width: 500,
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: Text(
+                  'Вход в аккаунт',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 32),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: TextInput(onInput: viewModel.setEmail, hintText: 'E-mail'),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: TextInput(onInput: viewModel.setPassword, hintText: 'Пароль', isPassword: true),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: DefaultButton(
+                  title: 'Зарегистрироваться',
+                  onTap: () => context.go(RouteEnum.register.value),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: DefaultButton(
+                  title: 'Войти',
+                  onTap: viewModel.isValid ? viewModel.login : null,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -28,8 +28,11 @@ class ProjectDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child:
-                TextInput(onInput: projectDialogViewModel.setName, hintText: 'Название', value: _project?.name ?? ''),
+            child: TextInput(
+              onInput: projectDialogViewModel.setName,
+              hintText: 'Название',
+              value: _project?.name ?? '',
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -38,7 +41,7 @@ class ProjectDialog extends StatelessWidget {
                 return CheckboxListTile(
                   value: projectDialogViewModel.isUserAdded(user.id),
                   onChanged: projectDialogViewModel.changeMemberHandler(user.id),
-                  title: Text('${user.firstName} ${user.lastName}'),
+                  title: Text('${user.firstName} ${user.lastName} (${user.email})'),
                 );
               }).toList(),
             ),

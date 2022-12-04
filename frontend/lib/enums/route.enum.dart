@@ -3,7 +3,8 @@ enum RouteEnum {
   home('/home'),
   login('/login'),
   register('/register'),
-  projects('/projects');
+  projects('/projects'),
+  tasks('/tasks');
 
   final String value;
 

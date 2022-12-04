@@ -5,6 +5,7 @@ import 'package:frontend/view_models/state/base/stream.dart';
 abstract class EntitiesState<E extends BaseEntity> {
   final Stream<List<E>> _entities$ = Stream([]);
   final Stream<E?> _current$ = Stream(null);
+  final Stream<String?> _currentId$ = Stream(null);
 
   Observable<List<E>> get entities$ {
     return _entities$;
@@ -14,9 +15,15 @@ abstract class EntitiesState<E extends BaseEntity> {
     return _current$;
   }
 
+  Observable<String?> get currentId$ {
+    return _currentId$;
+  }
+
   List<E> getEntities() => _entities$.get();
   E? getCurrentOrNull() => _current$.get();
   E getCurrent() => _current$.get() ?? (throw Exception());
+  String? getCurrentIdOrNull() => _currentId$.get();
+  String getCurrentId() => _currentId$.get() ?? (throw Exception());
 
   void setEntities(List<E> value) {
     _entities$.set(value);
@@ -36,5 +43,9 @@ abstract class EntitiesState<E extends BaseEntity> {
 
   void setCurrent(E? value) {
     _current$.set(value);
+  }
+
+  void setCurrentId(String? value) {
+    _currentId$.set(value);
   }
 }

@@ -23,19 +23,20 @@ class ProjectListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final projectViewModel = context.watch<ProjectViewModel>();
+    final viewModel = context.watch<ProjectViewModel>();
 
     return Scaffold(
       body: ListView(
-        children: projectViewModel.isLoading
+        children: viewModel.isLoading
             ? const [LinearProgressIndicator()]
-            : projectViewModel
+            : viewModel
                 .getProjects()
                 .map(
                   (Project project) => ProjectCard(
                     project: project,
+                    onTap: viewModel.pickProjectHandler(project),
                     onEdit: _showProjectDialog(context, true, project: project),
-                    onDelete: projectViewModel.deleteById(project.id),
+                    onDelete: viewModel.deleteById(project.id),
                   ),
                 )
                 .toList(),

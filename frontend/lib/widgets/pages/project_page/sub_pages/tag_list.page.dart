@@ -32,22 +32,22 @@ class TagListPage extends StatelessWidget {
                 .map(
                   (Tag tag) => TagCard(
                     tag: tag,
-                    onEdit: viewModel.isProjectLoaded ? _showDialog(context, true, tag: tag) : null,
-                    onDelete: viewModel.isProjectLoaded ? viewModel.deleteById(tag.id) : null,
+                    onEdit: _showDialog(context, true, tag: tag),
+                    onDelete: viewModel.deleteById(tag.id),
                   ),
                 )
                 .toList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: viewModel.isProjectLoaded ? _showDialog(context, false) : null,
+        onPressed: _showDialog(context, false),
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  static Widget onCreate(String projectId) {
+  static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TagViewModel>(param1: context, param2: projectId),
+      create: (BuildContext context) => injector.get<TagViewModel>(param1: context),
       child: const TagListPage(),
     );
   }

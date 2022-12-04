@@ -5,7 +5,7 @@ import 'package:frontend/models/user.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:injectable/injectable.dart';
 
-import '../dtos/request/delete.dto.dart';
+import '../dtos/response/delete.dto.dart';
 import 'base/base.repository.dart';
 
 @LazySingleton()

@@ -11,19 +11,12 @@ import taskmanager.backend.enums.Status
 import taskmanager.backend.models.Task
 import taskmanager.backend.services.TaskService
 import taskmanager.backend.services.base.impl.AttachedToProjectEntityServiceImpl
-import java.text.SimpleDateFormat
 
 class TaskServiceImpl(
     override val collection: CoroutineCollection<Task>
 ) : AttachedToProjectEntityServiceImpl<Task>(collection, CollectionInfo.TASK), TaskService {
 
     override suspend fun create(userId: ObjectId, projectId: ObjectId, dto: CreateTaskDto): Task {
-        val expectedTime = if (dto.expectedTime != null) {
-            SimpleDateFormat().parse(dto.expectedTime)
-        } else {
-            null
-        }
-
         val task = Task(
             createdBy = userId,
             project = projectId,
@@ -34,7 +27,7 @@ class TaskServiceImpl(
             description = dto.description,
             priority = dto.priority,
             status = dto.status,
-            expectedTime = expectedTime
+            expectedHours = dto.expectedHours ?: 24
         )
 
         collection.save(task)
@@ -42,13 +35,16 @@ class TaskServiceImpl(
     }
 
     override suspend fun updateInfo(id: ObjectId, dto: UpdateTaskInfoDto): Task {
-        return updateById(
-            id,
-            set(
-                Task::title setTo dto.title,
-                Task::description setTo dto.description
-            )
+        val fields: MutableSet<SetTo<*>> = mutableSetOf(
+            Task::title setTo dto.title,
+            Task::description setTo dto.description
         )
+
+        if (dto.expectedHours != null) {
+            fields.add(Task::expectedHours setTo dto.expectedHours)
+        }
+
+        return updateById(id, set(*fields.toTypedArray()))
     }
 
     override suspend fun updateStatus(id: ObjectId, status: Status): Task {

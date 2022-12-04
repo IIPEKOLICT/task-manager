@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/models/project.dart';
-import 'package:go_router/go_router.dart';
 
 class ProjectCard extends StatelessWidget {
   final Project project;
+  final VoidCallback? onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const ProjectCard({super.key, required this.project, this.onEdit, this.onDelete});
+  const ProjectCard({super.key, required this.project, this.onTap, this.onEdit, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class ProjectCard extends StatelessWidget {
           leading: Icon(Icons.folder, color: project.canEdit ? Colors.blue : Colors.grey),
           title: Text(project.name),
           subtitle: Text('${project.members.length} других участников'),
-          onTap: () => context.go('${RouteEnum.projects.value}/${project.id}?canEdit=${project.canEdit}'),
+          onTap: onTap,
           trailing: project.canEdit
               ? Row(
                   mainAxisSize: MainAxisSize.min,
