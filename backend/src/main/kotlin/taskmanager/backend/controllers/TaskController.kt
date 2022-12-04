@@ -12,11 +12,14 @@ import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.dtos.response.AttachmentResponseDto
+import taskmanager.backend.dtos.response.TaskResponseDto
+import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
+import taskmanager.backend.mappers.TaskMapper
 import taskmanager.backend.plugins.annotations.JwtUser
-import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.models.*
+import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.*
 
 @Controller("tasks")
@@ -27,13 +30,17 @@ class TaskController(
     private val noteService: NoteService,
     private val attachmentService: AttachmentService,
     private val fileService: FileService,
-    private val s3Service: S3Service
+    private val s3Service: S3Service,
+    private val taskMapper: TaskMapper
 ) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun getById(@Param("id") id: String): Task {
-        return taskService.getById(ObjectId(id))
+    suspend fun getById(@JwtUser user: User, @Param("id") id: String): TaskResponseDto {
+        return taskMapper.convert(
+            userId = user._id,
+            task = taskService.getById(ObjectId(id))
+        )
     }
 
     @Get("{id}/works")
@@ -119,60 +126,72 @@ class TaskController(
     @Patch("{id}/info")
     @Authentication(["auth-jwt"])
     suspend fun updateInfo(
+        @JwtUser user: User,
         @Param("id") id: String,
         @Body(type = UpdateTaskInfoDto::class) dto: UpdateTaskInfoDto
-    ): Task {
-        return taskService.updateInfo(ObjectId(id), dto)
+    ): TaskResponseDto {
+        return taskMapper.convert(
+            userId = user._id,
+            task = taskService.updateInfo(ObjectId(id), dto)
+        )
     }
 
     @Patch("{id}/status")
     @Authentication(["auth-jwt"])
     suspend fun updateStatus(
+        @JwtUser user: User,
         @Param("id") id: String,
         @Body("status") status: String
-    ): Task {
-        return taskService.updateStatus(ObjectId(id), Status.valueOf(status))
+    ): TaskResponseDto {
+        return taskMapper.convert(
+            userId = user._id,
+            task = taskService.updateStatus(ObjectId(id), Status.valueOf(status))
+        )
     }
 
     @Patch("{id}/priority")
     @Authentication(["auth-jwt"])
     suspend fun updatePriority(
+        @JwtUser user: User,
         @Param("id") id: String,
         @Body("priority") priority: String
-    ): Task {
-        return taskService.updatePriority(ObjectId(id), Priority.valueOf(priority))
+    ): TaskResponseDto {
+        return taskMapper.convert(
+            userId = user._id,
+            task = taskService.updatePriority(ObjectId(id), Priority.valueOf(priority))
+        )
     }
 
     @Patch("{id}/tags")
     @Authentication(["auth-jwt"])
     suspend fun updateTags(
+        @JwtUser user: User,
         @Param("id") id: String,
         @Body("tags") tags: List<String>
-    ): Task {
-        return taskService.updateTags(ObjectId(id), tags.map { ObjectId(it) })
+    ): TaskResponseDto {
+        return taskMapper.convert(
+            userId = user._id,
+            task = taskService.updateTags(ObjectId(id), tags.map { ObjectId(it) })
+        )
     }
 
     @Patch("{id}/blocked-by")
     @Authentication(["auth-jwt"])
     suspend fun updateBlockedBy(
+        @JwtUser user: User,
         @Param("id") id: String,
         @Body("blockedBy") blockedBy: List<String>
-    ): Task {
-        return taskService.updateBlockedBy(ObjectId(id), blockedBy.map { ObjectId(it) })
+    ): TaskResponseDto {
+        return taskMapper.convert(
+            userId = user._id,
+            task = taskService.updateBlockedBy(ObjectId(id), blockedBy.map { ObjectId(it) })
+        )
     }
 
     @Delete("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun deleteById(
-        @JwtUser user: User,
-        @Param("id") id: String
-    ): DeleteDto {
-        val task: Task = taskService.getById(ObjectId(id))
-
-        if (!taskService.isOwner(task, user._id)) {
-            throw ForbiddenException("Вы не можете удалить эту задачу")
-        }
-
-        return DeleteDto(taskService.deleteById(task._id))
+    @EditAccess(EditableEntity.TASK, "Вы не можете удалить эту задачу")
+    suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        return DeleteDto(taskService.deleteById(ObjectId(id)))
     }
 }

@@ -6,6 +6,7 @@ class BottomBarPage extends StatefulWidget {
   final int checkedItem;
   final Color selectedColor;
   final Color backgroundColor;
+  final VoidCallback? onBack;
 
   BottomBarData getCurrentItem(int index) {
     return items.elementAt(index);
@@ -16,7 +17,8 @@ class BottomBarPage extends StatefulWidget {
     this.items = const [],
     this.checkedItem = 0,
     this.selectedColor = Colors.blue,
-    this.backgroundColor = Colors.black87
+    this.backgroundColor = Colors.black87,
+    this.onBack,
   });
 
   @override
@@ -39,7 +41,11 @@ class _BottomBarPageState extends State<BottomBarPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(selectedItem.label)
+        leading: TextButton(
+          onPressed: widget.onBack,
+          child: const Icon(Icons.arrow_back_sharp),
+        ),
+        title: Text(selectedItem.label),
       ),
       body: Center(
         child: selectedItem.content,

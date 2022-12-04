@@ -8,6 +8,7 @@ import taskmanager.backend.models.User
 import taskmanager.backend.services.base.BaseService
 
 interface UserService : BaseService<User> {
+    suspend fun getByIds(ids: List<ObjectId>): List<User>
     suspend fun getByEmailOrNull(email: String): User?
     suspend fun create(dto: CreateUserDto): User
     suspend fun updateCredentials(id: ObjectId, dto: UpdateUserCredentialsDto): User

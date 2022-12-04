@@ -8,37 +8,44 @@ import '../../models/user.dart';
 import '../components/text.input.dart';
 
 class ProjectDialog extends StatelessWidget {
-  final bool _isEdit;
   final Project? _project;
 
-  const ProjectDialog(this._isEdit, this._project, {super.key});
+  bool get _isAuth {
+    return _project != null;
+  }
+
+  const ProjectDialog(this._project, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final projectDialogViewModel = context.watch<ProjectDialogViewModel>();
+    final viewModel = context.watch<ProjectDialogViewModel>();
 
     return AlertDialog(
+      scrollable: true,
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actionsPadding: const EdgeInsets.all(10),
       title: Center(
-        child: Text('${_isEdit ? 'Изменение' : 'Создание'} проекта'),
+        child: Text('${_isAuth ? 'Изменение' : 'Создание'} проекта'),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child:
-                TextInput(onInput: projectDialogViewModel.setName, hintText: 'Название', value: _project?.name ?? ''),
+            child: TextInput(
+              onInput: viewModel.setName,
+              hintText: 'Название',
+              value: _project?.name ?? '',
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Column(
-              children: projectDialogViewModel.getUsers().map((User user) {
+              children: viewModel.getUsers().map((User user) {
                 return CheckboxListTile(
-                  value: projectDialogViewModel.isUserAdded(user.id),
-                  onChanged: projectDialogViewModel.changeMemberHandler(user.id),
-                  title: Text('${user.firstName} ${user.lastName}'),
+                  value: viewModel.isUserAdded(user.id),
+                  onChanged: viewModel.changeMemberHandler(user.id),
+                  title: Text('${user.firstName} ${user.lastName} (${user.email})'),
                 );
               }).toList(),
             ),
@@ -51,17 +58,17 @@ class ProjectDialog extends StatelessWidget {
           child: const Text('Закрыть'),
         ),
         ElevatedButton(
-          onPressed: !projectDialogViewModel.isValid ? null : projectDialogViewModel.submitHandler(_isEdit),
-          child: Text(_isEdit ? 'Изменить' : 'Создать'),
+          onPressed: !viewModel.isValid ? null : viewModel.submitHandler,
+          child: Text(_isAuth ? 'Изменить' : 'Создать'),
         ),
       ],
     );
   }
 
-  static Widget onCreate(bool isEdit, {Project? project}) {
+  static Widget onCreate({Project? project}) {
     return ChangeNotifierProvider(
       create: (BuildContext context) => injector.get<ProjectDialogViewModel>(param1: context, param2: project),
-      child: ProjectDialog(isEdit, project),
+      child: ProjectDialog(project),
     );
   }
 }

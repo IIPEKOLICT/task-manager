@@ -14,7 +14,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loginViewModel = context.watch<LoginViewModel>();
+    var viewModel = context.watch<LoginViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -28,36 +28,37 @@ class LoginPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    child: Text(
-                      'Вход в аккаунт',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 32),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(onInput: loginViewModel.setEmail, hintText: 'E-mail'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: TextInput(onInput: loginViewModel.setPassword, hintText: 'Пароль', isPassword: true),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child:
-                        DefaultButton(title: 'Зарегистрироваться', onTap: () => context.go(RouteEnum.register.value)),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: DefaultButton(title: 'Войти', onTap: loginViewModel.isValid ? loginViewModel.login : null),
-                  ),
-                ],
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: Text(
+                  'Вход в аккаунт',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 32),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: TextInput(onInput: viewModel.setEmail, hintText: 'E-mail'),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: TextInput(onInput: viewModel.setPassword, hintText: 'Пароль', isPassword: true),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: DefaultButton(
+                  title: 'Зарегистрироваться',
+                  onTap: () => context.go(RouteEnum.register.value),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: DefaultButton(
+                  title: 'Войти',
+                  onTap: viewModel.isValid ? viewModel.login : null,
+                ),
               ),
             ],
           ),

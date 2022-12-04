@@ -17,6 +17,7 @@ class EditUserCredentialsDialog extends StatelessWidget {
     final viewModel = context.watch<EditUserDialogViewModel>();
 
     return AlertDialog(
+      scrollable: true,
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actionsPadding: const EdgeInsets.all(10),
       title: Center(

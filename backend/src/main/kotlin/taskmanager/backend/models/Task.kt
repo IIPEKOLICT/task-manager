@@ -4,7 +4,6 @@ import org.bson.types.ObjectId
 import taskmanager.backend.models.base.impl.BaseEntityImpl
 import taskmanager.backend.models.interfaces.AttachedToProjectEntity
 import taskmanager.backend.shared.ColorGenerator
-import java.util.Date
 
 data class Task(
     override val createdBy: ObjectId,
@@ -22,5 +21,5 @@ data class Task(
     var color: String = ColorGenerator.generateHexColor(),
     var priority: String,
     var status: String,
-    var expectedTime: Date? = null
+    var expectedHours: Int = 24
 ) : BaseEntityImpl(), AttachedToProjectEntity

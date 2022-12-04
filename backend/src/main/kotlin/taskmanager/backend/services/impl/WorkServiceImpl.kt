@@ -2,6 +2,7 @@ package taskmanager.backend.services.impl
 
 import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineCollection
+import org.litote.kmongo.`in`
 import org.litote.kmongo.set
 import org.litote.kmongo.setTo
 import taskmanager.backend.dtos.request.WorkDto
@@ -14,6 +15,10 @@ import java.text.SimpleDateFormat
 class WorkServiceImpl(
     override val collection: CoroutineCollection<Work>
 ) : AttachedToTaskEntityServiceImpl<Work>(collection, CollectionInfo.WORK), WorkService {
+
+    override suspend fun getByIds(ids: List<ObjectId>): List<Work> {
+        return collection.find(Work::_id `in` ids).toList()
+    }
 
     override suspend fun create(userId: ObjectId, taskId: ObjectId, dto: WorkDto): Work {
         val work = Work(

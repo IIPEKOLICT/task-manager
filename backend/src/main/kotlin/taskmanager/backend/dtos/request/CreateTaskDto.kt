@@ -11,7 +11,7 @@ data class CreateTaskDto(
     val description: String,
     val priority: String,
     val status: String,
-    val expectedTime: String? = null
+    val expectedHours: Int?
 ) {
 
     fun validate() {

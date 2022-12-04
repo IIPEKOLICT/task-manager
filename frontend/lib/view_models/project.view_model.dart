@@ -1,8 +1,10 @@
 import 'package:frontend/repositories/project.repository.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/state/project.state.dart';
+import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
+import '../enums/route.enum.dart';
 import '../models/project.dart';
 
 @Injectable()
@@ -19,6 +21,13 @@ class ProjectViewModel extends BaseViewModel {
   void _projectsSubscriber(List<Project> projects) {
     if (_isLoading) _isLoading = false;
     notifyListeners();
+  }
+
+  void Function() pickProjectHandler(Project project) {
+    return () {
+      _projectState.setCurrentId(project.id);
+      context.go('${RouteEnum.projects.value}/${project.id}?canEdit=${project.canEdit}');
+    };
   }
 
   List<Project> getProjects() => _projectState.getEntities();

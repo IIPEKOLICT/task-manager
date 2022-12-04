@@ -38,4 +38,7 @@ abstract class BaseViewModel extends ChangeNotifier {
 
     ExceptionSnackbar.show(backendMessage ?? message, context);
   }
+
+  @protected
+  void defaultSubscriber(_) => notifyListeners();
 }
