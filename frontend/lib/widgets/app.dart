@@ -4,6 +4,7 @@ import 'package:frontend/widgets/pages/home_page/home.page.dart';
 import 'package:frontend/widgets/pages/login.page.dart';
 import 'package:frontend/widgets/pages/project_page/project.page.dart';
 import 'package:frontend/widgets/pages/register.page.dart';
+import 'package:frontend/widgets/pages/task_page/task.page.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../constants/ui.dart';
@@ -32,12 +33,12 @@ class App extends StatelessWidget {
         builder: (context, state) => const HomePage(),
       ),
       GoRoute(
-        path: '${RouteEnum.projects.value}/:id',
+        path: RouteEnum.project.value,
         builder: (context, state) => ProjectPage(state.queryParams['canEdit'] == 'true'),
       ),
       GoRoute(
-        path: '${RouteEnum.tasks.value}/:id',
-        builder: (context, state) => const Text('Задача'),
+        path: RouteEnum.task.value,
+        builder: (context, state) => TaskPage(),
       ),
     ],
   );

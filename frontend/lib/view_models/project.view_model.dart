@@ -1,6 +1,8 @@
 import 'package:frontend/repositories/project.repository.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/state/project.state.dart';
+import 'package:frontend/view_models/state/tag.state.dart';
+import 'package:frontend/view_models/state/user.state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,11 +11,19 @@ import '../models/project.dart';
 
 @Injectable()
 class ProjectViewModel extends BaseViewModel {
+  final UserState _userState;
+  final TagState _tagState;
   final ProjectState _projectState;
   final ProjectRepository _projectRepository;
   bool _isLoading = true;
 
-  ProjectViewModel(@factoryParam super.context, this._projectRepository, this._projectState) {
+  ProjectViewModel(
+    @factoryParam super.context,
+    this._projectRepository,
+    this._projectState,
+    this._userState,
+    this._tagState,
+  ) {
     _projectState.entities$.subscribe(_projectsSubscriber);
     _loadUserProjects();
   }
@@ -26,7 +36,9 @@ class ProjectViewModel extends BaseViewModel {
   void Function() pickProjectHandler(Project project) {
     return () {
       _projectState.setCurrentId(project.id);
-      context.go('${RouteEnum.projects.value}/${project.id}?canEdit=${project.canEdit}');
+      _userState.setEntities([]);
+      _tagState.setEntities([]);
+      context.go('${RouteEnum.project.value}?canEdit=${project.canEdit}');
     };
   }
 

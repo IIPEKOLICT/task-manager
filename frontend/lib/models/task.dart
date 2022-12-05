@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/enums/priority.enum.dart';
 import 'package:frontend/models/base/base_entity.dart';
 import 'package:frontend/models/tag.dart';
 import 'package:frontend/models/user.dart';
+
+import '../enums/status.enum.dart';
 
 class Task extends BaseEntity {
   String createdBy;
@@ -16,8 +19,8 @@ class Task extends BaseEntity {
   String title;
   String description;
   Color color;
-  String priority;
-  String status;
+  PriorityEnum priority;
+  StatusEnum status;
   num expectedHours;
   bool canEdit;
 
@@ -35,8 +38,8 @@ class Task extends BaseEntity {
     this.title = '',
     this.description = '',
     this.color = Colors.white10,
-    this.priority = 'NORMAL',
-    this.status = 'TODO',
+    this.priority = PriorityEnum.normal,
+    this.status = StatusEnum.todo,
     this.expectedHours = 0,
     this.canEdit = false,
     super.createdAt,
@@ -61,8 +64,14 @@ class Task extends BaseEntity {
           [],
       title: json['title'],
       description: json['description'],
-      priority: json['priority'],
-      status: json['status'],
+      priority: PriorityEnum.values.firstWhere(
+        (element) => element.value == json['priority'],
+        orElse: () => PriorityEnum.normal,
+      ),
+      status: StatusEnum.values.firstWhere(
+        (element) => element.value == json['status'],
+        orElse: () => StatusEnum.todo,
+      ),
       expectedHours: json['expectedHours'],
       canEdit: json['canEdit'],
       color: BaseEntity.parseColorFromJson(json['color']),

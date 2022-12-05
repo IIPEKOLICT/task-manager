@@ -136,6 +136,19 @@ class TaskController(
         )
     }
 
+    @Patch("{id}/assigned-to")
+    @Authentication(["auth-jwt"])
+    suspend fun updateAssignedTo(
+        @JwtUser user: User,
+        @Param("id") id: String,
+        @Body("assignedTo") assignedTo: String
+    ): TaskResponseDto {
+        return taskMapper.convert(
+            userId = user._id,
+            task = taskService.updateAssignedTo(ObjectId(id), ObjectId(assignedTo))
+        )
+    }
+
     @Patch("{id}/status")
     @Authentication(["auth-jwt"])
     suspend fun updateStatus(

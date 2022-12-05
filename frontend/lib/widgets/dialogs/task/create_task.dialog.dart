@@ -4,12 +4,12 @@ import 'package:frontend/enums/priority.enum.dart';
 import 'package:frontend/view_models/task.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../di/app.module.dart';
-import '../../enums/status.enum.dart';
-import '../../models/tag.dart';
-import '../../models/task.dart';
-import '../../models/user.dart';
-import '../components/text.input.dart';
+import '../../../di/app.module.dart';
+import '../../../enums/status.enum.dart';
+import '../../../models/tag.dart';
+import '../../../models/task.dart';
+import '../../../models/user.dart';
+import '../../components/text.input.dart';
 
 class CreateTaskDialog extends StatelessWidget {
   const CreateTaskDialog({super.key});
@@ -102,7 +102,7 @@ class CreateTaskDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Исполнитель'),
-                const SizedBox(width: 100),
+                const SizedBox(width: 10),
                 DropdownButton<User>(
                   value: viewModel.getAssignedToOrNull(),
                   icon: const Icon(Icons.arrow_drop_down),
@@ -187,7 +187,7 @@ class CreateTaskDialog extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: null),
+      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: false),
       child: const CreateTaskDialog(),
     );
   }

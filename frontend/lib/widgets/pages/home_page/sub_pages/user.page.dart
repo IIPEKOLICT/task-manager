@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/view_models/user.view_model.dart';
-import 'package:frontend/widgets/dialogs/edit_user_credentials.dialog.dart';
-import 'package:frontend/widgets/dialogs/edit_user_info.dialog.dart';
+import 'package:frontend/widgets/dialogs/user/edit_user_credentials.dialog.dart';
+import 'package:frontend/widgets/dialogs/user/edit_user_info.dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';

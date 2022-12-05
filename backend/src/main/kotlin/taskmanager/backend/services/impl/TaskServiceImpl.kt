@@ -47,6 +47,10 @@ class TaskServiceImpl(
         return updateById(id, set(*fields.toTypedArray()))
     }
 
+    override suspend fun updateAssignedTo(id: ObjectId, userId: ObjectId): Task {
+        return updateById(id, setValue(Task::assignedTo, userId))
+    }
+
     override suspend fun updateStatus(id: ObjectId, status: Status): Task {
         return updateById(id, setValue(Task::status, status.name))
     }

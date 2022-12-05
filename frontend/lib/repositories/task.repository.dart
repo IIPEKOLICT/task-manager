@@ -24,6 +24,15 @@ class TaskRepository extends BaseRepository {
     ));
   }
 
+  Future<Task> updateAssignedTo(String id, String userId) async {
+    return Task.fromJson(
+      await patch<Map<String, dynamic>>(
+        path: '$id/assigned-to',
+        body: {'assignedTo': userId},
+      ),
+    );
+  }
+
   Future<Task> updateStatus(String id, StatusEnum status) async {
     return Task.fromJson(
       await patch<Map<String, dynamic>>(

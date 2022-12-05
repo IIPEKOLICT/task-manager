@@ -38,16 +38,26 @@ class ProjectDialog extends StatelessWidget {
               value: _project?.name ?? '',
             ),
           ),
+          const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Column(
-              children: viewModel.getUsers().map((User user) {
-                return CheckboxListTile(
-                  value: viewModel.isUserAdded(user.id),
-                  onChanged: viewModel.changeMemberHandler(user.id),
-                  title: Text('${user.firstName} ${user.lastName} (${user.email})'),
-                );
-              }).toList(),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    'Участники',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                  ),
+                ),
+                ...viewModel.getUsers().map((User user) {
+                  return CheckboxListTile(
+                    value: viewModel.isUserAdded(user.id),
+                    onChanged: viewModel.changeMemberHandler(user.id),
+                    title: Text('${user.firstName} ${user.lastName} (${user.email})'),
+                  );
+                }).toList(),
+              ],
             ),
           ),
         ],

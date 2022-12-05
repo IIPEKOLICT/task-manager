@@ -5,6 +5,7 @@ import 'package:frontend/enums/status.enum.dart';
 import 'package:frontend/models/tag.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/repositories/project.repository.dart';
+import 'package:frontend/repositories/task.repository.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/state/project.state.dart';
 import 'package:frontend/view_models/state/tag.state.dart';
@@ -16,16 +17,18 @@ import '../models/task.dart';
 
 @Injectable()
 class TaskViewModel extends BaseViewModel {
-  final Task? _task;
+  final bool _isEdit;
   final ProjectState _projectState;
   final TaskState _taskState;
   final TagState _tagState;
   final UserState _userState;
+  final TaskRepository _taskRepository;
   final ProjectRepository _projectRepository;
 
   TaskViewModel(
     @factoryParam super.context,
-    @factoryParam this._task,
+    @factoryParam this._isEdit,
+    this._taskRepository,
     this._projectRepository,
     this._projectState,
     this._userState,
@@ -34,8 +37,23 @@ class TaskViewModel extends BaseViewModel {
   ) {
     _tagState.entities$.subscribe(defaultSubscriber);
     _userState.entities$.subscribe(defaultSubscriber);
-    _loadProjectTags();
-    _loadProjectUsers();
+    _taskState.current$.subscribe(_currentTaskSubscriber);
+
+    if (_userState.getEntities().isEmpty) {
+      _loadProjectUsers();
+    }
+
+    if (_tagState.getEntities().isEmpty) {
+      _loadProjectTags();
+    }
+
+    if (_isEdit && _taskState.getCurrentOrNull() == null) {
+      _loadCurrentTask();
+    }
+
+    if (_isEdit && _taskState.getCurrentOrNull() != null) {
+      _currentTaskSubscriber(_taskState.getCurrent());
+    }
   }
 
   User? _assignedTo;
@@ -47,6 +65,9 @@ class TaskViewModel extends BaseViewModel {
   List<String> _tagsIds = [];
   List<String> _blockedByIds = [];
 
+  String getTitle() => _title;
+  String getDescription() => _description;
+  num? getExpectedHoursOrNull() => _expectedHours;
   PriorityEnum getPriority() => _priority;
   StatusEnum getStatus() => _status;
   User? getAssignedToOrNull() => _assignedTo;
@@ -54,18 +75,56 @@ class TaskViewModel extends BaseViewModel {
   List<Tag> getProjectTags() => _tagState.getEntities();
 
   List<Task> getProjectTasks() {
-    return _task == null
+    return _taskState.getCurrentOrNull() == null
         ? _taskState.getEntities()
-        : _taskState.getEntities().where((element) => element.id != _task!.id).toList();
+        : _taskState.getEntities().where((element) => element.id != _taskState.getCurrent().id).toList();
+  }
+
+  List<Task> getBlockedByTasks() {
+    if (_taskState.getCurrentOrNull() == null) return [];
+    return getProjectTasks().where((element) => _taskState.getCurrent().blockedBy.contains(element.id)).toList();
+  }
+
+  void _currentTaskSubscriber(Task? task) {
+    if (task == null) return;
+
+    _title = task.title;
+    _description = task.description;
+    _expectedHours = task.expectedHours;
+    _status = task.status;
+    _priority = task.priority;
+    _assignedTo = task.assignedTo;
+    _tagsIds = task.tags.map((e) => e.id).toList();
+    _blockedByIds = task.blockedBy;
+
+    notifyListeners();
   }
 
   Future<void> _loadProjectTags() async {
-    _tagState.setEntities(await _projectRepository.getProjectTags(_projectState.getCurrentId()));
+    try {
+      _tagState.setEntities(await _projectRepository.getProjectTags(_projectState.getCurrentId()));
+    } catch (e) {
+      onException(e);
+    }
+  }
+
+  Future<void> _loadCurrentTask() async {
+    try {
+      _taskState.setCurrent(await _taskRepository.getById(_taskState.getCurrentId()));
+    } catch (e) {
+      onException(e);
+    }
   }
 
   Future<void> _loadProjectUsers() async {
-    _userState.setEntities(await _projectRepository.getProjectUsers(_projectState.getCurrentId()));
+    try {
+      _userState.setEntities(await _projectRepository.getProjectUsers(_projectState.getCurrentId()));
+    } catch (e) {
+      onException(e);
+    }
   }
+
+  Task? getTaskOrNull() => _taskState.getCurrentOrNull();
 
   bool isTagAdded(String tagId) {
     return _tagsIds.any((element) => element == tagId);
@@ -77,6 +136,10 @@ class TaskViewModel extends BaseViewModel {
 
   bool get isValidForCreate {
     return _title.isNotEmpty && _assignedTo != null;
+  }
+
+  bool get isInfoValid {
+    return _title.isNotEmpty;
   }
 
   void setTitle(String value) {
@@ -133,6 +196,61 @@ class TaskViewModel extends BaseViewModel {
     return _changeIdHandler(_blockedByIds, blockedById);
   }
 
+  Future<void> _updateForDialogs(Future<Task> Function() taskGetter) async {
+    try {
+      _taskState.setCurrent(await taskGetter());
+    } catch (e) {
+      onException(e);
+    } finally {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> updateInfoHandler() {
+    return _updateForDialogs(
+      () async => _taskRepository.updateInfo(
+        _taskState.getCurrentId(),
+        _title,
+        _description,
+        _expectedHours,
+      ),
+    );
+  }
+
+  Future<void> Function() _update(Future<Task> Function() taskGetter) {
+    return () async {
+      try {
+        _taskState.setCurrent(await taskGetter());
+      } catch (e) {
+        onException(e);
+      }
+    };
+  }
+
+  Future<void> Function() updatePriorityHandler(String id, PriorityEnum priority) {
+    return _update(() async => _taskRepository.updatePriority(id, priority));
+  }
+
+  Future<void> Function() updateStatusHandler(String id, StatusEnum status) {
+    return _update(() async => _taskRepository.updateStatus(id, status));
+  }
+
+  Future<void> Function() updateAssignedToHandler(String id, User user) {
+    return _update(() async => _taskRepository.updateAssignedTo(id, user.id));
+  }
+
+  Future<void> updateTagsHandler() {
+    return _updateForDialogs(
+      () async => _taskRepository.updateTags(_taskState.getCurrentId(), _tagsIds),
+    );
+  }
+
+  Future<void> updateBlockedByHandler() {
+    return _updateForDialogs(
+      () async => _taskRepository.updateBlockedBy(_taskState.getCurrentId(), _blockedByIds),
+    );
+  }
+
   Future<void> createHandler() async {
     try {
       final dto = CreateTaskDto(
@@ -158,6 +276,7 @@ class TaskViewModel extends BaseViewModel {
   void dispose() {
     _tagState.entities$.unsubscribe(defaultSubscriber);
     _userState.entities$.unsubscribe(defaultSubscriber);
+    _taskState.current$.unsubscribe(_currentTaskSubscriber);
 
     super.dispose();
   }

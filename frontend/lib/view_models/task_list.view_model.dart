@@ -45,7 +45,7 @@ class TaskListViewModel extends BaseViewModel {
   void Function() pickTaskHandler(String taskId) {
     return () {
       _taskState.setCurrentId(taskId);
-      context.go('${RouteEnum.tasks.value}/$taskId');
+      context.go(RouteEnum.task.value);
     };
   }
 

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../di/app.module.dart';
-import '../../models/user.dart';
-import '../../view_models/dialog/edit_user_dialog.view_model.dart';
-import '../components/text.input.dart';
+import '../../../di/app.module.dart';
+import '../../../models/user.dart';
+import '../../../view_models/dialog/edit_user_dialog.view_model.dart';
+import '../../components/text.input.dart';
 
-class EditUserInfoDialog extends StatelessWidget {
+class EditUserCredentialsDialog extends StatelessWidget {
   final User _user;
+  final bool _isPassword;
 
-  const EditUserInfoDialog(this._user, {super.key});
+  const EditUserCredentialsDialog(this._user, this._isPassword, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +20,8 @@ class EditUserInfoDialog extends StatelessWidget {
       scrollable: true,
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actionsPadding: const EdgeInsets.all(10),
-      title: const Center(
-        child: Text('Изменить имя/фамилию'),
+      title: Center(
+        child: Text('Изменить ${_isPassword ? 'пароль' : 'E-mail'}'),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -28,17 +29,9 @@ class EditUserInfoDialog extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: TextInput(
-              onInput: viewModel.setFirstName,
-              hintText: 'Имя',
-              value: _user.firstName,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
-              onInput: viewModel.setLastName,
-              hintText: 'Фамилия',
-              value: _user.lastName,
+              onInput: _isPassword ? viewModel.setPassword : viewModel.setEmail,
+              hintText: _isPassword ? 'Пароль' : 'E-mail',
+              value: _isPassword ? '' : _user.email,
             ),
           ),
         ],
@@ -49,17 +42,17 @@ class EditUserInfoDialog extends StatelessWidget {
           child: const Text('Закрыть'),
         ),
         ElevatedButton(
-          onPressed: !viewModel.isInfoValid ? null : viewModel.updateInfoHandler,
+          onPressed: !viewModel.isCredentialsValid ? null : viewModel.updateCredentialsHandler,
           child: const Text('Применить'),
         ),
       ],
     );
   }
 
-  static Widget onCreate(User user) {
+  static Widget onCreate(User user, bool isPassword) {
     return ChangeNotifierProvider(
       create: (BuildContext context) => injector.get<EditUserDialogViewModel>(param1: context),
-      child: EditUserInfoDialog(user),
+      child: EditUserCredentialsDialog(user, isPassword),
     );
   }
 }
