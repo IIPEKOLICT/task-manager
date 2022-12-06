@@ -47,6 +47,10 @@ class TaskViewModel extends BaseViewModel {
       _loadProjectTags();
     }
 
+    if (_isEdit) {
+      _loadAllowedBlockedByTasks();
+    }
+
     if (_isEdit && _taskState.getCurrentOrNull() == null) {
       _loadCurrentTask();
     }
@@ -75,9 +79,7 @@ class TaskViewModel extends BaseViewModel {
   List<Tag> getProjectTags() => _tagState.getEntities();
 
   List<Task> getProjectTasks() {
-    return _taskState.getCurrentOrNull() == null
-        ? _taskState.getEntities()
-        : _taskState.getEntities().where((element) => element.id != _taskState.getCurrent().id).toList();
+    return _taskState.getEntities();
   }
 
   List<Task> getBlockedByTasks() {
@@ -111,6 +113,14 @@ class TaskViewModel extends BaseViewModel {
   Future<void> _loadCurrentTask() async {
     try {
       _taskState.setCurrent(await _taskRepository.getById(_taskState.getCurrentId()));
+    } catch (e) {
+      onException(e);
+    }
+  }
+
+  Future<void> _loadAllowedBlockedByTasks() async {
+    try {
+      _taskState.setEntities(await _taskRepository.getAllowedBlockedBy(_taskState.getCurrentId()));
     } catch (e) {
       onException(e);
     }

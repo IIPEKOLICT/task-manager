@@ -67,6 +67,18 @@ class TaskController(
         return attachmentService.getByTask(ObjectId(id)).map { it.toResponseDto() }
     }
 
+    @Get("{id}/blocked-by")
+    @Authentication(["auth-jwt"])
+    suspend fun getAllowedBlockedByForTask(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<TaskResponseDto> {
+        return taskMapper.convert(
+            userId = user._id,
+            tasks = taskService.getAllowedBlockedBy(taskService.getById(ObjectId(id)))
+        )
+    }
+
     @Post("{id}/works")
     @Authentication(["auth-jwt"])
     suspend fun createTaskWork(
