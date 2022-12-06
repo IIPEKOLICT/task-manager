@@ -1,25 +1,18 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/view_models/state/auth.state.dart';
+import 'package:frontend/repositories/interceptors/main.interceptor.dart';
 
 abstract class BaseRepository {
   @protected
   final Dio httpClient;
 
-  @protected
-  final AuthState authState;
+  final MainInterceptor _mainInterceptor;
 
   @protected
   abstract final String endpoint;
 
-  BaseRepository(this.httpClient, this.authState);
-
-  Map<String, dynamic> get _headers {
-    return {
-      HttpHeaders.authorizationHeader: 'Bearer ${authState.getTokenOrNull() ?? ''}',
-    };
+  BaseRepository(this.httpClient, this._mainInterceptor) {
+    httpClient.interceptors.add(_mainInterceptor);
   }
 
   String _getUri(String path) {
@@ -37,7 +30,7 @@ abstract class BaseRepository {
       _getUri(path),
       data: body,
       options: Options(
-        headers: {..._headers, ...headers},
+        headers: headers,
         method: method,
       ),
     );

@@ -10,7 +10,7 @@ import 'base/base.repository.dart';
 
 @LazySingleton()
 class ProjectRepository extends BaseRepository {
-  ProjectRepository(super.httpClient, super.authState);
+  ProjectRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'projects';

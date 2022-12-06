@@ -6,7 +6,7 @@ import 'base/base.repository.dart';
 
 @LazySingleton()
 class AuthRepository extends BaseRepository {
-  AuthRepository(super.httpClient, super.authState);
+  AuthRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'auth';
@@ -16,20 +16,11 @@ class AuthRepository extends BaseRepository {
   }
 
   Future<AuthDto> register(CreateUserDto dto) async {
-    return AuthDto.fromJSON(
-      await post<Map<String, dynamic>>(
-        path: 'register',
-        body: dto.json
-      )
-    );
+    return AuthDto.fromJSON(await post<Map<String, dynamic>>(path: 'register', body: dto.json));
   }
 
   Future<AuthDto> login(String email, String password) async {
     return AuthDto.fromJSON(
-      await post<Map<String, dynamic>>(
-        path: 'login',
-        body: { 'email': email, 'password': password }
-      )
-    );
+        await post<Map<String, dynamic>>(path: 'login', body: {'email': email, 'password': password}));
   }
 }

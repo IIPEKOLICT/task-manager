@@ -8,7 +8,7 @@ import 'base/base.repository.dart';
 
 @LazySingleton()
 class TaskRepository extends BaseRepository {
-  TaskRepository(super.httpClient, super.authState);
+  TaskRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'tasks';
