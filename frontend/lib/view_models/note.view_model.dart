@@ -26,12 +26,7 @@ class NoteViewModel extends PageViewModel<NoteViewModel> with LoadableViewModel 
 
   @override
   NoteViewModel copy(BuildContext context) {
-    final copied = NoteViewModel(context, _noteState, _taskState, _taskRepository, _noteRepository);
-
-    copied.setText(_text);
-    copied.setHeader(_header);
-
-    return copied;
+    return NoteViewModel(context, _noteState, _taskState, _taskRepository, _noteRepository);
   }
 
   @override
@@ -43,6 +38,7 @@ class NoteViewModel extends PageViewModel<NoteViewModel> with LoadableViewModel 
   @override
   void onInit() {
     _noteState.entities$.subscribe(loaderSubscriber);
+    _noteState.current$.subscribe(_currentNoteSubscriber, lazy: false);
   }
 
   String _header = '';
@@ -52,7 +48,12 @@ class NoteViewModel extends PageViewModel<NoteViewModel> with LoadableViewModel 
     return _header.isNotEmpty && _text.isNotEmpty;
   }
 
-  Note getNote() => _noteState.getCurrent();
+  bool get isEdit {
+    return _noteState.getCurrentOrNull() != null;
+  }
+
+  String getHeader() => _header;
+  String getText() => _text;
   List<Note> getNotes() => _noteState.getEntities();
 
   void setHeader(String value) {
@@ -67,6 +68,11 @@ class NoteViewModel extends PageViewModel<NoteViewModel> with LoadableViewModel 
 
   void setNote(Note? value) {
     _noteState.setCurrent(value);
+  }
+
+  void _currentNoteSubscriber(Note? note) {
+    _header = note?.header ?? '';
+    _text = note?.text ?? '';
   }
 
   Future<void> _loadNotes() async {
@@ -87,24 +93,21 @@ class NoteViewModel extends PageViewModel<NoteViewModel> with LoadableViewModel 
     _noteState.updateEntity(
       await _noteRepository.updateById(_noteState.getCurrent().id, _header, _text),
     );
-
-    _noteState.setCurrent(null);
   }
 
-  Future<void> Function() submitHandler(bool isEdit) {
-    return () async {
-      try {
-        if (isEdit) {
-          await _update();
-        } else {
-          await _create();
-        }
-      } catch (e) {
-        onException(e);
-      } finally {
-        Navigator.of(context).pop();
+  Future<void> submitHandler() async {
+    try {
+      if (isEdit) {
+        await _update();
+      } else {
+        await _create();
       }
-    };
+    } catch (e) {
+      onException(e);
+    } finally {
+      _noteState.setCurrent(null);
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> Function() deleteById(String id) {
@@ -120,6 +123,7 @@ class NoteViewModel extends PageViewModel<NoteViewModel> with LoadableViewModel 
   @override
   void dispose() {
     _noteState.entities$.unsubscribe(loaderSubscriber);
+    _noteState.current$.unsubscribe(_currentNoteSubscriber);
 
     super.dispose();
   }

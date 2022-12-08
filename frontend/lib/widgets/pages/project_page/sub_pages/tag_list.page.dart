@@ -12,9 +12,13 @@ class TagListPage extends StatelessWidget {
 
   Future<void> Function() _showDialog(BuildContext context, {Tag? tag}) {
     return () async {
+      final viewModel = context.read<TagViewModel>();
+
+      viewModel.setTag(tag);
+
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => TagDialog.onCreate(tag, context.read()),
+        builder: (BuildContext ctx) => TagDialog.onCreate(context.read()),
       );
     };
   }

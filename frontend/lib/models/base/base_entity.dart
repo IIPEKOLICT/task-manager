@@ -7,6 +7,10 @@ abstract class BaseEntity {
 
   BaseEntity({this.id = '', this.createdAt, this.updatedAt});
 
+  bool get isEdited {
+    return updatedAt?.isBefore(DateTime.now()) ?? false;
+  }
+
   static DateTime? parseDateFromJson(dynamic jsonDate) {
     return jsonDate == null ? null : DateTime.parse(jsonDate);
   }
