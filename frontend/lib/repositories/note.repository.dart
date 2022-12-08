@@ -15,7 +15,7 @@ class NoteRepository extends BaseRepository {
     return Note.fromJson(await get<Map<String, dynamic>>(path: id));
   }
 
-  Future<Note> updateName(String id, String header, String text) async {
+  Future<Note> updateById(String id, String header, String text) async {
     return Note.fromJson(
       await put<Map<String, dynamic>>(
         path: id,
