@@ -3,7 +3,7 @@ import 'package:frontend/view_models/user.view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/user.dart';
-import '../../components/text.input.dart';
+import '../../components/text-input.component.dart';
 
 class EditUserInfoDialog extends StatelessWidget {
   final User _user;
@@ -26,7 +26,7 @@ class EditUserInfoDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setFirstName,
               hintText: 'Имя',
               value: _user.firstName,
@@ -34,7 +34,7 @@ class EditUserInfoDialog extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setLastName,
               hintText: 'Фамилия',
               value: _user.lastName,

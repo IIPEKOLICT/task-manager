@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/dtos/response/exception.dto.dart';
 
-import '../../widgets/components/exception.snackbar.dart';
+import '../../widgets/shackbars/exception.snackbar.dart';
 
 abstract class BaseViewModel extends ChangeNotifier {
   @protected

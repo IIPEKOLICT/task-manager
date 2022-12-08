@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TextInput extends StatelessWidget {
+class TextInputComponent extends StatelessWidget {
   final bool isPassword;
   final bool autofocus;
   final String? hintText;
@@ -9,7 +9,14 @@ class TextInput extends StatelessWidget {
 
   final _controller = TextEditingController();
 
-  TextInput({super.key, this.isPassword = false, this.autofocus = false, this.hintText, this.onInput, this.value = ''});
+  TextInputComponent({
+    super.key,
+    this.isPassword = false,
+    this.autofocus = false,
+    this.hintText,
+    this.onInput,
+    this.value = '',
+  });
 
   void setValue(String value) {
     _controller.text = value;

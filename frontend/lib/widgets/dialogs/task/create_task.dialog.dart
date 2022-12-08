@@ -9,7 +9,7 @@ import '../../../enums/status.enum.dart';
 import '../../../models/tag.dart';
 import '../../../models/task.dart';
 import '../../../models/user.dart';
-import '../../components/text.input.dart';
+import '../../components/text-input.component.dart';
 
 class CreateTaskDialog extends StatelessWidget {
   const CreateTaskDialog({super.key});
@@ -29,14 +29,14 @@ class CreateTaskDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setTitle,
               hintText: 'Название',
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setDescription,
               hintText: 'Описание',
             ),

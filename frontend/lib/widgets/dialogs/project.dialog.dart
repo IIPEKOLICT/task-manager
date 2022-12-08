@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/user.dart';
 import '../../view_models/project.view_model.dart';
-import '../components/text.input.dart';
+import '../components/text-input.component.dart';
 
 class ProjectDialog extends StatelessWidget {
   final Project? _project;
@@ -28,7 +28,7 @@ class ProjectDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setName,
               hintText: 'Название',
               value: _project?.name ?? '',

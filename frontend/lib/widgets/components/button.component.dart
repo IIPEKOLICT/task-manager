@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 
-class DefaultButton extends StatelessWidget {
+class ButtonComponent extends StatelessWidget {
   final String title;
   final void Function()? onTap;
 
-  const DefaultButton({
-    super.key,
-    this.title = '',
-    this.onTap
-  });
+  const ButtonComponent({super.key, this.title = '', this.onTap});
 
   static final ButtonStyle _btnStyle = ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(10),
-      minimumSize: const Size(40, 40),
-      textStyle: const TextStyle(fontSize: 20)
+    padding: const EdgeInsets.all(10),
+    minimumSize: const Size(40, 40),
+    textStyle: const TextStyle(fontSize: 20),
   );
 
   @override

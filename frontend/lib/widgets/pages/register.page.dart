@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 import '../../constants/ui.dart';
 import '../../view_models/register.view_model.dart';
-import '../components/default.button.dart';
-import '../components/text.input.dart';
+import '../components/button.component.dart';
+import '../components/text-input.component.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -38,24 +38,37 @@ class RegisterPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: TextInput(onInput: viewModel.setEmail, hintText: 'E-mail'),
+                child: TextInputComponent(
+                  onInput: viewModel.setEmail,
+                  hintText: 'E-mail',
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: TextInput(onInput: viewModel.setPassword, hintText: 'Пароль', isPassword: true),
+                child: TextInputComponent(
+                  onInput: viewModel.setPassword,
+                  hintText: 'Пароль',
+                  isPassword: true,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: TextInput(onInput: viewModel.setFirstName, hintText: 'Имя'),
+                child: TextInputComponent(
+                  onInput: viewModel.setFirstName,
+                  hintText: 'Имя',
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: TextInput(onInput: viewModel.setLastName, hintText: 'Фамилия'),
+                child: TextInputComponent(
+                  onInput: viewModel.setLastName,
+                  hintText: 'Фамилия',
+                ),
               ),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: DefaultButton(
+                child: ButtonComponent(
                   title: 'Уже есть аккаунт',
                   onTap: () => context.go(RouteEnum.login.value),
                 ),
@@ -63,7 +76,7 @@ class RegisterPage extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: DefaultButton(
+                child: ButtonComponent(
                   title: 'Регистрация',
                   onTap: viewModel.isValid ? viewModel.onSubmit : null,
                 ),

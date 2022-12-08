@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' as services;
 import 'package:frontend/view_models/task.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/text.input.dart';
+import '../../components/text-input.component.dart';
 
 class EditTaskInfoDialog extends StatelessWidget {
   const EditTaskInfoDialog({super.key});
@@ -23,7 +23,7 @@ class EditTaskInfoDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setTitle,
               value: viewModel.getTitle(),
               hintText: 'Название',
@@ -31,7 +31,7 @@ class EditTaskInfoDialog extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setDescription,
               value: viewModel.getDescription(),
               hintText: 'Описание',

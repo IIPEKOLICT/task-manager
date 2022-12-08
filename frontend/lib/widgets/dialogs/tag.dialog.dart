@@ -3,7 +3,7 @@ import 'package:frontend/view_models/tag.view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/tag.dart';
-import '../components/text.input.dart';
+import '../components/text-input.component.dart';
 
 class TagDialog extends StatelessWidget {
   final Tag? _tag;
@@ -27,7 +27,7 @@ class TagDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setName,
               hintText: 'Название',
               value: _tag?.name ?? '',

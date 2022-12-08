@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:frontend/di/app.module.dart';
 import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/view_models/login.view_model.dart';
-import 'package:frontend/widgets/components/default.button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/ui.dart';
-import '../components/text.input.dart';
+import '../components/button.component.dart';
+import '../components/text-input.component.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -38,16 +38,23 @@ class LoginPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: TextInput(onInput: viewModel.setEmail, hintText: 'E-mail'),
+                child: TextInputComponent(
+                  onInput: viewModel.setEmail,
+                  hintText: 'E-mail',
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: TextInput(onInput: viewModel.setPassword, hintText: 'Пароль', isPassword: true),
+                child: TextInputComponent(
+                  onInput: viewModel.setPassword,
+                  hintText: 'Пароль',
+                  isPassword: true,
+                ),
               ),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: DefaultButton(
+                child: ButtonComponent(
                   title: 'Зарегистрироваться',
                   onTap: () => context.go(RouteEnum.register.value),
                 ),
@@ -55,7 +62,7 @@ class LoginPage extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: DefaultButton(
+                child: ButtonComponent(
                   title: 'Войти',
                   onTap: viewModel.isValid ? viewModel.login : null,
                 ),

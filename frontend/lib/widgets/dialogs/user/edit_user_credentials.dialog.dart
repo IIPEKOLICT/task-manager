@@ -3,7 +3,7 @@ import 'package:frontend/view_models/user.view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/user.dart';
-import '../../components/text.input.dart';
+import '../../components/text-input.component.dart';
 
 class EditUserCredentialsDialog extends StatelessWidget {
   final User _user;
@@ -27,7 +27,7 @@ class EditUserCredentialsDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: _isPassword ? viewModel.setPassword : viewModel.setEmail,
               hintText: _isPassword ? 'Пароль' : 'E-mail',
               value: _isPassword ? '' : _user.email,
