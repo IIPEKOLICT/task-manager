@@ -11,6 +11,7 @@ import org.bson.types.ObjectId
 import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.plugins.annotations.EditAccess
+import taskmanager.backend.services.NoteService
 import taskmanager.backend.services.ProjectService
 import taskmanager.backend.services.TagService
 import taskmanager.backend.services.TaskService
@@ -19,7 +20,8 @@ import taskmanager.backend.services.base.CreatedByUserEntityService
 class MiddlewareContainer(
     private val projectService: ProjectService,
     private val tagService: TagService,
-    private val taskService: TaskService
+    private val taskService: TaskService,
+    private val noteService: NoteService
 ) {
 
     @Middleware(EditAccess::class)
@@ -36,6 +38,7 @@ class MiddlewareContainer(
             EditableEntity.PROJECT -> projectService
             EditableEntity.TAG -> tagService
             EditableEntity.TASK -> taskService
+            EditableEntity.NOTE -> noteService
             else -> throw RuntimeException("Unsupported entity type: ${annotation.entity}")
         }
 

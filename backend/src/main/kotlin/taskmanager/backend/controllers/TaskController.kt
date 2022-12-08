@@ -12,10 +12,12 @@ import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.dtos.response.AttachmentResponseDto
+import taskmanager.backend.dtos.response.NoteResponseDto
 import taskmanager.backend.dtos.response.TaskResponseDto
 import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
+import taskmanager.backend.mappers.NoteMapper
 import taskmanager.backend.mappers.TaskMapper
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.*
@@ -31,7 +33,8 @@ class TaskController(
     private val attachmentService: AttachmentService,
     private val fileService: FileService,
     private val s3Service: S3Service,
-    private val taskMapper: TaskMapper
+    private val taskMapper: TaskMapper,
+    private val noteMapper: NoteMapper
 ) {
 
     @Get("{id}")
@@ -57,8 +60,14 @@ class TaskController(
 
     @Get("{id}/notes")
     @Authentication(["auth-jwt"])
-    suspend fun getTaskNotes(@Param("id") id: String): List<Note> {
-        return noteService.getByTask(ObjectId(id))
+    suspend fun getTaskNotes(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<NoteResponseDto> {
+        return noteMapper.convert(
+            userId = user._id,
+            notes = noteService.getByTask(ObjectId(id))
+        )
     }
 
     @Get("{id}/attachments")
@@ -105,8 +114,11 @@ class TaskController(
         @JwtUser user: User,
         @Param("id") id: String,
         @Body(type = NoteDto::class) dto: NoteDto
-    ): Note {
-        return noteService.create(user._id, ObjectId(id), dto)
+    ): NoteResponseDto {
+        return noteMapper.convert(
+            userId = user._id,
+            note = noteService.create(user._id, ObjectId(id), dto)
+        )
     }
 
     @Post("{id}/attachments")

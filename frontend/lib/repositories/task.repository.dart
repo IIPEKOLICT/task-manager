@@ -1,5 +1,6 @@
 import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/enums/status.enum.dart';
+import 'package:frontend/models/note.dart';
 import 'package:injectable/injectable.dart';
 
 import '../enums/priority.enum.dart';
@@ -19,6 +20,22 @@ class TaskRepository extends BaseRepository {
 
   Future<List<Task>> getAllowedBlockedBy(String id) async {
     return (await get<List>(path: '$id/blocked-by')).map((json) => Task.fromJson(json)).toList();
+  }
+
+  Future<List<Note>> getTaskNotes(String id) async {
+    return (await get<List>(path: '$id/notes')).map((json) => Note.fromJson(json)).toList();
+  }
+
+  Future<Note> createTaskNote(String id, String header, String text) async {
+    return Note.fromJson(
+      await post<Map<String, dynamic>>(
+        path: '$id/notes',
+        body: {
+          'header': header,
+          'text': text,
+        },
+      ),
+    );
   }
 
   Future<Task> updateInfo(String id, String title, String description, num? expectedHours) async {
