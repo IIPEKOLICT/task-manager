@@ -15,7 +15,7 @@ class ProjectListPage extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext ctx) {
-          return ProjectDialog.onCreate(project: project);
+          return ProjectDialog.onCreate(context.read(), project: project);
         },
       );
     };
@@ -50,7 +50,7 @@ class ProjectListPage extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<ProjectViewModel>(param1: context),
+      create: (BuildContext context) => injector.get<ProjectViewModel>(param1: context).create(),
       child: const ProjectListPage(),
     );
   }

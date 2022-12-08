@@ -99,7 +99,7 @@ class TaskInfoPage extends StatelessWidget {
     return () async {
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => EditTaskInfoDialog.withContext(context),
+        builder: (BuildContext ctx) => EditTaskInfoDialog.onCreate(context.read()),
       );
     };
   }
@@ -108,7 +108,7 @@ class TaskInfoPage extends StatelessWidget {
     return () async {
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => EditTaskTagsDialog.onCreate(),
+        builder: (BuildContext ctx) => EditTaskTagsDialog.onCreate(context.read()),
       );
     };
   }
@@ -117,7 +117,7 @@ class TaskInfoPage extends StatelessWidget {
     return () async {
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => EditTaskBlockedByDialog.onCreate(),
+        builder: (BuildContext ctx) => EditTaskBlockedByDialog.onCreate(context.read()),
       );
     };
   }
@@ -217,7 +217,7 @@ class TaskInfoPage extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: true),
+      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: true).create(),
       child: const TaskInfoPage(),
     );
   }

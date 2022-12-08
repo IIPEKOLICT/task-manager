@@ -12,7 +12,14 @@ class RegisterViewModel extends BaseViewModel {
   final AuthState _authState;
   final AuthRepository _authRepository;
 
-  RegisterViewModel(@factoryParam super.context, this._authState, this._authRepository) {
+  RegisterViewModel(
+    @factoryParam super.context,
+    this._authState,
+    this._authRepository,
+  );
+
+  @override
+  void onInit() {
     _authState.isAuth$.subscribe(_isAuthSubscription);
   }
 
@@ -57,11 +64,8 @@ class RegisterViewModel extends BaseViewModel {
 
   Future<void> onSubmit() async {
     try {
-      await _authState.setUserData(
-        await _authRepository.register(
-          CreateUserDto(_email, _password, _firstName, _lastName)
-        )
-      );
+      await _authState
+          .setUserData(await _authRepository.register(CreateUserDto(_email, _password, _firstName, _lastName)));
     } catch (e) {
       onException(e, message: 'Ошибка регистрации');
     } finally {

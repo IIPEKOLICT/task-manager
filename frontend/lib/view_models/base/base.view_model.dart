@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/dtos/response/exception.dto.dart';
@@ -10,7 +8,14 @@ abstract class BaseViewModel extends ChangeNotifier {
   @protected
   final BuildContext context;
 
-  BaseViewModel(this.context);
+  final int _internalStatusCode = 600;
+
+  BaseViewModel(this.context) {
+    onInit();
+  }
+
+  @protected
+  void onInit() {}
 
   ExceptionDto? _parseExceptionResponse(e) {
     if (e is DioError && e.response?.data != null) {
@@ -19,12 +24,12 @@ abstract class BaseViewModel extends ChangeNotifier {
       } catch (exc) {
         final String body = e.response!.data!.toString();
         if (body.isEmpty) return null;
-        return ExceptionDto(HttpStatus.internalServerError, body);
+        return ExceptionDto(_internalStatusCode, body);
       }
     }
 
     if (e is DioError) {
-      return ExceptionDto(HttpStatus.internalServerError, e.message);
+      return ExceptionDto(_internalStatusCode, e.message);
     }
 
     return null;
@@ -33,10 +38,18 @@ abstract class BaseViewModel extends ChangeNotifier {
   @protected
   void onException(exception, {String message = 'Неизвестная ошибка'}) {
     ExceptionDto? exceptionDto = _parseExceptionResponse(exception);
-    String? backendMessage =
-        exceptionDto != null ? '${exceptionDto.code}: ${exceptionDto.message ?? 'Неизвестная ошибка'}' : null;
 
-    ExceptionSnackbar.show(backendMessage ?? message, context);
+    if (exceptionDto == null) {
+      ExceptionSnackbar.show(message, context);
+      return;
+    }
+
+    if (exceptionDto.code == _internalStatusCode) {
+      ExceptionSnackbar.show(exceptionDto.message ?? message, context);
+      return;
+    }
+
+    ExceptionSnackbar.show('${exceptionDto.code}: ${exceptionDto.message ?? message}', context);
   }
 
   @protected

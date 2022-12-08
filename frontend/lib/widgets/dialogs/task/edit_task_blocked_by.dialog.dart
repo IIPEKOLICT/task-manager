@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/view_models/task.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../di/app.module.dart';
 import '../../../models/task.dart';
 
 class EditTaskBlockedByDialog extends StatelessWidget {
@@ -42,9 +41,9 @@ class EditTaskBlockedByDialog extends StatelessWidget {
     );
   }
 
-  static Widget onCreate() {
+  static Widget onCreate(TaskViewModel viewModel) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: true),
+      create: (BuildContext context) => viewModel.copy(context),
       child: const EditTaskBlockedByDialog(),
     );
   }

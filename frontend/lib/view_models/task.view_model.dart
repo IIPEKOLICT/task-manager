@@ -6,7 +6,6 @@ import 'package:frontend/models/tag.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/repositories/project.repository.dart';
 import 'package:frontend/repositories/task.repository.dart';
-import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/state/project.state.dart';
 import 'package:frontend/view_models/state/tag.state.dart';
 import 'package:frontend/view_models/state/task.state.dart';
@@ -14,9 +13,10 @@ import 'package:frontend/view_models/state/user.state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../models/task.dart';
+import 'base/page.view_model.dart';
 
 @Injectable()
-class TaskViewModel extends BaseViewModel {
+class TaskViewModel extends PageViewModel<TaskViewModel> {
   final bool _isEdit;
   final ProjectState _projectState;
   final TaskState _taskState;
@@ -34,11 +34,17 @@ class TaskViewModel extends BaseViewModel {
     this._userState,
     this._taskState,
     this._tagState,
-  ) {
+  );
+
+  @override
+  void onInit() {
     _tagState.entities$.subscribe(defaultSubscriber);
     _userState.entities$.subscribe(defaultSubscriber);
     _taskState.current$.subscribe(_currentTaskSubscriber);
+  }
 
+  @override
+  TaskViewModel create() {
     if (_userState.getEntities().isEmpty) {
       _loadProjectUsers();
     }
@@ -58,6 +64,8 @@ class TaskViewModel extends BaseViewModel {
     if (_isEdit && _taskState.getCurrentOrNull() != null) {
       _currentTaskSubscriber(_taskState.getCurrent());
     }
+
+    return this;
   }
 
   User? _assignedTo;
@@ -186,6 +194,16 @@ class TaskViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void setTagsIds(List<String> value) {
+    _tagsIds = value;
+    notifyListeners();
+  }
+
+  void setBlockedByIds(List<String> value) {
+    _blockedByIds = value;
+    notifyListeners();
+  }
+
   void Function(bool?) _changeIdHandler(List<String> list, String id) {
     return (bool? checked) {
       if (checked == true) {
@@ -280,6 +298,34 @@ class TaskViewModel extends BaseViewModel {
     } finally {
       Navigator.of(context).pop();
     }
+  }
+
+  @override
+  TaskViewModel copy(BuildContext context) {
+    final copied = TaskViewModel(
+      context,
+      _isEdit,
+      _taskRepository,
+      _projectRepository,
+      _projectState,
+      _userState,
+      _taskState,
+      _tagState,
+    );
+
+    if (_expectedHours != null) {
+      copied.setExpectedHours(_expectedHours.toString());
+    }
+
+    copied.setAssignedTo(_assignedTo);
+    copied.setTitle(_title);
+    copied.setDescription(_description);
+    copied.setPriority(_priority);
+    copied.setStatus(_status);
+    copied.setTagsIds(_tagsIds);
+    copied.setBlockedByIds(_blockedByIds);
+
+    return copied;
   }
 
   @override

@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/project.dart';
-import 'package:frontend/view_models/dialog/project_dialog.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../di/app.module.dart';
 import '../../models/user.dart';
+import '../../view_models/project.view_model.dart';
 import '../components/text.input.dart';
 
 class ProjectDialog extends StatelessWidget {
   final Project? _project;
 
-  bool get _isAuth {
-    return _project != null;
-  }
-
   const ProjectDialog(this._project, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<ProjectDialogViewModel>();
+    final viewModel = context.watch<ProjectViewModel>();
+    final isEdit = _project != null;
 
     return AlertDialog(
       scrollable: true,
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actionsPadding: const EdgeInsets.all(10),
       title: Center(
-        child: Text('${_isAuth ? 'Изменение' : 'Создание'} проекта'),
+        child: Text('${isEdit ? 'Изменение' : 'Создание'} проекта'),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -38,7 +34,6 @@ class ProjectDialog extends StatelessWidget {
               value: _project?.name ?? '',
             ),
           ),
-          const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Column(
@@ -68,16 +63,18 @@ class ProjectDialog extends StatelessWidget {
           child: const Text('Закрыть'),
         ),
         ElevatedButton(
-          onPressed: !viewModel.isValid ? null : viewModel.submitHandler,
-          child: Text(_isAuth ? 'Изменить' : 'Создать'),
+          onPressed: !viewModel.isValid ? null : viewModel.submitHandler(isEdit),
+          child: Text(isEdit ? 'Изменить' : 'Создать'),
         ),
       ],
     );
   }
 
-  static Widget onCreate({Project? project}) {
+  static Widget onCreate(ProjectViewModel viewModel, {Project? project}) {
+    viewModel.setProject(project);
+
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<ProjectDialogViewModel>(param1: context, param2: project),
+      create: (BuildContext context) => viewModel.copy(context),
       child: ProjectDialog(project),
     );
   }

@@ -17,7 +17,12 @@ class AuthViewModel extends BaseViewModel {
   final MainRepository _mainRepository;
   final AuthRepository _authRepository;
 
-  AuthViewModel(@factoryParam super.context, this._authState, this._mainRepository, this._authRepository) {
+  AuthViewModel(
+    @factoryParam super.context,
+    this._authState,
+    this._mainRepository,
+    this._authRepository,
+  ) {
     _authState.hasInitialized$.subscribe(_hasInitializedSubscription);
     _authState.isAuth$.subscribe(_isAuthSubscription);
   }

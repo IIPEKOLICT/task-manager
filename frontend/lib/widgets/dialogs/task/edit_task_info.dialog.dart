@@ -6,13 +6,11 @@ import 'package:provider/provider.dart';
 import '../../components/text.input.dart';
 
 class EditTaskInfoDialog extends StatelessWidget {
-  final BuildContext _parentContext;
-
-  const EditTaskInfoDialog(this._parentContext, {super.key});
+  const EditTaskInfoDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = _parentContext.watch<TaskViewModel>();
+    final viewModel = context.watch<TaskViewModel>();
 
     return AlertDialog(
       scrollable: true,
@@ -68,7 +66,10 @@ class EditTaskInfoDialog extends StatelessWidget {
     );
   }
 
-  static Widget withContext(BuildContext context) {
-    return EditTaskInfoDialog(context);
+  static Widget onCreate(TaskViewModel viewModel) {
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => viewModel.copy(context),
+      child: const EditTaskInfoDialog(),
+    );
   }
 }

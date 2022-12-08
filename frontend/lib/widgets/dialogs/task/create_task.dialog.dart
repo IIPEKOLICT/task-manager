@@ -187,7 +187,7 @@ class CreateTaskDialog extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: false),
+      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: false).create(),
       child: const CreateTaskDialog(),
     );
   }

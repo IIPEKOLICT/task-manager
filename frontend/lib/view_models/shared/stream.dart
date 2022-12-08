@@ -1,4 +1,4 @@
-import 'package:frontend/view_models/state/base/observable.dart';
+import 'package:frontend/view_models/shared/observable.dart';
 
 class Stream<T> extends Observable<T> {
   T _value;
@@ -18,8 +18,12 @@ class Stream<T> extends Observable<T> {
   }
 
   @override
-  void subscribe(void Function(T) callback) {
+  void subscribe(void Function(T) callback, {bool lazy = true}) {
     _subscribers.add(callback);
+
+    if (!lazy) {
+      callback(_value);
+    }
   }
 
   @override

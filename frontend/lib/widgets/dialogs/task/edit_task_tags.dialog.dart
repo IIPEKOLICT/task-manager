@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../di/app.module.dart';
 import '../../../models/tag.dart';
 import '../../../view_models/task.view_model.dart';
 
@@ -41,9 +40,9 @@ class EditTaskTagsDialog extends StatelessWidget {
     );
   }
 
-  static Widget onCreate() {
+  static Widget onCreate(TaskViewModel viewModel) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: true),
+      create: (BuildContext context) => viewModel.copy(context),
       child: const EditTaskTagsDialog(),
     );
   }

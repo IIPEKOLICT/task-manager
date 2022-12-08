@@ -11,7 +11,10 @@ class LoginViewModel extends BaseViewModel {
   final AuthState _authState;
   final AuthRepository _authRepository;
 
-  LoginViewModel(@factoryParam super.context, this._authState, this._authRepository) {
+  LoginViewModel(@factoryParam super.context, this._authState, this._authRepository);
+
+  @override
+  void onInit() {
     _authState.isAuth$.subscribe(_isAuthSubscription);
   }
 

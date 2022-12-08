@@ -24,7 +24,10 @@ class TaskListViewModel extends BaseViewModel {
     this._projectState,
     this._projectRepository,
     this._taskRepository,
-  ) {
+  );
+
+  @override
+  void onInit() {
     _taskState.entities$.subscribe(_tasksSubscriber);
     _loadTasks();
   }

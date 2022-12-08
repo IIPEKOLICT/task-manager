@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/view_models/user.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../di/app.module.dart';
 import '../../../models/user.dart';
-import '../../../view_models/dialog/edit_user_dialog.view_model.dart';
 import '../../components/text.input.dart';
 
 class EditUserInfoDialog extends StatelessWidget {
@@ -13,7 +12,7 @@ class EditUserInfoDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<EditUserDialogViewModel>();
+    final viewModel = context.watch<UserViewModel>();
 
     return AlertDialog(
       scrollable: true,
@@ -56,9 +55,9 @@ class EditUserInfoDialog extends StatelessWidget {
     );
   }
 
-  static Widget onCreate(User user) {
+  static Widget onCreate(User user, UserViewModel viewModel) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<EditUserDialogViewModel>(param1: context),
+      create: (BuildContext context) => viewModel.copy(context),
       child: EditUserInfoDialog(user),
     );
   }
