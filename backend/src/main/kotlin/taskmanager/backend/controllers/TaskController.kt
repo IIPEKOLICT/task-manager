@@ -12,11 +12,13 @@ import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.dtos.response.AttachmentResponseDto
+import taskmanager.backend.dtos.response.CommentResponseDto
 import taskmanager.backend.dtos.response.NoteResponseDto
 import taskmanager.backend.dtos.response.TaskResponseDto
 import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
+import taskmanager.backend.mappers.CommentMapper
 import taskmanager.backend.mappers.NoteMapper
 import taskmanager.backend.mappers.TaskMapper
 import taskmanager.backend.plugins.annotations.JwtUser
@@ -34,7 +36,8 @@ class TaskController(
     private val fileService: FileService,
     private val s3Service: S3Service,
     private val taskMapper: TaskMapper,
-    private val noteMapper: NoteMapper
+    private val noteMapper: NoteMapper,
+    private val commentMapper: CommentMapper
 ) {
 
     @Get("{id}")
@@ -54,8 +57,14 @@ class TaskController(
 
     @Get("{id}/comments")
     @Authentication(["auth-jwt"])
-    suspend fun getTaskComments(@Param("id") id: String): List<Comment> {
-        return commentService.getByTask(ObjectId(id))
+    suspend fun getTaskComments(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<CommentResponseDto> {
+        return commentMapper.convert(
+            userId = user._id,
+            comments = commentService.getByTask(ObjectId(id))
+        )
     }
 
     @Get("{id}/notes")
@@ -104,8 +113,11 @@ class TaskController(
         @JwtUser user: User,
         @Param("id") id: String,
         @Body("text") text: String
-    ): Comment {
-        return commentService.create(user._id, ObjectId(id), text)
+    ): CommentResponseDto {
+        return commentMapper.convert(
+            userId = user._id,
+            comment = commentService.create(user._id, ObjectId(id), text)
+        )
     }
 
     @Post("{id}/notes")

@@ -5,6 +5,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import taskmanager.backend.controllers.*
 import taskmanager.backend.enums.CollectionInfo
+import taskmanager.backend.mappers.CommentMapper
 import taskmanager.backend.mappers.NoteMapper
 import taskmanager.backend.mappers.TaskMapper
 import taskmanager.backend.plugins.middlewares.MiddlewareContainer
@@ -59,19 +60,20 @@ object AppModule {
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }
 
-            single { MiddlewareContainer(get(), get(), get(), get()) }
+            single { MiddlewareContainer(get(), get(), get(), get(), get()) }
 
             single { TaskMapper(get(), get(), get()) }
             single { NoteMapper(get()) }
+            single { CommentMapper(get()) }
 
             single { MainController() }
             single { AuthController(get(), get()) }
             single { UserController(get(), get(), get(), get()) }
             single { ProjectController(get(), get(), get(), get(), get()) }
             single { TagController(get()) }
-            single { TaskController(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+            single { TaskController(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
             single { WorkController(get()) }
-            single { CommentController(get()) }
+            single { CommentController(get(), get()) }
             single { NoteController(get(), get()) }
             single { AttachmentController(get()) }
         }
