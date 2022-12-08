@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/view_models/tag.view_model.dart';
+import 'package:frontend/view_models/comment.view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../components/text_input.component.dart';
 
-class TagDialog extends StatelessWidget {
-  const TagDialog({super.key});
+class CommentDialog extends StatelessWidget {
+  const CommentDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<TagViewModel>();
+    final viewModel = context.watch<CommentViewModel>();
 
     return AlertDialog(
       scrollable: true,
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actionsPadding: const EdgeInsets.all(10),
       title: Center(
-        child: Text('${viewModel.isEdit ? 'Изменение' : 'Создание'} тега'),
+        child: Text('${viewModel.isEdit ? 'Изменение' : 'Создание'} комментария'),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -24,9 +24,9 @@ class TagDialog extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: TextInputComponent(
-              onInput: viewModel.setName,
-              hintText: 'Название',
-              value: viewModel.getName(),
+              onInput: viewModel.setText,
+              hintText: 'Текст',
+              value: viewModel.getText(),
             ),
           ),
         ],
@@ -44,10 +44,10 @@ class TagDialog extends StatelessWidget {
     );
   }
 
-  static Widget onCreate(TagViewModel viewModel) {
+  static Widget onCreate(CommentViewModel viewModel) {
     return ChangeNotifierProvider(
       create: (BuildContext context) => viewModel.copy(context),
-      child: const TagDialog(),
+      child: const CommentDialog(),
     );
   }
 }

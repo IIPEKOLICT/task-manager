@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/user.dart';
 import '../../view_models/project.view_model.dart';
-import '../components/text-input.component.dart';
+import '../components/text_input.component.dart';
 
 class ProjectDialog extends StatelessWidget {
   final Project? _project;

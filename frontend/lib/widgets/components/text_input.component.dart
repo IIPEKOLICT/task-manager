@@ -31,7 +31,6 @@ class TextInputComponent extends StatelessWidget {
       obscureText: isPassword,
       enableSuggestions: !isPassword,
       autocorrect: false,
-      // controller: _controller,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: hintText,

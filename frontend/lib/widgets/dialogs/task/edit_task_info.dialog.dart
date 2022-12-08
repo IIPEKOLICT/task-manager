@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' as services;
 import 'package:frontend/view_models/task.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/text-input.component.dart';
+import '../../components/text_input.component.dart';
 
 class EditTaskInfoDialog extends StatelessWidget {
   const EditTaskInfoDialog({super.key});

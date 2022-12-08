@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/view_models/note.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../components/text-input.component.dart';
+import '../components/text_input.component.dart';
 
 class NoteDialog extends StatelessWidget {
   const NoteDialog({super.key});

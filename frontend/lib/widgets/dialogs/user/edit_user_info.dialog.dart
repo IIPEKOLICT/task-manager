@@ -3,7 +3,7 @@ import 'package:frontend/view_models/user.view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/user.dart';
-import '../../components/text-input.component.dart';
+import '../../components/text_input.component.dart';
 
 class EditUserInfoDialog extends StatelessWidget {
   final User _user;

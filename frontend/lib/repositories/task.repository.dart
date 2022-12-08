@@ -1,5 +1,6 @@
 import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/enums/status.enum.dart';
+import 'package:frontend/models/comment.dart';
 import 'package:frontend/models/note.dart';
 import 'package:injectable/injectable.dart';
 
@@ -26,6 +27,10 @@ class TaskRepository extends BaseRepository {
     return (await get<List>(path: '$id/notes')).map((json) => Note.fromJson(json)).toList();
   }
 
+  Future<List<Comment>> getTaskComments(String id) async {
+    return (await get<List>(path: '$id/comments')).map((json) => Comment.fromJson(json)).toList();
+  }
+
   Future<Note> createTaskNote(String id, String header, String text) async {
     return Note.fromJson(
       await post<Map<String, dynamic>>(
@@ -34,6 +39,15 @@ class TaskRepository extends BaseRepository {
           'header': header,
           'text': text,
         },
+      ),
+    );
+  }
+
+  Future<Comment> createTaskComment(String id, String text) async {
+    return Comment.fromJson(
+      await post<Map<String, dynamic>>(
+        path: '$id/comments',
+        body: {'text': text},
       ),
     );
   }

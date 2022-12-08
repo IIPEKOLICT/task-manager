@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/project.dart';
+import 'package:frontend/models/comment.dart';
 
-class ProjectCard extends StatelessWidget {
-  final Project project;
-  final VoidCallback? onTap;
+class CommentCard extends StatelessWidget {
+  final Comment comment;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const ProjectCard({super.key, required this.project, this.onTap, this.onEdit, this.onDelete});
+  const CommentCard({super.key, required this.comment, this.onEdit, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       child: Card(
         child: ListTile(
-          leading: Icon(Icons.folder, color: project.canEdit ? Colors.blue : Colors.grey),
-          title: Text(project.name),
-          subtitle: Text('${project.members.length} других участников'),
-          onTap: onTap,
-          trailing: project.canEdit
+          leading: const Icon(Icons.comment),
+          title: Text(comment.createdBy?.username ?? 'Анонимус'),
+          subtitle: Text(comment.text),
+          trailing: comment.canEdit
               ? Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

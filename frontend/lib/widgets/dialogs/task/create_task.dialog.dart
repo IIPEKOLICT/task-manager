@@ -9,7 +9,7 @@ import '../../../enums/status.enum.dart';
 import '../../../models/tag.dart';
 import '../../../models/task.dart';
 import '../../../models/user.dart';
-import '../../components/text-input.component.dart';
+import '../../components/text_input.component.dart';
 
 class CreateTaskDialog extends StatelessWidget {
   const CreateTaskDialog({super.key});

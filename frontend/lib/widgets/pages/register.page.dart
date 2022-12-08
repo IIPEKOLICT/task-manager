@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../../constants/ui.dart';
 import '../../view_models/register.view_model.dart';
 import '../components/button.component.dart';
-import '../components/text-input.component.dart';
+import '../components/text_input.component.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});

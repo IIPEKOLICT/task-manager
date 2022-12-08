@@ -24,7 +24,6 @@ class TagCard extends StatelessWidget {
               TextButton(onPressed: onDelete, child: const Icon(Icons.delete, color: Colors.red)),
             ],
           ),
-          // isThreeLine: true,
         ),
       ),
     );

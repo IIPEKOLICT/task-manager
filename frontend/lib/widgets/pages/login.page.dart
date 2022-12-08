@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../constants/ui.dart';
 import '../components/button.component.dart';
-import '../components/text-input.component.dart';
+import '../components/text_input.component.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
