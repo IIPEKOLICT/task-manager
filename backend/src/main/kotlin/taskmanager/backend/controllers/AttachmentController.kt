@@ -10,9 +10,10 @@ import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.dtos.response.AttachmentResponseDto
+import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.plugins.annotations.JwtUser
-import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.models.User
+import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.AttachmentService
 
 @Controller("attachments")
@@ -20,22 +21,17 @@ class AttachmentController(private val attachmentService: AttachmentService) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun getById(@Param("id") id: String): AttachmentResponseDto {
-        return attachmentService.getById(ObjectId(id)).toResponseDto()
+    suspend fun getById(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): AttachmentResponseDto {
+        return attachmentService.getById(ObjectId(id)).toResponseDto(user._id)
     }
 
     @Delete("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun deleteById(
-        @JwtUser user: User,
-        @Param("id") id: String
-    ): DeleteDto {
-        val attachment = attachmentService.getById(ObjectId(id))
-
-        if (!attachmentService.isOwner(attachment, user._id)) {
-            throw ForbiddenException("Вы не можете удалить это вложение")
-        }
-
-        return DeleteDto(attachmentService.deleteById(attachment._id))
+    @EditAccess(EditableEntity.ATTACHMENT, "Вы не можете удалить это вложение")
+    suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        return DeleteDto(attachmentService.deleteById(ObjectId(id)))
     }
 }

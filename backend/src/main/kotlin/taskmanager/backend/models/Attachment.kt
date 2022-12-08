@@ -16,12 +16,15 @@ data class Attachment(
     var name: String
 ) : BaseEntityImpl(), AttachedToTaskEntity {
 
-    fun toResponseDto(): AttachmentResponseDto {
+    fun toResponseDto(userId: ObjectId): AttachmentResponseDto {
         return AttachmentResponseDto(
             _id = _id.toString(),
             type = type,
             name = name,
-            url = s3Service.getUrlOrNull(path)
+            url = s3Service.getUrlOrNull(path),
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            canEdit = userId.toString() == createdBy.toString()
         )
     }
 

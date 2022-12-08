@@ -81,8 +81,11 @@ class TaskController(
 
     @Get("{id}/attachments")
     @Authentication(["auth-jwt"])
-    suspend fun getTaskAttachments(@Param("id") id: String): List<AttachmentResponseDto> {
-        return attachmentService.getByTask(ObjectId(id)).map { it.toResponseDto() }
+    suspend fun getTaskAttachments(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<AttachmentResponseDto> {
+        return attachmentService.getByTask(ObjectId(id)).map { it.toResponseDto(user._id) }
     }
 
     @Get("{id}/blocked-by")
@@ -156,7 +159,7 @@ class TaskController(
             path = path
         )
 
-        return attachmentService.create(user._id, ObjectId(id), dto).toResponseDto()
+        return attachmentService.create(user._id, ObjectId(id), dto).toResponseDto(user._id)
     }
 
     @Patch("{id}/info")

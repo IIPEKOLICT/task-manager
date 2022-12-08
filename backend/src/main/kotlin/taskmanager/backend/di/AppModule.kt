@@ -60,7 +60,7 @@ object AppModule {
             single<S3Service> { S3ServiceImpl(get()) }
             single<FileService> { FileServiceImpl() }
 
-            single { MiddlewareContainer(get(), get(), get(), get(), get()) }
+            single { MiddlewareContainer(get(), get(), get(), get(), get(), get()) }
 
             single { TaskMapper(get(), get(), get()) }
             single { NoteMapper(get()) }

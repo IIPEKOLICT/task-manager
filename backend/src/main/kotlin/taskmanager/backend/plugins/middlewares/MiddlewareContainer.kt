@@ -19,7 +19,8 @@ class MiddlewareContainer(
     private val tagService: TagService,
     private val taskService: TaskService,
     private val noteService: NoteService,
-    private val commentService: CommentService
+    private val commentService: CommentService,
+    private val attachmentService: AttachmentService
 ) {
 
     @Middleware(EditAccess::class)
@@ -38,6 +39,7 @@ class MiddlewareContainer(
             EditableEntity.TASK -> taskService
             EditableEntity.NOTE -> noteService
             EditableEntity.COMMENT -> commentService
+            EditableEntity.ATTACHMENT -> attachmentService
             else -> throw RuntimeException("Unsupported entity type: ${annotation.entity}")
         }
 
