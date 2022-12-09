@@ -38,7 +38,7 @@ class ProjectPage extends StatelessWidget {
       TaskListPage.onCreate(),
     ),
     BottomBarData(
-      'Статистика',
+      'График',
       Colors.greenAccent,
       const Icon(Icons.query_stats),
       Text('Нет контента'),

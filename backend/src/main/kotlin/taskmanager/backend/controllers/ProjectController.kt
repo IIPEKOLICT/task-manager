@@ -8,6 +8,9 @@ import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.dtos.response.ProjectResponseDto
@@ -123,8 +126,19 @@ class ProjectController(
     @Authentication(["auth-jwt"])
     @EditAccess(EditableEntity.PROJECT, "Вы не можете удалить этот проект")
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
-        val objectId = ObjectId(id)
-        tagService.deleteByProject(objectId)
-        return DeleteDto(projectService.deleteById(objectId))
+        val project: Project = projectService.getById(ObjectId(id))
+
+        coroutineScope {
+            awaitAll(
+                async {
+                    tagService.deleteByProject(project._id)
+                },
+                async {
+                    taskService.deleteByProject(project._id)
+                }
+            )
+        }
+
+        return DeleteDto(projectService.deleteById(project._id))
     }
 }

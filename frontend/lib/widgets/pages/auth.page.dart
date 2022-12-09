@@ -12,7 +12,7 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(appHeader),
+        title: const Text(appName),
       ),
       body: const Center(
         widthFactor: double.infinity,
@@ -26,10 +26,10 @@ class AuthPage extends StatelessWidget {
   }
 
   static Widget onCreate() {
-     return ChangeNotifierProvider(
-       create: (BuildContext context) => injector.get<AuthViewModel>(param1: context),
-       lazy: false,
-       child: const AuthPage(),
-     );
-   }
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => injector.get<AuthViewModel>(param1: context),
+      lazy: false,
+      child: const AuthPage(),
+    );
+  }
 }

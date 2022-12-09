@@ -14,13 +14,16 @@ import taskmanager.backend.dtos.response.CommentResponseDto
 import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.mappers.CommentMapper
+import taskmanager.backend.models.Comment
 import taskmanager.backend.models.User
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.CommentService
+import taskmanager.backend.services.TaskService
 
 @Controller("comments")
 class CommentController(
     private val commentService: CommentService,
+    private val taskService: TaskService,
     private val commentMapper: CommentMapper
 ) {
 
@@ -54,6 +57,8 @@ class CommentController(
     @Authentication(["auth-jwt"])
     @EditAccess(EditableEntity.COMMENT, "Вы не можете удалить этот комментарий")
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
-        return DeleteDto(commentService.deleteById(ObjectId(id)))
+        val comment: Comment = commentService.getById(ObjectId(id))
+        taskService.removeComment(comment.task, comment._id)
+        return DeleteDto(commentService.deleteById(comment._id))
     }
 }

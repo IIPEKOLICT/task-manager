@@ -7,7 +7,7 @@ import 'package:frontend/widgets/pages/register.page.dart';
 import 'package:frontend/widgets/pages/task_page/task.page.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../constants/ui.dart';
+import '../constants/ui.dart';
 import '../enums/route.enum.dart';
 
 class App extends StatelessWidget {
@@ -38,7 +38,7 @@ class App extends StatelessWidget {
       ),
       GoRoute(
         path: RouteEnum.task.value,
-        builder: (context, state) => TaskPage(),
+        builder: (context, state) => const TaskPage(),
       ),
     ],
   );

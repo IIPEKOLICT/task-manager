@@ -9,5 +9,4 @@ interface ProjectService : CreatedByUserEntityService<Project> {
     suspend fun getByUser(userId: ObjectId): List<Project>
     suspend fun create(userId: ObjectId, dto: ProjectDto): Project
     suspend fun updateById(id: ObjectId, dto: ProjectDto): Project
-    suspend fun deleteByUser(userId: ObjectId)
 }

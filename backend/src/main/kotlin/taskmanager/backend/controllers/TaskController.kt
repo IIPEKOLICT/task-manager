@@ -9,6 +9,9 @@ import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.dtos.response.*
@@ -112,10 +115,9 @@ class TaskController(
         @Param("id") id: String,
         @Body(type = WorkDto::class) dto: WorkDto
     ): WorkResponseDto {
-        return workMapper.convert(
-            userId = user._id,
-            entity = workService.create(user._id, ObjectId(id), dto)
-        )
+        val work: Work = workService.create(user._id, ObjectId(id), dto)
+        taskService.addWork(work.task, work._id)
+        return workMapper.convert(user._id, work)
     }
 
     @Post("{id}/comments")
@@ -125,10 +127,9 @@ class TaskController(
         @Param("id") id: String,
         @Body("text") text: String
     ): CommentResponseDto {
-        return commentMapper.convert(
-            userId = user._id,
-            entity = commentService.create(user._id, ObjectId(id), text)
-        )
+        val comment: Comment = commentService.create(user._id, ObjectId(id), text)
+        taskService.addComment(comment.task, comment._id)
+        return commentMapper.convert(user._id, comment)
     }
 
     @Post("{id}/notes")
@@ -138,10 +139,9 @@ class TaskController(
         @Param("id") id: String,
         @Body(type = NoteDto::class) dto: NoteDto
     ): NoteResponseDto {
-        return noteMapper.convert(
-            userId = user._id,
-            entity = noteService.create(user._id, ObjectId(id), dto)
-        )
+        val note: Note = noteService.create(user._id, ObjectId(id), dto)
+        taskService.addNote(note.task, note._id)
+        return noteMapper.convert(user._id, note)
     }
 
     @Post("{id}/attachments")
@@ -167,7 +167,9 @@ class TaskController(
             path = path
         )
 
-        return attachmentService.create(user._id, ObjectId(id), dto).toResponseDto(user._id)
+        val attachment: Attachment = attachmentService.create(user._id, ObjectId(id), dto)
+        taskService.addAttachment(attachment.task, attachment._id)
+        return attachment.toResponseDto(user._id)
     }
 
     @Patch("{id}/info")
@@ -252,6 +254,28 @@ class TaskController(
     @Authentication(["auth-jwt"])
     @EditAccess(EditableEntity.TASK, "Вы не можете удалить эту задачу")
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        val task: Task = taskService.getById(ObjectId(id))
+
+        coroutineScope {
+            awaitAll(
+                async {
+                    taskService.removeTaskFromBlockedBy(task.project, task._id)
+                },
+                async {
+                    attachmentService.deleteByTask(task._id)
+                },
+                async {
+                    commentService.deleteByTask(task._id)
+                },
+                async {
+                    noteService.deleteByTask(task._id)
+                },
+                async {
+                    workService.deleteByTask(task._id)
+                }
+            )
+        }
+
         return DeleteDto(taskService.deleteById(ObjectId(id)))
     }
 }

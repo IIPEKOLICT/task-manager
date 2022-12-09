@@ -211,6 +211,28 @@ class TaskInfoPage extends StatelessWidget {
                   child: const Icon(Icons.edit),
                 ),
               ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.comment),
+                title: Text('Число комментариев: ${task.commentsAmount}'),
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.note),
+                title: Text('Число заметок: ${task.notesAmount}'),
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.attachment),
+                title: Text('Число вложений: ${task.attachmentsAmount}'),
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.work),
+                title: Text(
+                  'Выполняется ${Duration(milliseconds: task.trackedTime.toInt()).inHours} часов',
+                ),
+              ),
             ],
     );
   }

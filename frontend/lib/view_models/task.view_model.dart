@@ -40,7 +40,7 @@ class TaskViewModel extends PageViewModel<TaskViewModel> {
   void onInit() {
     _tagState.entities$.subscribe(defaultSubscriber);
     _userState.entities$.subscribe(defaultSubscriber);
-    _taskState.current$.subscribe(_currentTaskSubscriber);
+    _taskState.current$.subscribe(_currentTaskSubscriber, lazy: false);
   }
 
   @override
@@ -55,14 +55,7 @@ class TaskViewModel extends PageViewModel<TaskViewModel> {
 
     if (_isEdit) {
       _loadAllowedBlockedByTasks();
-    }
-
-    if (_isEdit && _taskState.getCurrentOrNull() == null) {
       _loadCurrentTask();
-    }
-
-    if (_isEdit && _taskState.getCurrentOrNull() != null) {
-      _currentTaskSubscriber(_taskState.getCurrent());
     }
 
     return this;
@@ -122,6 +115,7 @@ class TaskViewModel extends PageViewModel<TaskViewModel> {
     try {
       _taskState.setCurrent(await _taskRepository.getById(_taskState.getCurrentId()));
     } catch (e) {
+      print(e);
       onException(e);
     }
   }

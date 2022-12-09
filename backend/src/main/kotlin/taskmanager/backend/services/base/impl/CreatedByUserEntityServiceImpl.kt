@@ -22,4 +22,8 @@ abstract class CreatedByUserEntityServiceImpl<E : CreatedByUserEntity>(
 
         return collection.countDocuments(conditions).toInt() == 1
     }
+
+    override suspend fun deleteByUser(userId: ObjectId) {
+        collection.deleteMany(CreatedByUserEntity::createdBy eq userId)
+    }
 }

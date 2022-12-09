@@ -25,4 +25,6 @@ interface TaskService : AttachedToProjectEntityService<Task> {
     suspend fun removeComment(id: ObjectId, commentId: ObjectId)
     suspend fun removeNote(id: ObjectId, noteId: ObjectId)
     suspend fun removeAttachment(id: ObjectId, attachmentId: ObjectId)
+    suspend fun removeTaskFromBlockedBy(projectId: ObjectId, taskId: ObjectId)
+    suspend fun removeTag(projectId: ObjectId, tagId: ObjectId)
 }

@@ -15,12 +15,15 @@ import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.mappers.WorkMapper
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.User
+import taskmanager.backend.models.Work
 import taskmanager.backend.plugins.annotations.EditAccess
+import taskmanager.backend.services.TaskService
 import taskmanager.backend.services.WorkService
 
 @Controller("works")
 class WorkController(
     private val workService: WorkService,
+    private val taskService: TaskService,
     private val workMapper: WorkMapper
 ) {
 
@@ -54,6 +57,8 @@ class WorkController(
     @Authentication(["auth-jwt"])
     @EditAccess(EditableEntity.WORK, "Вы не можете удалить это время")
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
-        return DeleteDto(workService.deleteById(ObjectId(id)))
+        val work: Work = workService.getById(ObjectId(id))
+        taskService.removeWork(work.task, work._id)
+        return DeleteDto(workService.deleteById(work._id))
     }
 }

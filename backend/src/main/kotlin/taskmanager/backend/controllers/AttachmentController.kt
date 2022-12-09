@@ -11,13 +11,18 @@ import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
 import taskmanager.backend.dtos.response.AttachmentResponseDto
 import taskmanager.backend.enums.EditableEntity
+import taskmanager.backend.models.Attachment
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.User
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.AttachmentService
+import taskmanager.backend.services.TaskService
 
 @Controller("attachments")
-class AttachmentController(private val attachmentService: AttachmentService) {
+class AttachmentController(
+    private val attachmentService: AttachmentService,
+    private val taskService: TaskService
+) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
@@ -32,6 +37,8 @@ class AttachmentController(private val attachmentService: AttachmentService) {
     @Authentication(["auth-jwt"])
     @EditAccess(EditableEntity.ATTACHMENT, "Вы не можете удалить это вложение")
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
-        return DeleteDto(attachmentService.deleteById(ObjectId(id)))
+        val attachment: Attachment = attachmentService.getById(ObjectId(id))
+        taskService.removeAttachment(attachment.task, attachment._id)
+        return DeleteDto(attachmentService.deleteById(attachment._id))
     }
 }

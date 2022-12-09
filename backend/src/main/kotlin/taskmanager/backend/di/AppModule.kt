@@ -72,12 +72,27 @@ object AppModule {
             single { AuthController(get(), get()) }
             single { UserController(get(), get(), get(), get()) }
             single { ProjectController(get(), get(), get(), get(), get()) }
-            single { TagController(get()) }
-            single { TaskController(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-            single { WorkController(get(), get()) }
-            single { CommentController(get(), get()) }
-            single { NoteController(get(), get()) }
-            single { AttachmentController(get()) }
+            single { TagController(get(), get()) }
+            single { WorkController(get(), get(), get()) }
+            single { CommentController(get(), get(), get()) }
+            single { NoteController(get(), get(), get()) }
+            single { AttachmentController(get(), get()) }
+
+            single {
+                TaskController(
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get()
+                )
+            }
         }
     }
 }

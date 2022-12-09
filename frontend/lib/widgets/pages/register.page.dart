@@ -18,7 +18,7 @@ class RegisterPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(appHeader),
+        title: const Text(appName),
       ),
       body: Center(
         child: Container(

@@ -21,7 +21,11 @@ class TaskServiceImpl(
             .find(
                 and(
                     Task::project eq task.project,
-                    nor(Task::blockedBy contains task._id, Task::_id eq task._id)
+                    nor(
+                        Task::blockedBy contains task._id,
+                        Task::_id eq task._id,
+                        Task::_id `in` task.blockedBy
+                    )
                 )
             )
             .toList()
@@ -108,5 +112,13 @@ class TaskServiceImpl(
 
     override suspend fun removeAttachment(id: ObjectId, attachmentId: ObjectId) {
         updateById(id, pull(Task::attachments, attachmentId))
+    }
+
+    override suspend fun removeTaskFromBlockedBy(projectId: ObjectId, taskId: ObjectId) {
+        updateMany(Task::project eq projectId, pull(Task::blockedBy, taskId))
+    }
+
+    override suspend fun removeTag(projectId: ObjectId, tagId: ObjectId) {
+        updateMany(Task::project eq projectId, pull(Task::tags, tagId))
     }
 }

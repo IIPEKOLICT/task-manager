@@ -14,13 +14,16 @@ import taskmanager.backend.dtos.response.NoteResponseDto
 import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.mappers.NoteMapper
+import taskmanager.backend.models.Note
 import taskmanager.backend.models.User
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.NoteService
+import taskmanager.backend.services.TaskService
 
 @Controller("notes")
 class NoteController(
     private val noteService: NoteService,
+    private val taskService: TaskService,
     private val noteMapper: NoteMapper
 ) {
 
@@ -54,6 +57,8 @@ class NoteController(
     @Authentication(["auth-jwt"])
     @EditAccess(EditableEntity.NOTE, "Вы не можете удалить эту заметку")
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
-        return DeleteDto(noteService.deleteById(ObjectId(id)))
+        val note: Note = noteService.getById(ObjectId(id))
+        taskService.removeNote(note.task, note._id)
+        return DeleteDto(noteService.deleteById(note._id))
     }
 }

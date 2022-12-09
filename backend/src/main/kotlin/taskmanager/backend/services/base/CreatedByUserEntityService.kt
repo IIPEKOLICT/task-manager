@@ -5,4 +5,5 @@ import taskmanager.backend.models.interfaces.CreatedByUserEntity
 
 interface CreatedByUserEntityService<E : CreatedByUserEntity> : BaseService<E> {
     suspend fun canEdit(entityId: ObjectId, userId: ObjectId): Boolean
+    suspend fun deleteByUser(userId: ObjectId)
 }
