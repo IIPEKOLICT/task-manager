@@ -1,10 +1,10 @@
 package taskmanager.backend.mappers
 
-import taskmanager.backend.dtos.response.CommentResponseDto
+import taskmanager.backend.dtos.response.WorkResponseDto
 import taskmanager.backend.mappers.base.CreatedByUserEntityMapper
 import taskmanager.backend.models.*
 import taskmanager.backend.services.UserService
 
-class CommentMapper(
+class WorkMapper(
     override val userService: UserService
-) : CreatedByUserEntityMapper<Comment, CommentResponseDto>(userService)
+) : CreatedByUserEntityMapper<Work, WorkResponseDto>(userService)

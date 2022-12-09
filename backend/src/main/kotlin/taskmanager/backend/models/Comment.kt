@@ -4,15 +4,16 @@ import org.bson.types.ObjectId
 import taskmanager.backend.dtos.response.CommentResponseDto
 import taskmanager.backend.models.base.impl.BaseEntityImpl
 import taskmanager.backend.models.interfaces.AttachedToTaskEntity
+import taskmanager.backend.models.interfaces.MappableCreatedByUserEntity
 
 data class Comment(
     override val createdBy: ObjectId,
     override val task: ObjectId,
 
     var text: String
-) : BaseEntityImpl(), AttachedToTaskEntity {
+) : BaseEntityImpl(), AttachedToTaskEntity, MappableCreatedByUserEntity<CommentResponseDto> {
 
-    fun toResponseDto(userId: ObjectId, createdBy: User?): CommentResponseDto {
+    override fun toResponseDto(userId: ObjectId, createdBy: User?): CommentResponseDto {
         return CommentResponseDto(
             _id = _id.toString(),
             createdBy = createdBy?.toResponseDto(),

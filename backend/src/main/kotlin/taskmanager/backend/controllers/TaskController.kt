@@ -11,16 +11,14 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
-import taskmanager.backend.dtos.response.AttachmentResponseDto
-import taskmanager.backend.dtos.response.CommentResponseDto
-import taskmanager.backend.dtos.response.NoteResponseDto
-import taskmanager.backend.dtos.response.TaskResponseDto
+import taskmanager.backend.dtos.response.*
 import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
 import taskmanager.backend.mappers.CommentMapper
 import taskmanager.backend.mappers.NoteMapper
 import taskmanager.backend.mappers.TaskMapper
+import taskmanager.backend.mappers.WorkMapper
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.*
 import taskmanager.backend.plugins.annotations.EditAccess
@@ -37,7 +35,8 @@ class TaskController(
     private val s3Service: S3Service,
     private val taskMapper: TaskMapper,
     private val noteMapper: NoteMapper,
-    private val commentMapper: CommentMapper
+    private val commentMapper: CommentMapper,
+    private val workMapper: WorkMapper
 ) {
 
     @Get("{id}")
@@ -51,8 +50,14 @@ class TaskController(
 
     @Get("{id}/works")
     @Authentication(["auth-jwt"])
-    suspend fun getTaskWorks(@Param("id") id: String): List<Work> {
-        return workService.getByTask(ObjectId(id))
+    suspend fun getTaskWorks(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<WorkResponseDto> {
+        return workMapper.convert(
+            userId = user._id,
+            entities = workService.getByTask(ObjectId(id))
+        )
     }
 
     @Get("{id}/comments")
@@ -63,7 +68,7 @@ class TaskController(
     ): List<CommentResponseDto> {
         return commentMapper.convert(
             userId = user._id,
-            comments = commentService.getByTask(ObjectId(id))
+            entities = commentService.getByTask(ObjectId(id))
         )
     }
 
@@ -75,7 +80,7 @@ class TaskController(
     ): List<NoteResponseDto> {
         return noteMapper.convert(
             userId = user._id,
-            notes = noteService.getByTask(ObjectId(id))
+            entities = noteService.getByTask(ObjectId(id))
         )
     }
 
@@ -106,8 +111,11 @@ class TaskController(
         @JwtUser user: User,
         @Param("id") id: String,
         @Body(type = WorkDto::class) dto: WorkDto
-    ): Work {
-        return workService.create(user._id, ObjectId(id), dto)
+    ): WorkResponseDto {
+        return workMapper.convert(
+            userId = user._id,
+            entity = workService.create(user._id, ObjectId(id), dto)
+        )
     }
 
     @Post("{id}/comments")
@@ -119,7 +127,7 @@ class TaskController(
     ): CommentResponseDto {
         return commentMapper.convert(
             userId = user._id,
-            comment = commentService.create(user._id, ObjectId(id), text)
+            entity = commentService.create(user._id, ObjectId(id), text)
         )
     }
 
@@ -132,7 +140,7 @@ class TaskController(
     ): NoteResponseDto {
         return noteMapper.convert(
             userId = user._id,
-            note = noteService.create(user._id, ObjectId(id), dto)
+            entity = noteService.create(user._id, ObjectId(id), dto)
         )
     }
 

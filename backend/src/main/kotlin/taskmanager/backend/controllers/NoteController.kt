@@ -32,7 +32,7 @@ class NoteController(
     ): NoteResponseDto {
         return noteMapper.convert(
             userId = user._id,
-            note = noteService.getById(ObjectId(id))
+            entity = noteService.getById(ObjectId(id))
         )
     }
 
@@ -46,7 +46,7 @@ class NoteController(
     ): NoteResponseDto {
         return noteMapper.convert(
             userId = user._id,
-            note = noteService.updateById(ObjectId(id), dto)
+            entity = noteService.updateById(ObjectId(id), dto)
         )
     }
 

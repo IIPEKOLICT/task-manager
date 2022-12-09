@@ -32,7 +32,7 @@ class CommentController(
     ): CommentResponseDto {
         return commentMapper.convert(
             userId = user._id,
-            comment = commentService.getById(ObjectId(id))
+            entity = commentService.getById(ObjectId(id))
         )
     }
 
@@ -46,7 +46,7 @@ class CommentController(
     ): CommentResponseDto {
         return commentMapper.convert(
             userId = user._id,
-            comment = commentService.updateById(ObjectId(id), text)
+            entity = commentService.updateById(ObjectId(id), text)
         )
     }
 
