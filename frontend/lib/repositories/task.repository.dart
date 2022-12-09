@@ -1,8 +1,14 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/enums/status.enum.dart';
+import 'package:frontend/models/attachment.dart';
 import 'package:frontend/models/comment.dart';
 import 'package:frontend/models/note.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:injectable/injectable.dart';
+import 'package:mime/mime.dart';
 
 import '../enums/priority.enum.dart';
 import '../models/task.dart';
@@ -31,6 +37,10 @@ class TaskRepository extends BaseRepository {
     return (await get<List>(path: '$id/comments')).map((json) => Comment.fromJson(json)).toList();
   }
 
+  Future<List<Attachment>> getTaskAttachments(String id) async {
+    return (await get<List>(path: '$id/attachments')).map((json) => Attachment.fromJson(json)).toList();
+  }
+
   Future<Note> createTaskNote(String id, String header, String text) async {
     return Note.fromJson(
       await post<Map<String, dynamic>>(
@@ -49,6 +59,22 @@ class TaskRepository extends BaseRepository {
         path: '$id/comments',
         body: {'text': text},
       ),
+    );
+  }
+
+  Future<Attachment> createTaskAttachment(String id, File file) async {
+    final List<String> parsedMimeData = lookupMimeType(file.path)?.split('/') ?? ['text', 'plain'];
+
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
+        contentType: MediaType(parsedMimeData[0], parsedMimeData[1]),
+      )
+    });
+
+    return Attachment.fromJson(
+      await post<Map<String, dynamic>>(path: '$id/attachments', body: formData),
     );
   }
 

@@ -19,6 +19,8 @@ data class Attachment(
     fun toResponseDto(userId: ObjectId): AttachmentResponseDto {
         return AttachmentResponseDto(
             _id = _id.toString(),
+            createdBy = createdBy.toString(),
+            task = task.toString(),
             type = type,
             name = name,
             url = s3Service.getUrlOrNull(path),

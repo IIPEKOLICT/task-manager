@@ -7,8 +7,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i4;
 import 'package:flutter/material.dart' as _i22;
-import 'package:frontend/repositories/auth.repository.dart' as _i27;
-import 'package:frontend/repositories/comment.repository.dart' as _i29;
+import 'package:frontend/repositories/attachment.repository.dart' as _i27;
+import 'package:frontend/repositories/auth.repository.dart' as _i28;
+import 'package:frontend/repositories/comment.repository.dart' as _i30;
 import 'package:frontend/repositories/interceptors/main.interceptor.dart'
     as _i16;
 import 'package:frontend/repositories/main.repository.dart' as _i17;
@@ -21,12 +22,12 @@ import 'package:frontend/services/file.service.dart' as _i5;
 import 'package:frontend/services/impl/file.service.impl.dart' as _i6;
 import 'package:frontend/services/impl/storage.service.impl.dart' as _i11;
 import 'package:frontend/services/storage.service.dart' as _i10;
-import 'package:frontend/view_models/auth.view_model.dart' as _i28;
-import 'package:frontend/view_models/comment.view_model.dart' as _i30;
-import 'package:frontend/view_models/login.view_model.dart' as _i31;
-import 'package:frontend/view_models/note.view_model.dart' as _i32;
-import 'package:frontend/view_models/project.view_model.dart' as _i33;
-import 'package:frontend/view_models/register.view_model.dart' as _i34;
+import 'package:frontend/view_models/auth.view_model.dart' as _i29;
+import 'package:frontend/view_models/comment.view_model.dart' as _i31;
+import 'package:frontend/view_models/login.view_model.dart' as _i32;
+import 'package:frontend/view_models/note.view_model.dart' as _i33;
+import 'package:frontend/view_models/project.view_model.dart' as _i34;
+import 'package:frontend/view_models/register.view_model.dart' as _i35;
 import 'package:frontend/view_models/state/auth.state.dart' as _i15;
 import 'package:frontend/view_models/state/comment.state.dart' as _i3;
 import 'package:frontend/view_models/state/note.state.dart' as _i7;
@@ -36,13 +37,13 @@ import 'package:frontend/view_models/state/task.state.dart' as _i13;
 import 'package:frontend/view_models/state/user.state.dart' as _i14;
 import 'package:frontend/view_models/tag.view_model.dart' as _i21;
 import 'package:frontend/view_models/task.view_model.dart' as _i24;
-import 'package:frontend/view_models/task_list.view_model.dart' as _i35;
+import 'package:frontend/view_models/task_list.view_model.dart' as _i36;
 import 'package:frontend/view_models/user.view_model.dart' as _i26;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:shared_preferences/shared_preferences.dart' as _i9;
 
-import 'app.module.dart' as _i36;
+import 'app.module.dart' as _i37;
 
 /// ignore_for_file: unnecessary_lambdas
 /// ignore_for_file: lines_longer_than_80_chars
@@ -133,60 +134,64 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i25.UserRepository>(),
           gh<_i5.FileService>(),
         ));
-    gh.lazySingleton<_i27.AuthRepository>(() => _i27.AuthRepository(
+    gh.lazySingleton<_i27.AttachmentRepository>(() => _i27.AttachmentRepository(
           gh<_i4.Dio>(),
           gh<_i16.MainInterceptor>(),
         ));
-    gh.factoryParam<_i28.AuthViewModel, _i22.BuildContext, dynamic>((
+    gh.lazySingleton<_i28.AuthRepository>(() => _i28.AuthRepository(
+          gh<_i4.Dio>(),
+          gh<_i16.MainInterceptor>(),
+        ));
+    gh.factoryParam<_i29.AuthViewModel, _i22.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i28.AuthViewModel(
+        _i29.AuthViewModel(
           context,
           gh<_i15.AuthState>(),
           gh<_i17.MainRepository>(),
-          gh<_i27.AuthRepository>(),
+          gh<_i28.AuthRepository>(),
         ));
-    gh.lazySingleton<_i29.CommentRepository>(() => _i29.CommentRepository(
+    gh.lazySingleton<_i30.CommentRepository>(() => _i30.CommentRepository(
           gh<_i4.Dio>(),
           gh<_i16.MainInterceptor>(),
         ));
-    gh.factoryParam<_i30.CommentViewModel, _i22.BuildContext, dynamic>((
+    gh.factoryParam<_i31.CommentViewModel, _i22.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i30.CommentViewModel(
+        _i31.CommentViewModel(
           context,
           gh<_i3.CommentState>(),
           gh<_i13.TaskState>(),
           gh<_i23.TaskRepository>(),
-          gh<_i29.CommentRepository>(),
+          gh<_i30.CommentRepository>(),
         ));
-    gh.factoryParam<_i31.LoginViewModel, _i22.BuildContext, dynamic>((
+    gh.factoryParam<_i32.LoginViewModel, _i22.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i31.LoginViewModel(
+        _i32.LoginViewModel(
           context,
           gh<_i15.AuthState>(),
-          gh<_i27.AuthRepository>(),
+          gh<_i28.AuthRepository>(),
         ));
-    gh.factoryParam<_i32.NoteViewModel, _i22.BuildContext, dynamic>((
+    gh.factoryParam<_i33.NoteViewModel, _i22.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i32.NoteViewModel(
+        _i33.NoteViewModel(
           context,
           gh<_i7.NoteState>(),
           gh<_i13.TaskState>(),
           gh<_i23.TaskRepository>(),
           gh<_i18.NoteRepository>(),
         ));
-    gh.factoryParam<_i33.ProjectViewModel, _i22.BuildContext, dynamic>((
+    gh.factoryParam<_i34.ProjectViewModel, _i22.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i33.ProjectViewModel(
+        _i34.ProjectViewModel(
           context,
           gh<_i19.ProjectRepository>(),
           gh<_i25.UserRepository>(),
@@ -195,20 +200,20 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i12.TagState>(),
           gh<_i15.AuthState>(),
         ));
-    gh.factoryParam<_i34.RegisterViewModel, _i22.BuildContext, dynamic>((
+    gh.factoryParam<_i35.RegisterViewModel, _i22.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i34.RegisterViewModel(
+        _i35.RegisterViewModel(
           context,
           gh<_i15.AuthState>(),
-          gh<_i27.AuthRepository>(),
+          gh<_i28.AuthRepository>(),
         ));
-    gh.factoryParam<_i35.TaskListViewModel, _i22.BuildContext, dynamic>((
+    gh.factoryParam<_i36.TaskListViewModel, _i22.BuildContext, dynamic>((
       context,
       _,
     ) =>
-        _i35.TaskListViewModel(
+        _i36.TaskListViewModel(
           context,
           gh<_i13.TaskState>(),
           gh<_i8.ProjectState>(),
@@ -219,4 +224,4 @@ extension GetItInjectableX on _i1.GetIt {
   }
 }
 
-class _$AppModule extends _i36.AppModule {}
+class _$AppModule extends _i37.AppModule {}

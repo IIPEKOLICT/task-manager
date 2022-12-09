@@ -6,14 +6,15 @@ class Project extends BaseEntity {
   String name;
   bool canEdit;
 
-  Project(
-      {super.id,
-      this.createdBy = '',
-      this.members = const [],
-      this.name = '',
-      super.createdAt,
-      super.updatedAt,
-      this.canEdit = false});
+  Project({
+    super.id,
+    this.createdBy = '',
+    this.members = const [],
+    this.name = '',
+    super.createdAt,
+    super.updatedAt,
+    this.canEdit = false,
+  });
 
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
@@ -24,16 +25,5 @@ class Project extends BaseEntity {
         createdAt: BaseEntity.parseDateFromJson(json['createdAt']),
         updatedAt: BaseEntity.parseDateFromJson(json['updatedAt']),
         canEdit: json['canEdit']);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'createdBy': createdBy,
-      'members': members,
-      'name': name,
-      'createdAt': createdAt?.toString(),
-      'updatedAt': updatedAt?.toString()
-    };
   }
 }

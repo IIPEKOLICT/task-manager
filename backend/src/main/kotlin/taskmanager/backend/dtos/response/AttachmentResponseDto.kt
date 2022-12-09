@@ -4,6 +4,8 @@ import java.util.*
 
 data class AttachmentResponseDto(
     val _id: String,
+    val createdBy: String,
+    val task: String,
     val type: String,
     val name: String,
     val url: String?,
