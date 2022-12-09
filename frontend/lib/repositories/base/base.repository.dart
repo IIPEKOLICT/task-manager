@@ -25,6 +25,7 @@ abstract class BaseRepository {
     String path = '',
     dynamic body,
     Map<String, dynamic> headers = const {},
+    ResponseType? responseType,
   }) async {
     Response<T> response = await httpClient.request(
       _getUri(path),
@@ -32,14 +33,24 @@ abstract class BaseRepository {
       options: Options(
         headers: headers,
         method: method,
+        responseType: responseType,
       ),
     );
 
     return (response.data ?? Object()) as T;
   }
 
-  Future<T> get<T>({String path = '', Map<String, dynamic> headers = const {}}) async {
-    return _sendRequest('GET', path: path, headers: headers);
+  Future<T> get<T>({
+    String path = '',
+    Map<String, dynamic> headers = const {},
+    ResponseType? responseType,
+  }) async {
+    return _sendRequest(
+      'GET',
+      path: path,
+      headers: headers,
+      responseType: responseType,
+    );
   }
 
   Future<T> post<T>({

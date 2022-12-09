@@ -1,9 +1,11 @@
 import 'package:frontend/models/base/base_entity.dart';
 
+import '../enums/file_type.enum.dart';
+
 class Attachment extends BaseEntity {
   String createdBy;
   String task;
-  String type;
+  FileTypeEnum type;
   String name;
   String? url;
   bool canEdit;
@@ -12,7 +14,7 @@ class Attachment extends BaseEntity {
     super.id,
     this.createdBy = '',
     this.task = '',
-    this.type = '',
+    this.type = FileTypeEnum.other,
     this.name = '',
     this.url,
     super.createdAt,
@@ -25,7 +27,10 @@ class Attachment extends BaseEntity {
       id: json['_id'],
       createdBy: json['createdBy'],
       task: json['task'],
-      type: json['type'],
+      type: FileTypeEnum.values.firstWhere(
+        (element) => element.value == json['type'],
+        orElse: () => FileTypeEnum.other,
+      ),
       name: json['name'],
       url: json['url'],
       createdAt: BaseEntity.parseDateFromJson(json['createdAt']),

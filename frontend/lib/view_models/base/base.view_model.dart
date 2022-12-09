@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/dtos/response/exception.dto.dart';
+import 'package:frontend/widgets/shackbars/success.snackbar.dart';
 
 import '../../widgets/shackbars/exception.snackbar.dart';
 
@@ -50,6 +51,11 @@ abstract class BaseViewModel extends ChangeNotifier {
     }
 
     ExceptionSnackbar.show('${exceptionDto.code}: ${exceptionDto.message ?? message}', context);
+  }
+
+  @protected
+  void onSuccess(String message) {
+    SuccessSnackbar.show(message, context);
   }
 
   @protected

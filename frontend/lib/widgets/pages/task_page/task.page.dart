@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/widgets/bottom_bar_page.dart';
 import 'package:frontend/widgets/pages/project_page/sub_pages/task_list.page.dart';
+import 'package:frontend/widgets/pages/task_page/sub_pages/attachment_list.page.dart';
 import 'package:frontend/widgets/pages/task_page/sub_pages/comment_list.page.dart';
 import 'package:frontend/widgets/pages/task_page/sub_pages/note_list.page.dart';
 import 'package:frontend/widgets/pages/task_page/sub_pages/task_info.page.dart';
@@ -43,7 +44,7 @@ class TaskPage extends StatelessWidget {
       'Вложения',
       Colors.blueAccent,
       const Icon(Icons.attachment),
-      TaskListPage.onCreate(),
+      AttachmentListPage.onCreate(),
     ),
     BottomBarData(
       'Время',
