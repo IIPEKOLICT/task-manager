@@ -12,6 +12,7 @@ import 'package:mime/mime.dart';
 
 import '../enums/priority.enum.dart';
 import '../models/task.dart';
+import '../models/work.dart';
 import 'base/base.repository.dart';
 
 @LazySingleton()
@@ -39,6 +40,10 @@ class TaskRepository extends BaseRepository {
 
   Future<List<Attachment>> getTaskAttachments(String id) async {
     return (await get<List>(path: '$id/attachments')).map((json) => Attachment.fromJson(json)).toList();
+  }
+
+  Future<List<Work>> getTaskWorks(String id) async {
+    return (await get<List>(path: '$id/works')).map((json) => Work.fromJson(json)).toList();
   }
 
   Future<Note> createTaskNote(String id, String header, String text) async {
@@ -75,6 +80,24 @@ class TaskRepository extends BaseRepository {
 
     return Attachment.fromJson(
       await post<Map<String, dynamic>>(path: '$id/attachments', body: formData),
+    );
+  }
+
+  Future<Work> createTaskWork(
+    String id,
+    String description,
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    return Work.fromJson(
+      await post<Map<String, dynamic>>(
+        path: '$id/works',
+        body: {
+          'description': description,
+          'startDate': startDate.toUtc().toString(),
+          'endDate': endDate.toUtc().toString(),
+        },
+      ),
     );
   }
 

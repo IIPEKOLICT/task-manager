@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/comment.dart';
+import 'package:frontend/models/work.dart';
 
-class CommentCard extends StatelessWidget {
-  final Comment comment;
+class WorkCard extends StatelessWidget {
+  final Work work;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const CommentCard({super.key, required this.comment, this.onEdit, this.onDelete});
+  const WorkCard({super.key, required this.work, this.onEdit, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +14,16 @@ class CommentCard extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: Card(
         child: ListTile(
-          leading: const Icon(Icons.comment),
-          title: Text(comment.createdBy?.username ?? 'Анонимус'),
-          subtitle: Text(comment.text),
-          trailing: comment.canEdit
+          leading: const Icon(Icons.work),
+          title: Text(work.createdBy?.username ?? 'Анонимус'),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(work.description),
+              Text(work.renderDates()),
+            ],
+          ),
+          trailing: work.canEdit
               ? Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

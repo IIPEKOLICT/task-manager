@@ -25,8 +25,8 @@ class WorkServiceImpl(
             createdBy = userId,
             task = taskId,
             description = dto.description,
-            startDate = SimpleDateFormat().parse(dto.startDate),
-            endDate = SimpleDateFormat().parse(dto.endDate)
+            startDate = SimpleDateFormat(DATE_PATTERN).parse(dto.startDate),
+            endDate = SimpleDateFormat(DATE_PATTERN).parse(dto.endDate)
         )
 
         collection.save(work)
@@ -38,9 +38,13 @@ class WorkServiceImpl(
             id,
             set(
                 Work::description setTo dto.description,
-                Work::startDate setTo SimpleDateFormat().parse(dto.startDate),
-                Work::endDate setTo SimpleDateFormat().parse(dto.endDate)
+                Work::startDate setTo SimpleDateFormat(DATE_PATTERN).parse(dto.startDate),
+                Work::endDate setTo SimpleDateFormat(DATE_PATTERN).parse(dto.endDate)
             )
         )
+    }
+
+    companion object {
+        private const val DATE_PATTERN: String = "yyyy-MM-dd HH:mm:ss.SSS"
     }
 }

@@ -23,13 +23,27 @@ class NoteCard extends StatelessWidget {
               Text(note.text),
             ],
           ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextButton(onPressed: onEdit, child: const Icon(Icons.edit, color: Colors.amber)),
-              TextButton(onPressed: onDelete, child: const Icon(Icons.delete, color: Colors.red)),
-            ],
-          ),
+          trailing: note.canEdit
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: onEdit,
+                      child: const Icon(
+                        Icons.edit,
+                        color: Colors.amber,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: onDelete,
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                )
+              : null,
         ),
       ),
     );
