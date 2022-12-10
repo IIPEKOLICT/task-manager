@@ -41,7 +41,10 @@ abstract class BaseViewModel extends ChangeNotifier {
     ExceptionDto? exceptionDto = _parseExceptionResponse(exception);
 
     if (exceptionDto == null) {
-      ExceptionSnackbar.show(message, context);
+      ExceptionSnackbar.show(
+        (exception is Exception) ? exception.toString() : message,
+        context,
+      );
       return;
     }
 
@@ -50,7 +53,10 @@ abstract class BaseViewModel extends ChangeNotifier {
       return;
     }
 
-    ExceptionSnackbar.show('${exceptionDto.code}: ${exceptionDto.message ?? message}', context);
+    ExceptionSnackbar.show(
+      '${exceptionDto.code}: ${exceptionDto.message ?? message}',
+      context,
+    );
   }
 
   @protected

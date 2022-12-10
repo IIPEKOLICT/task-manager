@@ -36,8 +36,11 @@ class _BottomBarPageState extends State<BottomBarPage> {
 
   @override
   Widget build(BuildContext context) {
-    BottomBarData selectedItem = _getCurrentItem(_currentIndex);
-    Color barBackgroundColor = Color.alphaBlend(widget.backgroundColor, selectedItem.color);
+    final BottomBarData selectedItem = _getCurrentItem(_currentIndex);
+
+    final Color barBackgroundColor = selectedItem.color != null
+        ? Color.alphaBlend(widget.backgroundColor, selectedItem.color!)
+        : widget.backgroundColor;
 
     return Scaffold(
       appBar: AppBar(
@@ -60,6 +63,7 @@ class _BottomBarPageState extends State<BottomBarPage> {
         }).toList(),
         currentIndex: _currentIndex,
         selectedItemColor: widget.selectedColor,
+        unselectedItemColor: Colors.grey,
         onTap: _onTap,
         backgroundColor: barBackgroundColor,
       ),

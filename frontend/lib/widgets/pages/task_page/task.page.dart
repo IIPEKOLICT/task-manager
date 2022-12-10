@@ -26,35 +26,35 @@ class TaskPage extends StatelessWidget {
   static final List<BottomBarData> _barItems = [
     BottomBarData(
       'Инфо',
-      Colors.redAccent.withOpacity(_itemOpacity),
+      _itemColor,
       const Icon(Icons.info),
       TaskInfoPage.onCreate(),
     ),
     BottomBarData(
       'Заметки',
-      Colors.yellowAccent.withOpacity(_itemOpacity),
+      _itemColor,
       const Icon(Icons.note),
       NoteListPage.onCreate(),
     ),
     BottomBarData(
       'Комментарии',
-      Colors.greenAccent.withOpacity(_itemOpacity),
+      _itemColor,
       const Icon(Icons.comment),
       CommentListPage.onCreate(),
     ),
     BottomBarData(
       'Вложения',
-      Colors.blueAccent.withOpacity(_itemOpacity),
+      _itemColor,
       const Icon(Icons.attachment),
       AttachmentListPage.onCreate(),
     ),
     BottomBarData(
       'Время',
-      Colors.deepPurpleAccent.withOpacity(_itemOpacity),
+      _itemColor,
       const Icon(Icons.timer),
       WorkListPage.onCreate(),
     ),
   ];
 
-  static const double _itemOpacity = 0.2;
+  static final Color? _itemColor = Color.lerp(Colors.black, Colors.white, 0.1);
 }
