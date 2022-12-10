@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/view_models/tag.view_model.dart';
 import 'package:gantt_chart/gantt_chart.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
+import '../../../../models/gantt_item.dart';
+import '../../../../view_models/gantt.view_model.dart';
 
 class ChartPage extends StatelessWidget {
   const ChartPage({super.key});
@@ -112,16 +113,16 @@ class ChartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<TagViewModel>();
+    final viewModel = context.watch<GanttViewModel>();
 
     return Scaffold(
       body: SingleChildScrollView(
         child: viewModel.isLoading
             ? const LinearProgressIndicator()
             : GanttChartView(
-                maxDuration: const Duration(days: 120),
+                maxDuration: Duration(days: viewModel.getHours()),
                 startDate: DateTime.now(),
-                stickyAreaWidth: 200,
+                stickyAreaWidth: 240,
                 showStickyArea: true,
                 showDays: true,
                 startOfTheWeek: WeekDay.monday,
@@ -129,26 +130,14 @@ class ChartPage extends StatelessWidget {
                 stickyAreaEventBuilder: _eventBuilder,
                 eventCellPerDayBuilder: _eventCellBuilder,
                 dayHeaderBuilder: _dayHeaderBuilder,
-                events: [
-                  GanttRelativeEvent(
-                    relativeToStart: const Duration(hours: 0),
-                    duration: const Duration(hours: 24),
-                    displayName: '1 task',
-                    suggestedColor: Colors.redAccent,
-                  ),
-                  GanttRelativeEvent(
-                    relativeToStart: const Duration(hours: 24),
-                    duration: const Duration(hours: 24),
-                    displayName: '2 task',
-                    suggestedColor: Colors.greenAccent,
-                  ),
-                  GanttRelativeEvent(
-                    relativeToStart: const Duration(hours: 48),
-                    duration: const Duration(hours: 24),
-                    displayName: '3 task',
-                    suggestedColor: Colors.blueAccent,
-                  ),
-                ],
+                events: viewModel.getItems().map((GanttItem item) {
+                  return GanttRelativeEvent(
+                    relativeToStart: Duration(hours: item.startOffsetHours),
+                    duration: Duration(hours: item.hours),
+                    displayName: item.taskName,
+                    suggestedColor: item.taskColor,
+                  );
+                }).toList(),
               ),
       ),
     );
@@ -156,7 +145,7 @@ class ChartPage extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TagViewModel>(param1: context).create(),
+      create: (BuildContext context) => injector.get<GanttViewModel>(param1: context),
       child: const ChartPage(),
     );
   }

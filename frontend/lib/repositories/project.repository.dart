@@ -1,4 +1,5 @@
 import 'package:frontend/dtos/response/delete.dto.dart';
+import 'package:frontend/dtos/response/gantt_chart.dto.dart';
 import 'package:frontend/models/project.dart';
 import 'package:frontend/models/tag.dart';
 import 'package:frontend/models/user.dart';
@@ -29,6 +30,10 @@ class ProjectRepository extends BaseRepository {
 
   Future<List<Task>> getProjectTasks(String id) async {
     return (await get<List>(path: '$id/tasks')).map((json) => Task.fromJson(json)).toList();
+  }
+
+  Future<GanttChartDto> getProjectGanttChart(String id) async {
+    return GanttChartDto.fromJSON(await get<Map<String, dynamic>>(path: '$id/gantt-chart'));
   }
 
   Future<List<User>> getProjectUsers(String id) async {

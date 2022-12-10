@@ -1,12 +1,22 @@
-import '../../models/user.dart';
+import 'package:frontend/models/gantt_item.dart';
 
-class AuthDto {
-  final String token;
-  final User user;
+class GanttChartDto {
+  final int hours;
+  final List<GanttItem> items;
 
-  AuthDto(this.token, this.user);
+  GanttChartDto({
+    this.hours = 0,
+    this.items = const [],
+  });
 
-  factory AuthDto.fromJSON(Map<String, dynamic> json) {
-    return AuthDto(json['token'], User.fromJson(json['user']));
+  factory GanttChartDto.fromJSON(Map<String, dynamic> json) {
+    return GanttChartDto(
+      hours: json['hours'],
+      items: (json['items'] as List)
+              ?.map((item) => item as Map<String, dynamic>)
+              ?.map((item) => GanttItem.fromJson(item))
+              .toList() ??
+          [],
+    );
   }
 }

@@ -7,11 +7,11 @@ import 'package:frontend/view_models/state/project.state.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()
-class GanttChartViewModel extends BaseViewModel with LoadableViewModel {
+class GanttViewModel extends BaseViewModel with LoadableViewModel {
   final ProjectState _projectState;
   final ProjectRepository _projectRepository;
 
-  GanttChartViewModel(@factoryParam super.context, this._projectState, this._projectRepository);
+  GanttViewModel(@factoryParam super.context, this._projectState, this._projectRepository);
 
   @override
   void onInit() {
@@ -30,7 +30,7 @@ class GanttChartViewModel extends BaseViewModel with LoadableViewModel {
         _projectState.getCurrentId(),
       );
 
-      _hours = response.hours + const Duration(days: 10).inHours;
+      _hours = response.hours + const Duration(days: 14).inHours;
       _items = response.items;
 
       toggleIsLoading();

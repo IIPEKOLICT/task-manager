@@ -20,7 +20,7 @@ class EditTaskBlockedByDialog extends StatelessWidget {
       ),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: viewModel.getProjectTasks().map((Task task) {
+        children: viewModel.getAllowedBlockedByTasks().map((Task task) {
           return CheckboxListTile(
             value: viewModel.isBlockedByAdded(task.id),
             onChanged: viewModel.changeBlockedByHandler(task.id),

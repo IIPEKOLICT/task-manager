@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/pages/auth.page.dart';
 import 'package:frontend/widgets/pages/home_page/home.page.dart';
@@ -9,6 +11,7 @@ import 'package:go_router/go_router.dart';
 
 import '../constants/ui.dart';
 import '../enums/route.enum.dart';
+import 'main_scroll_behavior.dart';
 
 class App extends StatelessWidget {
   App({super.key});
@@ -47,6 +50,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: appName,
+      scrollBehavior: MainScrollBehavior(),
       theme: ThemeData(
         colorScheme: const ColorScheme.dark(
           primary: Colors.blue,
@@ -66,7 +70,7 @@ class App extends StatelessWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
-          alignment: Alignment.bottomCenter,
+          alignment: Platform.isAndroid || Platform.isIOS ? Alignment.bottomCenter : null,
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.blue,
