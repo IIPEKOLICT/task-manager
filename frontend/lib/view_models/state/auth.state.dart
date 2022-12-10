@@ -10,20 +10,13 @@ import '../shared/stream.dart';
 class AuthState {
   final StorageService _storageService;
 
-  AuthState(this._storageService) {
-    _onInit();
-  }
+  AuthState(this._storageService);
 
   String? _token;
   String? _userId;
 
-  final Stream<bool> _hasInitialized$ = Stream(false);
   final Stream<bool> _isAuth$ = Stream(false);
   final Stream<User?> _user$ = Stream(null);
-
-  Observable<bool> get hasInitialized$ {
-    return _hasInitialized$;
-  }
 
   Observable<bool> get isAuth$ {
     return _isAuth$;
@@ -58,15 +51,13 @@ class AuthState {
     _user$.set(value.user);
   }
 
-  void setUser(User value) => _user$.set(value);
-
-  Future<void> _onInit() async {
-    _token = await _storageService.getToken();
-    _userId = await _storageService.getUserId();
-
-    _hasInitialized$.set(true);
+  void setUserIdAndToken(String? userId, String? token) {
+    _token = token;
+    _userId = userId;
     _isAuth$.set(_token != null && _userId != null);
   }
+
+  void setUser(User value) => _user$.set(value);
 
   Future<void> reset() async {
     _token = null;
@@ -79,19 +70,15 @@ class AuthState {
     _user$.set(null);
   }
 
-  Future<void> _onChangeToken(String? token) async {
-    if (token == null) {
-      await _storageService.removeToken();
-    } else {
-      await _storageService.saveToken(token);
+  Future<void> _onChangeToken(String? value) async {
+    if (value != null) {
+      await _storageService.saveToken(value);
     }
   }
 
-  Future<void> _onChangeUserId(String? token) async {
-    if (token == null) {
-      await _storageService.removeUserId();
-    } else {
-      await _storageService.saveUserId(token);
+  Future<void> _onChangeUserId(String? value) async {
+    if (value != null) {
+      await _storageService.saveUserId(value);
     }
   }
 }

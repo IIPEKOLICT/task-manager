@@ -1,8 +1,8 @@
 abstract class StorageService {
-  Future<String?> getToken();
+  Future<String?> getTokenOrNull();
   Future<void> saveToken(String token);
   Future<void> removeToken();
-  Future<String?> getUserId();
+  Future<String?> getUserIdOrNull();
   Future<void> saveUserId(String userId);
   Future<void> removeUserId();
 }

@@ -16,9 +16,9 @@ class TaskInfoPage extends StatelessWidget {
   const TaskInfoPage({super.key});
 
   Future<void> Function() _showEditStatusDialog(BuildContext context, Task task) {
-    final viewModel = context.read<TaskViewModel>();
-
     return () async {
+      final viewModel = context.read<TaskViewModel>();
+
       await showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -42,9 +42,9 @@ class TaskInfoPage extends StatelessWidget {
   }
 
   Future<void> Function() _showEditPriorityDialog(BuildContext context, Task task) {
-    final viewModel = context.read<TaskViewModel>();
-
     return () async {
+      final viewModel = context.read<TaskViewModel>();
+
       await showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -68,9 +68,9 @@ class TaskInfoPage extends StatelessWidget {
   }
 
   Future<void> Function() _showEditAssignedToDialog(BuildContext context, Task task) {
-    final viewModel = context.read<TaskViewModel>();
-
     return () async {
+      final viewModel = context.read<TaskViewModel>();
+
       await showDialog(
         context: context,
         builder: (BuildContext ctx) {

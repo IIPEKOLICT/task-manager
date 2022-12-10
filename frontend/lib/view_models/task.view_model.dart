@@ -54,7 +54,6 @@ class TaskViewModel extends PageViewModel<TaskViewModel> {
     }
 
     if (_isEdit) {
-      _loadAllowedBlockedByTasks();
       _loadCurrentTask();
     }
 
@@ -88,17 +87,21 @@ class TaskViewModel extends PageViewModel<TaskViewModel> {
     return getProjectTasks().where((element) => _taskState.getCurrent().blockedBy.contains(element.id)).toList();
   }
 
-  void _currentTaskSubscriber(Task? task) {
-    if (task == null) return;
+  List<Task> getAllowedBlockedByTasks() {
+    return getProjectTasks().where((element) {
+      return !element.blockedBy.contains(_taskState.getCurrent().id) && element.id != _taskState.getCurrent().id;
+    }).toList();
+  }
 
-    _title = task.title;
-    _description = task.description;
-    _expectedHours = task.expectedHours;
-    _status = task.status;
-    _priority = task.priority;
-    _assignedTo = task.assignedTo;
-    _tagsIds = task.tags.map((e) => e.id).toList();
-    _blockedByIds = task.blockedBy;
+  void _currentTaskSubscriber(Task? task) {
+    _title = task?.title ?? '';
+    _description = task?.description ?? '';
+    _expectedHours = task?.expectedHours;
+    _status = task?.status ?? StatusEnum.todo;
+    _priority = task?.priority ?? PriorityEnum.normal;
+    _assignedTo = task?.assignedTo;
+    _tagsIds = (task?.tags ?? []).map((e) => e.id).toList();
+    _blockedByIds = task?.blockedBy ?? [];
 
     notifyListeners();
   }
@@ -114,15 +117,6 @@ class TaskViewModel extends PageViewModel<TaskViewModel> {
   Future<void> _loadCurrentTask() async {
     try {
       _taskState.setCurrent(await _taskRepository.getById(_taskState.getCurrentId()));
-    } catch (e) {
-      print(e);
-      onException(e);
-    }
-  }
-
-  Future<void> _loadAllowedBlockedByTasks() async {
-    try {
-      _taskState.setEntities(await _taskRepository.getAllowedBlockedBy(_taskState.getCurrentId()));
     } catch (e) {
       onException(e);
     }

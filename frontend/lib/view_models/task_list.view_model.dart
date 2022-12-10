@@ -2,6 +2,7 @@ import 'package:frontend/enums/priority.enum.dart';
 import 'package:frontend/models/task.dart';
 import 'package:frontend/repositories/project.repository.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
+import 'package:frontend/view_models/base/loadable.view_model.dart';
 import 'package:frontend/view_models/state/project.state.dart';
 import 'package:frontend/view_models/state/task.state.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +13,7 @@ import '../enums/status.enum.dart';
 import '../repositories/task.repository.dart';
 
 @Injectable()
-class TaskListViewModel extends BaseViewModel {
+class TaskListViewModel extends BaseViewModel with LoadableViewModel {
   final TaskState _taskState;
   final ProjectState _projectState;
   final ProjectRepository _projectRepository;
@@ -28,22 +29,11 @@ class TaskListViewModel extends BaseViewModel {
 
   @override
   void onInit() {
-    _taskState.entities$.subscribe(_tasksSubscriber);
+    _taskState.entities$.subscribe(loaderSubscriber);
     _loadTasks();
   }
 
-  bool _isLoading = true;
-
-  void _tasksSubscriber(List<Task> tasks) {
-    if (_isLoading) _isLoading = false;
-    notifyListeners();
-  }
-
   List<Task> getTasks() => _taskState.getEntities();
-
-  bool get isLoading {
-    return _isLoading;
-  }
 
   void Function() pickTaskHandler(String taskId) {
     return () {
@@ -90,7 +80,7 @@ class TaskListViewModel extends BaseViewModel {
 
   @override
   void dispose() {
-    _taskState.entities$.unsubscribe(_tasksSubscriber);
+    _taskState.entities$.unsubscribe(loaderSubscriber);
 
     super.dispose();
   }

@@ -10,47 +10,48 @@ import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
 import '../enums/route.enum.dart';
+import '../services/storage.service.dart';
 
 @Injectable()
 class AuthViewModel extends BaseViewModel {
   final AuthState _authState;
   final MainRepository _mainRepository;
   final AuthRepository _authRepository;
+  final StorageService _storageService;
 
   AuthViewModel(
     @factoryParam super.context,
     this._authState,
     this._mainRepository,
     this._authRepository,
-  ) {
-    _authState.hasInitialized$.subscribe(_hasInitializedSubscription);
+    this._storageService,
+  );
+
+  @override
+  void onInit() {
     _authState.isAuth$.subscribe(_isAuthSubscription);
+
+    _onInit();
+  }
+
+  Future<void> _onInit() async {
+    final String? token = await _storageService.getTokenOrNull();
+    final String? userId = await _storageService.getUserIdOrNull();
+    final bool hasConnection = await _mainRepository.healthCheck();
+
+    if (!hasConnection) {
+      return _onBadConnection(Exception());
+    }
+
+    _authState.setUserIdAndToken(userId, token);
   }
 
   void _isAuthSubscription(bool isAuth) {
-    if (_authState.hasInitialized$.get()) {
-      context.go((isAuth ? RouteEnum.home : RouteEnum.login).value);
+    if (!isAuth) {
+      return context.go(RouteEnum.login.value);
     }
-  }
 
-  void _hasInitializedSubscription(bool hasInitialized) {
-    if (hasInitialized) {
-      _mainRepository.healthCheck().then((bool hasConnection) {
-        if (!hasConnection) {
-          _onBadConnection(Exception());
-          return;
-        }
-
-        if (!_authState.isAuth$.get()) {
-          _authState.reset();
-          return;
-        }
-
-        _tryRefreshToken();
-      }).catchError((exception) {
-        _onBadConnection(exception);
-      });
-    }
+    _tryRefreshToken();
   }
 
   void _onBadConnection(exception) {
@@ -61,7 +62,7 @@ class AuthViewModel extends BaseViewModel {
   Future<void> _tryRefreshToken() async {
     try {
       AuthDto data = await _authRepository.refreshToken();
-      await _authState.setUserData(data);
+      _authState.setUserData(data).then((_) => context.go(RouteEnum.home.value));
     } catch (e) {
       await _authState.reset();
     }
@@ -69,7 +70,6 @@ class AuthViewModel extends BaseViewModel {
 
   @override
   void dispose() {
-    _authState.hasInitialized$.unsubscribe(_hasInitializedSubscription);
     _authState.isAuth$.unsubscribe(_isAuthSubscription);
 
     super.dispose();

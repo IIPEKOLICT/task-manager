@@ -12,7 +12,7 @@ class StorageServiceImpl extends StorageService {
   final Future<SharedPreferences> _sharedPreferences = injector.getAsync();
 
   @override
-  Future<String?> getToken() async {
+  Future<String?> getTokenOrNull() async {
     return (await _sharedPreferences).getString(_tokenKey);
   }
 
@@ -27,7 +27,7 @@ class StorageServiceImpl extends StorageService {
   }
 
   @override
-  Future<String?> getUserId() async {
+  Future<String?> getUserIdOrNull() async {
     return (await _sharedPreferences).getString(_userIdKey);
   }
 

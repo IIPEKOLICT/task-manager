@@ -23,6 +23,7 @@ dependencies:
   mime: ^1.0.3
   permission_handler: ^10.2.0
   universal_html: ^2.0.8
+  gantt_chart: ^0.1.0
 
 dev_dependencies:
   flutter_test:

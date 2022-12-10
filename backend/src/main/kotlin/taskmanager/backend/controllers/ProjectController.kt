@@ -13,10 +13,12 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
+import taskmanager.backend.dtos.response.GanttResponseDto
 import taskmanager.backend.dtos.response.ProjectResponseDto
 import taskmanager.backend.dtos.response.TaskResponseDto
 import taskmanager.backend.dtos.response.UserResponseDto
 import taskmanager.backend.enums.EditableEntity
+import taskmanager.backend.mappers.GanttMapper
 import taskmanager.backend.mappers.TaskMapper
 import taskmanager.backend.models.Project
 import taskmanager.backend.plugins.annotations.JwtUser
@@ -34,7 +36,8 @@ class ProjectController(
     private val tagService: TagService,
     private val taskService: TaskService,
     private val userService: UserService,
-    private val taskMapper: TaskMapper
+    private val taskMapper: TaskMapper,
+    private val ganttMapper: GanttMapper
 ) {
 
     @Get
@@ -68,6 +71,20 @@ class ProjectController(
             userId = user._id,
             tasks = taskService.getByProject(ObjectId(id))
         )
+    }
+
+    @Get("{id}/gantt-chart")
+    @Authentication(["auth-jwt"])
+    suspend fun getProjectGanttChart(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): GanttResponseDto {
+        val tasks: List<TaskResponseDto> = taskMapper.convert(
+            userId = user._id,
+            tasks = taskService.getByProject(ObjectId(id))
+        )
+
+        return ganttMapper.convert(tasks)
     }
 
     @Get("{id}/users")

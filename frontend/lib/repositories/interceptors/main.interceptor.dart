@@ -13,7 +13,7 @@ class MainInterceptor extends Interceptor {
   MainInterceptor(this._authState, this._storageService);
 
   Future<String?> _grabToken() async {
-    return _authState.getTokenOrNull() ?? (await _storageService.getToken());
+    return _authState.getTokenOrNull() ?? (await _storageService.getTokenOrNull());
   }
 
   @override

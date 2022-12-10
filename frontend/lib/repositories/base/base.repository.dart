@@ -23,7 +23,7 @@ abstract class BaseRepository {
   Future<T> _sendRequest<T>(
     String method, {
     String path = '',
-    dynamic body,
+    dynamic body = const {},
     Map<String, dynamic> headers = const {},
     ResponseType? responseType,
   }) async {
@@ -37,7 +37,7 @@ abstract class BaseRepository {
       ),
     );
 
-    return (response.data ?? Object()) as T;
+    return (response.data ?? {}) as T;
   }
 
   Future<T> get<T>({
@@ -55,7 +55,7 @@ abstract class BaseRepository {
 
   Future<T> post<T>({
     String path = '',
-    dynamic body = const Object(),
+    dynamic body = const {},
     Map<String, dynamic> headers = const {},
   }) async {
     return _sendRequest('POST', path: path, body: body, headers: headers);
@@ -63,7 +63,7 @@ abstract class BaseRepository {
 
   Future<T> patch<T>({
     String path = '',
-    dynamic body = const Object(),
+    dynamic body = const {},
     Map<String, dynamic> headers = const {},
   }) async {
     return _sendRequest('PATCH', path: path, body: body, headers: headers);
@@ -71,7 +71,7 @@ abstract class BaseRepository {
 
   Future<T> put<T>({
     String path = '',
-    dynamic body = const Object(),
+    dynamic body = const {},
     Map<String, dynamic> headers = const {},
   }) async {
     return _sendRequest('PUT', path: path, body: body, headers: headers);

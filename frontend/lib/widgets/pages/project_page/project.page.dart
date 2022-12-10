@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/widgets/bottom_bar_page.dart';
+import 'package:frontend/widgets/pages/project_page/sub_pages/chart.page.dart';
 import 'package:frontend/widgets/pages/project_page/sub_pages/tag_list.page.dart';
 import 'package:frontend/widgets/pages/project_page/sub_pages/task_list.page.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +42,7 @@ class ProjectPage extends StatelessWidget {
       'График',
       Colors.greenAccent,
       const Icon(Icons.query_stats),
-      Text('Нет контента'),
+      ChartPage.onCreate(),
     ),
   ];
 }

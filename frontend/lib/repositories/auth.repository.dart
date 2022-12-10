@@ -21,6 +21,10 @@ class AuthRepository extends BaseRepository {
 
   Future<AuthDto> login(String email, String password) async {
     return AuthDto.fromJSON(
-        await post<Map<String, dynamic>>(path: 'login', body: {'email': email, 'password': password}));
+      await post<Map<String, dynamic>>(
+        path: 'login',
+        body: {'email': email, 'password': password},
+      ),
+    );
   }
 }
