@@ -5,10 +5,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import taskmanager.backend.controllers.*
 import taskmanager.backend.enums.CollectionInfo
-import taskmanager.backend.mappers.CommentMapper
-import taskmanager.backend.mappers.NoteMapper
-import taskmanager.backend.mappers.TaskMapper
-import taskmanager.backend.mappers.WorkMapper
+import taskmanager.backend.mappers.*
 import taskmanager.backend.plugins.middlewares.MiddlewareContainer
 import taskmanager.backend.services.*
 import taskmanager.backend.services.impl.*
@@ -67,11 +64,12 @@ object AppModule {
             single { NoteMapper(get()) }
             single { CommentMapper(get()) }
             single { WorkMapper(get()) }
+            single { GanttMapper() }
 
             single { MainController() }
             single { AuthController(get(), get()) }
             single { UserController(get(), get(), get(), get()) }
-            single { ProjectController(get(), get(), get(), get(), get()) }
+            single { ProjectController(get(), get(), get(), get(), get(), get()) }
             single { TagController(get(), get()) }
             single { WorkController(get(), get(), get()) }
             single { CommentController(get(), get(), get()) }
