@@ -28,15 +28,11 @@ class User extends BaseEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'email': email,
-      'firstName': firstName,
-      'lastName': lastName,
-      'profilePicture': profilePicture,
-      'createdAt': createdAt?.toString(),
-      'updatedAt': updatedAt?.toString()
-    };
+  String get username {
+    return '$firstName $lastName';
+  }
+
+  String get fullName {
+    return '$firstName $lastName ($email)';
   }
 }

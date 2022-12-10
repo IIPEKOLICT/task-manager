@@ -10,49 +10,55 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
+import taskmanager.backend.dtos.response.CommentResponseDto
+import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.plugins.annotations.JwtUser
-import taskmanager.backend.exceptions.custom.ForbiddenException
+import taskmanager.backend.mappers.CommentMapper
 import taskmanager.backend.models.Comment
 import taskmanager.backend.models.User
+import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.CommentService
+import taskmanager.backend.services.TaskService
 
 @Controller("comments")
-class CommentController(private val commentService: CommentService) {
+class CommentController(
+    private val commentService: CommentService,
+    private val taskService: TaskService,
+    private val commentMapper: CommentMapper
+) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun getById(@Param("id") id: String): Comment {
-        return commentService.getById(ObjectId(id))
+    suspend fun getById(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): CommentResponseDto {
+        return commentMapper.convert(
+            userId = user._id,
+            entity = commentService.getById(ObjectId(id))
+        )
     }
 
     @Put("{id}")
     @Authentication(["auth-jwt"])
+    @EditAccess(EditableEntity.COMMENT, "Вы не можете изменять этот комментарий")
     suspend fun updateById(
         @JwtUser user: User,
         @Param("id") id: String,
         @Body("text") text: String
-    ): Comment {
-        val objectId = ObjectId(id)
-
-        if (!commentService.isOwner(commentService.getById(objectId), user._id)) {
-            throw ForbiddenException("Вы не можете изменять этот комментарий")
-        }
-
-        return commentService.updateById(objectId, text)
+    ): CommentResponseDto {
+        return commentMapper.convert(
+            userId = user._id,
+            entity = commentService.updateById(ObjectId(id), text)
+        )
     }
 
     @Delete("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun deleteById(
-        @JwtUser user: User,
-        @Param("id") id: String
-    ): DeleteDto {
-        val objectId = ObjectId(id)
-
-        if (!commentService.isOwner(commentService.getById(objectId), user._id)) {
-            throw ForbiddenException("Вы не можете удалить этот комментарий")
-        }
-
-        return DeleteDto(commentService.deleteById(objectId))
+    @EditAccess(EditableEntity.COMMENT, "Вы не можете удалить этот комментарий")
+    suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        val comment: Comment = commentService.getById(ObjectId(id))
+        taskService.removeComment(comment.task, comment._id)
+        return DeleteDto(commentService.deleteById(comment._id))
     }
 }

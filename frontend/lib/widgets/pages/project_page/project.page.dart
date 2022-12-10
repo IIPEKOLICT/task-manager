@@ -33,13 +33,13 @@ class ProjectPage extends StatelessWidget {
   static final List<BottomBarData> _publicBarItems = [
     BottomBarData(
       'Задачи',
-      Colors.lightBlue,
+      Colors.blueAccent,
       const Icon(Icons.task),
       TaskListPage.onCreate(),
     ),
     BottomBarData(
-      'Статистика',
-      Colors.lightGreen,
+      'График',
+      Colors.greenAccent,
       const Icon(Icons.query_stats),
       Text('Нет контента'),
     ),

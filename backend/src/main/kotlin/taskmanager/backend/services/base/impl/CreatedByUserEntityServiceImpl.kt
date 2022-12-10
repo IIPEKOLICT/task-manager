@@ -13,10 +13,6 @@ abstract class CreatedByUserEntityServiceImpl<E : CreatedByUserEntity>(
     override val collection: CoroutineCollection<E>,
     collectionInfo: CollectionInfo
 ) : BaseServiceImpl<E>(collection, collectionInfo), CreatedByUserEntityService<E> {
-    
-    override fun isOwner(entity: E, userId: ObjectId): Boolean {
-        return entity.createdBy.toString() == userId.toString()
-    }
 
     override suspend fun canEdit(entityId: ObjectId, userId: ObjectId): Boolean {
         val conditions: Bson = and(
@@ -25,5 +21,9 @@ abstract class CreatedByUserEntityServiceImpl<E : CreatedByUserEntity>(
         )
 
         return collection.countDocuments(conditions).toInt() == 1
+    }
+
+    override suspend fun deleteByUser(userId: ObjectId) {
+        collection.deleteMany(CreatedByUserEntity::createdBy eq userId)
     }
 }

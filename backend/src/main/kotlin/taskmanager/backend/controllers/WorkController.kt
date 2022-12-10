@@ -10,49 +10,55 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
+import taskmanager.backend.dtos.response.WorkResponseDto
+import taskmanager.backend.enums.EditableEntity
+import taskmanager.backend.mappers.WorkMapper
 import taskmanager.backend.plugins.annotations.JwtUser
-import taskmanager.backend.exceptions.custom.ForbiddenException
 import taskmanager.backend.models.User
 import taskmanager.backend.models.Work
+import taskmanager.backend.plugins.annotations.EditAccess
+import taskmanager.backend.services.TaskService
 import taskmanager.backend.services.WorkService
 
 @Controller("works")
-class WorkController(private val workService: WorkService) {
+class WorkController(
+    private val workService: WorkService,
+    private val taskService: TaskService,
+    private val workMapper: WorkMapper
+) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun getById(@Param("id") id: String): Work {
-        return workService.getById(ObjectId(id))
+    suspend fun getById(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): WorkResponseDto {
+        return workMapper.convert(
+            userId = user._id,
+            entity = workService.getById(ObjectId(id))
+        )
     }
 
     @Put("{id}")
     @Authentication(["auth-jwt"])
+    @EditAccess(EditableEntity.WORK, "Вы не можете изменять это время")
     suspend fun updateById(
         @JwtUser user: User,
         @Param("id") id: String,
         @Body(type = WorkDto::class) dto: WorkDto
-    ): Work {
-        val objectId = ObjectId(id)
-
-        if (!workService.isOwner(workService.getById(objectId), user._id)) {
-            throw ForbiddenException("Вы не можете изменять это время")
-        }
-
-        return workService.updateById(objectId, dto)
+    ): WorkResponseDto {
+        return workMapper.convert(
+            userId = user._id,
+            entity = workService.updateById(ObjectId(id), dto)
+        )
     }
 
     @Delete("{id}")
     @Authentication(["auth-jwt"])
-    suspend fun deleteById(
-        @JwtUser user: User,
-        @Param("id") id: String
-    ): DeleteDto {
-        val objectId = ObjectId(id)
-
-        if (!workService.isOwner(workService.getById(objectId), user._id)) {
-            throw ForbiddenException("Вы не можете удалить это время")
-        }
-
-        return DeleteDto(workService.deleteById(objectId))
+    @EditAccess(EditableEntity.WORK, "Вы не можете удалить это время")
+    suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        val work: Work = workService.getById(ObjectId(id))
+        taskService.removeWork(work.task, work._id)
+        return DeleteDto(workService.deleteById(work._id))
     }
 }

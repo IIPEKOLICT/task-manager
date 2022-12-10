@@ -6,7 +6,7 @@ import 'base/base.repository.dart';
 
 @LazySingleton()
 class TagRepository extends BaseRepository {
-  TagRepository(super.httpClient, super.authState);
+  TagRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'tags';

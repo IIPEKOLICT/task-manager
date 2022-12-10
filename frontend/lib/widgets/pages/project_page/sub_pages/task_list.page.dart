@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../di/app.module.dart';
 import '../../../../enums/priority.enum.dart';
 import '../../../cards/task.card.dart';
-import '../../../dialogs/create_task.dialog.dart';
+import '../../../dialogs/task/create_task.dialog.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({super.key});
@@ -27,9 +27,7 @@ class TaskListPage extends StatelessWidget {
               children: StatusEnum.values.map((StatusEnum status) {
                 return PopupMenuItem(
                   onTap: viewModel.updateStatusHandler(task.id, status),
-                  textStyle: TextStyle(
-                    color: status.value == task.status ? Colors.white : Colors.grey,
-                  ),
+                  textStyle: TextStyle(color: status == task.status ? Colors.white : Colors.grey),
                   child: Text(status.label),
                 );
               }).toList(),
@@ -55,9 +53,7 @@ class TaskListPage extends StatelessWidget {
               children: PriorityEnum.values.map((PriorityEnum priority) {
                 return PopupMenuItem(
                   onTap: viewModel.updatePriorityHandler(task.id, priority),
-                  textStyle: TextStyle(
-                    color: priority.value == task.priority ? Colors.white : Colors.grey,
-                  ),
+                  textStyle: TextStyle(color: priority == task.priority ? Colors.white : Colors.grey),
                   child: Text(priority.label),
                 );
               }).toList(),

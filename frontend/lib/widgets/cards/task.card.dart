@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/enums/priority.enum.dart';
-import 'package:frontend/enums/status.enum.dart';
+import 'package:frontend/widgets/components/tag.component.dart';
 
-import '../../models/tag.dart';
 import '../../models/task.dart';
 
 class TaskCard extends StatelessWidget {
@@ -21,32 +19,25 @@ class TaskCard extends StatelessWidget {
     this.onDelete,
   });
 
-  Color get _priorityColor {
-    return PriorityEnum.values
-        .firstWhere(
-          (element) => element.value == task.priority,
-          orElse: () => PriorityEnum.normal,
-        )
-        .color;
-  }
-
-  Color get _statusColor {
-    return StatusEnum.values
-        .firstWhere(
-          (element) => element.value == task.status,
-          orElse: () => StatusEnum.todo,
-        )
-        .color;
-  }
-
   List<Widget> get _buttons {
     final List<Widget> publicWidgets = [
-      TextButton(onPressed: onEditStatus, child: Icon(Icons.task_alt, color: _statusColor)),
-      TextButton(onPressed: onEditPriority, child: Icon(Icons.priority_high, color: _priorityColor)),
+      TextButton(
+        onPressed: onEditStatus,
+        child: Icon(Icons.task_alt, color: task.status.color),
+      ),
+      TextButton(
+        onPressed: onEditPriority,
+        child: Icon(Icons.priority_high, color: task.priority.color),
+      ),
     ];
 
     if (task.canEdit) {
-      publicWidgets.add(TextButton(onPressed: onDelete, child: const Icon(Icons.delete, color: Colors.red)));
+      publicWidgets.add(
+        TextButton(
+          onPressed: onDelete,
+          child: const Icon(Icons.delete, color: Colors.red),
+        ),
+      );
     }
 
     return publicWidgets;
@@ -63,24 +54,11 @@ class TaskCard extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(task.description),
+              Text(task.description.isEmpty ? '(нет описания)' : task.description),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
-                  children: task.tags.map(
-                    (Tag tag) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                        child: Chip(
-                          labelPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                          label: Text(tag.name),
-                          backgroundColor: tag.color,
-                          elevation: 5,
-                          shadowColor: Colors.grey[60],
-                        ),
-                      );
-                    },
-                  ).toList(),
+                  children: task.tags.map((e) => TagComponent(e)).toList(),
                 ),
               ),
             ],

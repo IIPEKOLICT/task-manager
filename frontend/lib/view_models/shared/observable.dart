@@ -1,5 +1,5 @@
 abstract class Observable<T> {
   T get();
-  void subscribe(void Function(T) callback);
+  void subscribe(void Function(T) callback, {bool lazy});
   void unsubscribe(void Function(T) callback);
 }

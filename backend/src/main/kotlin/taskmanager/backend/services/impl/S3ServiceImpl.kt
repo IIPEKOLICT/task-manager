@@ -27,9 +27,7 @@ class S3ServiceImpl(private val configuration: Configuration) : S3Service {
                 .key(path)
                 .build()
 
-            val response = client.putObject(requestParams, RequestBody.fromBytes(content))
-
-            println(response)
+            client.putObject(requestParams, RequestBody.fromBytes(content))
         } catch (e: S3Exception) {
             println("AWS S3 file save exception: ${e.stackTraceToString()}")
             throw AWSException("Ошибка сохранения файла в AWS S3")
@@ -38,8 +36,6 @@ class S3ServiceImpl(private val configuration: Configuration) : S3Service {
 
     override fun get(path: String): ByteArray {
         try {
-            println(path)
-
             val requestParams: GetObjectRequest = GetObjectRequest.builder()
                 .bucket(configuration.s3BucketName)
                 .key(path)

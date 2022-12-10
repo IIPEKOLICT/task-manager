@@ -3,8 +3,8 @@ import 'package:injectable/injectable.dart';
 import '../../dtos/response/auth.dto.dart';
 import '../../models/user.dart';
 import '../../services/storage.service.dart';
-import 'base/observable.dart';
-import 'base/stream.dart';
+import '../shared/observable.dart';
+import '../shared/stream.dart';
 
 @LazySingleton()
 class AuthState {

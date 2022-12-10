@@ -4,15 +4,49 @@ import 'package:frontend/enums/priority.enum.dart';
 import 'package:frontend/view_models/task.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../di/app.module.dart';
-import '../../enums/status.enum.dart';
-import '../../models/tag.dart';
-import '../../models/task.dart';
-import '../../models/user.dart';
-import '../components/text.input.dart';
+import '../../../di/app.module.dart';
+import '../../../enums/status.enum.dart';
+import '../../../models/tag.dart';
+import '../../../models/task.dart';
+import '../../../models/user.dart';
+import '../../components/text_input.component.dart';
 
 class CreateTaskDialog extends StatelessWidget {
   const CreateTaskDialog({super.key});
+
+  List<Widget> _getAssignedToRowWidgets(TaskViewModel viewModel) {
+    final List<Widget> list = [
+      const Text('Исполнитель'),
+      const SizedBox(width: 10),
+    ];
+
+    final List<User> projectUsers = viewModel.getProjectUsers();
+
+    if (projectUsers.isNotEmpty) {
+      list.add(
+        DropdownButton<User>(
+          value: viewModel.getAssignedToOrNull(),
+          icon: const Icon(Icons.arrow_drop_down),
+          elevation: 16,
+          onChanged: viewModel.setAssignedTo,
+          items: [
+            const DropdownMenuItem(
+              value: null,
+              child: Text('Выбрать'),
+            ),
+            ...projectUsers.map((User user) {
+              return DropdownMenuItem(
+                value: user,
+                child: Text(user.username),
+              );
+            }).toList(),
+          ],
+        ),
+      );
+    }
+
+    return list;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +63,14 @@ class CreateTaskDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setTitle,
               hintText: 'Название',
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setDescription,
               hintText: 'Описание',
             ),
@@ -100,28 +134,7 @@ class CreateTaskDialog extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Исполнитель'),
-                const SizedBox(width: 100),
-                DropdownButton<User>(
-                  value: viewModel.getAssignedToOrNull(),
-                  icon: const Icon(Icons.arrow_drop_down),
-                  elevation: 16,
-                  onChanged: viewModel.setAssignedTo,
-                  items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('Выбрать'),
-                    ),
-                    ...viewModel.getProjectUsers().map((User user) {
-                      return DropdownMenuItem(
-                        value: user,
-                        child: Text('${user.firstName} ${user.lastName}'),
-                      );
-                    }).toList(),
-                  ],
-                ),
-              ],
+              children: _getAssignedToRowWidgets(viewModel),
             ),
           ),
           const Divider(),
@@ -187,7 +200,7 @@ class CreateTaskDialog extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: null),
+      create: (BuildContext context) => injector.get<TaskViewModel>(param1: context, param2: false).create(),
       child: const CreateTaskDialog(),
     );
   }

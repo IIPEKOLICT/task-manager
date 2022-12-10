@@ -9,14 +9,19 @@ import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.bson.types.ObjectId
 import taskmanager.backend.dtos.request.*
-import taskmanager.backend.dtos.response.AttachmentResponseDto
-import taskmanager.backend.dtos.response.TaskResponseDto
+import taskmanager.backend.dtos.response.*
 import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.enums.Priority
 import taskmanager.backend.enums.Status
+import taskmanager.backend.mappers.CommentMapper
+import taskmanager.backend.mappers.NoteMapper
 import taskmanager.backend.mappers.TaskMapper
+import taskmanager.backend.mappers.WorkMapper
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.*
 import taskmanager.backend.plugins.annotations.EditAccess
@@ -31,7 +36,10 @@ class TaskController(
     private val attachmentService: AttachmentService,
     private val fileService: FileService,
     private val s3Service: S3Service,
-    private val taskMapper: TaskMapper
+    private val taskMapper: TaskMapper,
+    private val noteMapper: NoteMapper,
+    private val commentMapper: CommentMapper,
+    private val workMapper: WorkMapper
 ) {
 
     @Get("{id}")
@@ -45,26 +53,59 @@ class TaskController(
 
     @Get("{id}/works")
     @Authentication(["auth-jwt"])
-    suspend fun getTaskWorks(@Param("id") id: String): List<Work> {
-        return workService.getByTask(ObjectId(id))
+    suspend fun getTaskWorks(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<WorkResponseDto> {
+        return workMapper.convert(
+            userId = user._id,
+            entities = workService.getByTask(ObjectId(id))
+        )
     }
 
     @Get("{id}/comments")
     @Authentication(["auth-jwt"])
-    suspend fun getTaskComments(@Param("id") id: String): List<Comment> {
-        return commentService.getByTask(ObjectId(id))
+    suspend fun getTaskComments(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<CommentResponseDto> {
+        return commentMapper.convert(
+            userId = user._id,
+            entities = commentService.getByTask(ObjectId(id))
+        )
     }
 
     @Get("{id}/notes")
     @Authentication(["auth-jwt"])
-    suspend fun getTaskNotes(@Param("id") id: String): List<Note> {
-        return noteService.getByTask(ObjectId(id))
+    suspend fun getTaskNotes(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<NoteResponseDto> {
+        return noteMapper.convert(
+            userId = user._id,
+            entities = noteService.getByTask(ObjectId(id))
+        )
     }
 
     @Get("{id}/attachments")
     @Authentication(["auth-jwt"])
-    suspend fun getTaskAttachments(@Param("id") id: String): List<AttachmentResponseDto> {
-        return attachmentService.getByTask(ObjectId(id)).map { it.toResponseDto() }
+    suspend fun getTaskAttachments(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<AttachmentResponseDto> {
+        return attachmentService.getByTask(ObjectId(id)).map { it.toResponseDto(user._id) }
+    }
+
+    @Get("{id}/blocked-by")
+    @Authentication(["auth-jwt"])
+    suspend fun getAllowedBlockedByForTask(
+        @JwtUser user: User,
+        @Param("id") id: String
+    ): List<TaskResponseDto> {
+        return taskMapper.convert(
+            userId = user._id,
+            tasks = taskService.getAllowedBlockedBy(taskService.getById(ObjectId(id)))
+        )
     }
 
     @Post("{id}/works")
@@ -73,8 +114,10 @@ class TaskController(
         @JwtUser user: User,
         @Param("id") id: String,
         @Body(type = WorkDto::class) dto: WorkDto
-    ): Work {
-        return workService.create(user._id, ObjectId(id), dto)
+    ): WorkResponseDto {
+        val work: Work = workService.create(user._id, ObjectId(id), dto)
+        taskService.addWork(work.task, work._id)
+        return workMapper.convert(user._id, work)
     }
 
     @Post("{id}/comments")
@@ -83,8 +126,10 @@ class TaskController(
         @JwtUser user: User,
         @Param("id") id: String,
         @Body("text") text: String
-    ): Comment {
-        return commentService.create(user._id, ObjectId(id), text)
+    ): CommentResponseDto {
+        val comment: Comment = commentService.create(user._id, ObjectId(id), text)
+        taskService.addComment(comment.task, comment._id)
+        return commentMapper.convert(user._id, comment)
     }
 
     @Post("{id}/notes")
@@ -93,8 +138,10 @@ class TaskController(
         @JwtUser user: User,
         @Param("id") id: String,
         @Body(type = NoteDto::class) dto: NoteDto
-    ): Note {
-        return noteService.create(user._id, ObjectId(id), dto)
+    ): NoteResponseDto {
+        val note: Note = noteService.create(user._id, ObjectId(id), dto)
+        taskService.addNote(note.task, note._id)
+        return noteMapper.convert(user._id, note)
     }
 
     @Post("{id}/attachments")
@@ -120,7 +167,9 @@ class TaskController(
             path = path
         )
 
-        return attachmentService.create(user._id, ObjectId(id), dto).toResponseDto()
+        val attachment: Attachment = attachmentService.create(user._id, ObjectId(id), dto)
+        taskService.addAttachment(attachment.task, attachment._id)
+        return attachment.toResponseDto(user._id)
     }
 
     @Patch("{id}/info")
@@ -133,6 +182,19 @@ class TaskController(
         return taskMapper.convert(
             userId = user._id,
             task = taskService.updateInfo(ObjectId(id), dto)
+        )
+    }
+
+    @Patch("{id}/assigned-to")
+    @Authentication(["auth-jwt"])
+    suspend fun updateAssignedTo(
+        @JwtUser user: User,
+        @Param("id") id: String,
+        @Body("assignedTo") assignedTo: String
+    ): TaskResponseDto {
+        return taskMapper.convert(
+            userId = user._id,
+            task = taskService.updateAssignedTo(ObjectId(id), ObjectId(assignedTo))
         )
     }
 
@@ -192,6 +254,28 @@ class TaskController(
     @Authentication(["auth-jwt"])
     @EditAccess(EditableEntity.TASK, "Вы не можете удалить эту задачу")
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
+        val task: Task = taskService.getById(ObjectId(id))
+
+        coroutineScope {
+            awaitAll(
+                async {
+                    taskService.removeTaskFromBlockedBy(task.project, task._id)
+                },
+                async {
+                    attachmentService.deleteByTask(task._id)
+                },
+                async {
+                    commentService.deleteByTask(task._id)
+                },
+                async {
+                    noteService.deleteByTask(task._id)
+                },
+                async {
+                    workService.deleteByTask(task._id)
+                }
+            )
+        }
+
         return DeleteDto(taskService.deleteById(ObjectId(id)))
     }
 }

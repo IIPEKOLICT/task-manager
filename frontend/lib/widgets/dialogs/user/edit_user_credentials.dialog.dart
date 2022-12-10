@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/view_models/user.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../di/app.module.dart';
-import '../../models/user.dart';
-import '../../view_models/dialog/edit_user_dialog.view_model.dart';
-import '../components/text.input.dart';
+import '../../../models/user.dart';
+import '../../components/text_input.component.dart';
 
 class EditUserCredentialsDialog extends StatelessWidget {
   final User _user;
@@ -14,7 +13,7 @@ class EditUserCredentialsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<EditUserDialogViewModel>();
+    final viewModel = context.watch<UserViewModel>();
 
     return AlertDialog(
       scrollable: true,
@@ -28,10 +27,11 @@ class EditUserCredentialsDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: _isPassword ? viewModel.setPassword : viewModel.setEmail,
               hintText: _isPassword ? 'Пароль' : 'E-mail',
               value: _isPassword ? '' : _user.email,
+              isPassword: _isPassword,
             ),
           ),
         ],
@@ -42,16 +42,16 @@ class EditUserCredentialsDialog extends StatelessWidget {
           child: const Text('Закрыть'),
         ),
         ElevatedButton(
-          onPressed: !viewModel.isCredentialsValid ? null : viewModel.updateCredentialsHandler,
+          onPressed: !viewModel.isCredentialsValid(_isPassword) ? null : viewModel.updateCredentialsHandler,
           child: const Text('Применить'),
         ),
       ],
     );
   }
 
-  static Widget onCreate(User user, bool isPassword) {
+  static Widget onCreate(User user, bool isPassword, UserViewModel viewModel) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<EditUserDialogViewModel>(param1: context),
+      create: (BuildContext context) => viewModel.copy(context),
       child: EditUserCredentialsDialog(user, isPassword),
     );
   }

@@ -1,53 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/project.dart';
-import 'package:frontend/view_models/dialog/project_dialog.view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../di/app.module.dart';
 import '../../models/user.dart';
-import '../components/text.input.dart';
+import '../../view_models/project.view_model.dart';
+import '../components/text_input.component.dart';
 
 class ProjectDialog extends StatelessWidget {
-  final Project? _project;
-
-  bool get _isAuth {
-    return _project != null;
-  }
-
-  const ProjectDialog(this._project, {super.key});
+  const ProjectDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<ProjectDialogViewModel>();
+    final viewModel = context.watch<ProjectViewModel>();
 
     return AlertDialog(
       scrollable: true,
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actionsPadding: const EdgeInsets.all(10),
       title: Center(
-        child: Text('${_isAuth ? 'Изменение' : 'Создание'} проекта'),
+        child: Text('${viewModel.isEdit ? 'Изменение' : 'Создание'} проекта'),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextInput(
+            child: TextInputComponent(
               onInput: viewModel.setName,
               hintText: 'Название',
-              value: _project?.name ?? '',
+              value: viewModel.getName(),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Column(
-              children: viewModel.getUsers().map((User user) {
-                return CheckboxListTile(
-                  value: viewModel.isUserAdded(user.id),
-                  onChanged: viewModel.changeMemberHandler(user.id),
-                  title: Text('${user.firstName} ${user.lastName} (${user.email})'),
-                );
-              }).toList(),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    'Участники',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                  ),
+                ),
+                ...viewModel.getUsers().map((User user) {
+                  return CheckboxListTile(
+                    value: viewModel.isUserAdded(user.id),
+                    onChanged: viewModel.changeMemberHandler(user.id),
+                    title: Text('${user.firstName} ${user.lastName} (${user.email})'),
+                  );
+                }).toList(),
+              ],
             ),
           ),
         ],
@@ -59,16 +60,16 @@ class ProjectDialog extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: !viewModel.isValid ? null : viewModel.submitHandler,
-          child: Text(_isAuth ? 'Изменить' : 'Создать'),
+          child: Text(viewModel.isEdit ? 'Изменить' : 'Создать'),
         ),
       ],
     );
   }
 
-  static Widget onCreate({Project? project}) {
+  static Widget onCreate(ProjectViewModel viewModel) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<ProjectDialogViewModel>(param1: context, param2: project),
-      child: ProjectDialog(project),
+      create: (BuildContext context) => viewModel.copy(context),
+      child: const ProjectDialog(),
     );
   }
 }

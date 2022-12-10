@@ -16,6 +16,21 @@ class TaskServiceImpl(
     override val collection: CoroutineCollection<Task>
 ) : AttachedToProjectEntityServiceImpl<Task>(collection, CollectionInfo.TASK), TaskService {
 
+    override suspend fun getAllowedBlockedBy(task: Task): List<Task> {
+        return collection
+            .find(
+                and(
+                    Task::project eq task.project,
+                    nor(
+                        Task::blockedBy contains task._id,
+                        Task::_id eq task._id,
+                        Task::_id `in` task.blockedBy
+                    )
+                )
+            )
+            .toList()
+    }
+
     override suspend fun create(userId: ObjectId, projectId: ObjectId, dto: CreateTaskDto): Task {
         val task = Task(
             createdBy = userId,
@@ -45,6 +60,10 @@ class TaskServiceImpl(
         }
 
         return updateById(id, set(*fields.toTypedArray()))
+    }
+
+    override suspend fun updateAssignedTo(id: ObjectId, userId: ObjectId): Task {
+        return updateById(id, setValue(Task::assignedTo, userId))
     }
 
     override suspend fun updateStatus(id: ObjectId, status: Status): Task {
@@ -93,5 +112,13 @@ class TaskServiceImpl(
 
     override suspend fun removeAttachment(id: ObjectId, attachmentId: ObjectId) {
         updateById(id, pull(Task::attachments, attachmentId))
+    }
+
+    override suspend fun removeTaskFromBlockedBy(projectId: ObjectId, taskId: ObjectId) {
+        updateMany(Task::project eq projectId, pull(Task::blockedBy, taskId))
+    }
+
+    override suspend fun removeTag(projectId: ObjectId, tagId: ObjectId) {
+        updateMany(Task::project eq projectId, pull(Task::tags, tagId))
     }
 }

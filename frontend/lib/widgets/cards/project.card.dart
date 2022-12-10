@@ -28,7 +28,6 @@ class ProjectCard extends StatelessWidget {
                   ],
                 )
               : null,
-          // isThreeLine: true,
         ),
       ),
     );

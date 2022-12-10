@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/widgets/bottom_bar_page.dart';
 import 'package:frontend/widgets/pages/home_page/sub_pages/project_list.page.dart';
 import 'package:frontend/widgets/pages/home_page/sub_pages/user.page.dart';
@@ -10,7 +11,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomBarPage(items: _tabItems);
+    return BottomBarPage(
+      onBack: () => SystemNavigator.pop(animated: true),
+      items: _tabItems,
+    );
   }
 
   static final List<BottomBarData> _tabItems = [

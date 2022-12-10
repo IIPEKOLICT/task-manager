@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/view_models/user.view_model.dart';
-import 'package:frontend/widgets/dialogs/edit_user_credentials.dialog.dart';
-import 'package:frontend/widgets/dialogs/edit_user_info.dialog.dart';
+import 'package:frontend/widgets/dialogs/user/edit_user_credentials.dialog.dart';
+import 'package:frontend/widgets/dialogs/user/edit_user_info.dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
@@ -10,11 +10,19 @@ import '../../../../models/user.dart';
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
 
-  Future<void> Function() _showEditCredentialsDialog(BuildContext context, User user, {bool isPassword = false}) {
+  Future<void> Function() _showEditCredentialsDialog(
+    BuildContext context,
+    User user, {
+    bool isPassword = false,
+  }) {
     return () async {
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => EditUserCredentialsDialog.onCreate(user, isPassword),
+        builder: (BuildContext ctx) => EditUserCredentialsDialog.onCreate(
+          user,
+          isPassword,
+          context.read(),
+        ),
       );
     };
   }
@@ -23,7 +31,7 @@ class UserPage extends StatelessWidget {
     return () async {
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => EditUserInfoDialog.onCreate(user),
+        builder: (BuildContext ctx) => EditUserInfoDialog.onCreate(user, context.read()),
       );
     };
   }
@@ -110,7 +118,11 @@ class UserPage extends StatelessWidget {
                           icon: Icons.password,
                           label: 'Пароль',
                           value: '********',
-                          onEdit: _showEditCredentialsDialog(context, user, isPassword: true),
+                          onEdit: _showEditCredentialsDialog(
+                            context,
+                            user,
+                            isPassword: true,
+                          ),
                         ),
                         const Divider(),
                         _getProfileItem(
@@ -141,7 +153,7 @@ class UserPage extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<UserViewModel>(param1: context),
+      create: (BuildContext context) => injector.get<UserViewModel>(param1: context).create(),
       child: const UserPage(),
     );
   }

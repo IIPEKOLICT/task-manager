@@ -14,9 +14,13 @@ import taskmanager.backend.enums.EditableEntity
 import taskmanager.backend.models.Tag
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.TagService
+import taskmanager.backend.services.TaskService
 
 @Controller("tags")
-class TagController(private val tagService: TagService) {
+class TagController(
+    private val tagService: TagService,
+    private val taskService: TaskService
+) {
 
     @Get("{id}")
     @Authentication(["auth-jwt"])
@@ -38,6 +42,8 @@ class TagController(private val tagService: TagService) {
     @Authentication(["auth-jwt"])
     @EditAccess(EditableEntity.TAG, "Вы не можете удалить этот тег")
     suspend fun deleteById(@Param("id") id: String): DeleteDto {
-        return DeleteDto(tagService.deleteById(ObjectId(id)))
+        val tag: Tag = tagService.getById(ObjectId(id))
+        taskService.removeTag(tag.project, tag._id)
+        return DeleteDto(tagService.deleteById(tag._id))
     }
 }

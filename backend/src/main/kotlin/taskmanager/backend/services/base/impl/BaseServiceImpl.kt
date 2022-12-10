@@ -42,4 +42,11 @@ abstract class BaseServiceImpl<E : BaseEntity>(
             )
             ?: throw notFoundException
     }
+
+    protected suspend fun updateMany(filter: Bson, vararg updates: Bson) {
+        collection.updateMany(
+            filter = filter,
+            update = combine(*updates, setValue(BaseEntity::updatedAt, Date()))
+        )
+    }
 }

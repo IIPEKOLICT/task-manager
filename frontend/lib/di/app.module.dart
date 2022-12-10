@@ -4,7 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../constants/configuration.dart';
 import '../constants/environment.dart';
 
 final injector = GetIt.instance;
@@ -18,15 +17,15 @@ Future<void> configureDependencies() async => injector.init();
 
 @module
 abstract class AppModule {
+  static const int _requestTimeout = 30000;
+
   @lazySingleton
   Future<SharedPreferences> get sharedPrefs => SharedPreferences.getInstance();
 
   @lazySingleton
-  Dio get dio => Dio(
-    BaseOptions(
-      baseUrl: backendUrl,
-      receiveTimeout: requestTimeout,
-      connectTimeout: requestTimeout,
-    )
-  );
+  Dio get dio => Dio(BaseOptions(
+        baseUrl: backendUrl,
+        receiveTimeout: _requestTimeout,
+        connectTimeout: _requestTimeout,
+      ));
 }

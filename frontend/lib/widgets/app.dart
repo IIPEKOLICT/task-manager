@@ -4,9 +4,10 @@ import 'package:frontend/widgets/pages/home_page/home.page.dart';
 import 'package:frontend/widgets/pages/login.page.dart';
 import 'package:frontend/widgets/pages/project_page/project.page.dart';
 import 'package:frontend/widgets/pages/register.page.dart';
+import 'package:frontend/widgets/pages/task_page/task.page.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../constants/ui.dart';
+import '../constants/ui.dart';
 import '../enums/route.enum.dart';
 
 class App extends StatelessWidget {
@@ -32,12 +33,12 @@ class App extends StatelessWidget {
         builder: (context, state) => const HomePage(),
       ),
       GoRoute(
-        path: '${RouteEnum.projects.value}/:id',
+        path: RouteEnum.project.value,
         builder: (context, state) => ProjectPage(state.queryParams['canEdit'] == 'true'),
       ),
       GoRoute(
-        path: '${RouteEnum.tasks.value}/:id',
-        builder: (context, state) => const Text('Задача'),
+        path: RouteEnum.task.value,
+        builder: (context, state) => TaskPage(state.queryParams['isOwnerOfProject'] == 'true'),
       ),
     ],
   );
@@ -49,6 +50,26 @@ class App extends StatelessWidget {
       theme: ThemeData(
         colorScheme: const ColorScheme.dark(
           primary: Colors.blue,
+        ),
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color.lerp(Colors.black, Colors.white, 0.05),
+        ),
+        cardTheme: CardTheme(
+          color: Color.lerp(Colors.black, Colors.white, 0.1),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+        dialogTheme: DialogTheme(
+          backgroundColor: Color.lerp(Colors.black, Colors.white, 0.15),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          alignment: Alignment.bottomCenter,
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.blue,
         ),
       ),
       routerConfig: _router,

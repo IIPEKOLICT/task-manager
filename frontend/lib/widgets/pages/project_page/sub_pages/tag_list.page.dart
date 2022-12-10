@@ -10,11 +10,15 @@ import '../../../../di/app.module.dart';
 class TagListPage extends StatelessWidget {
   const TagListPage({super.key});
 
-  Future<void> Function() _showDialog(BuildContext context, bool isEdit, {Tag? tag}) {
+  Future<void> Function() _showDialog(BuildContext context, {Tag? tag}) {
     return () async {
+      final viewModel = context.read<TagViewModel>();
+
+      viewModel.setTag(tag);
+
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => TagDialog.onCreate(isEdit, tag: tag),
+        builder: (BuildContext ctx) => TagDialog.onCreate(context.read()),
       );
     };
   }
@@ -32,14 +36,14 @@ class TagListPage extends StatelessWidget {
                 .map(
                   (Tag tag) => TagCard(
                     tag: tag,
-                    onEdit: _showDialog(context, true, tag: tag),
+                    onEdit: _showDialog(context, tag: tag),
                     onDelete: viewModel.deleteById(tag.id),
                   ),
                 )
                 .toList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showDialog(context, false),
+        onPressed: _showDialog(context),
         child: const Icon(Icons.add),
       ),
     );
@@ -47,7 +51,7 @@ class TagListPage extends StatelessWidget {
 
   static Widget onCreate() {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => injector.get<TagViewModel>(param1: context),
+      create: (BuildContext context) => injector.get<TagViewModel>(param1: context).create(),
       child: const TagListPage(),
     );
   }
