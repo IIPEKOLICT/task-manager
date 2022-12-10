@@ -89,8 +89,9 @@ class AttachmentViewModel extends PageViewModel<AttachmentViewModel> with Loadab
     return attachment.url != null
         ? () async {
             try {
-              await _fileService.saveFile(attachment.name, attachment.url!);
-              onSuccess('Файл успешно загружен');
+              if (await _fileService.saveFile(attachment.name, attachment.url!)) {
+                onSuccess('Файл успешно загружен');
+              }
             } catch (e) {
               onException(e);
             }

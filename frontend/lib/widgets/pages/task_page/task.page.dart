@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/widgets/bottom_bar_page.dart';
 import 'package:frontend/widgets/pages/task_page/sub_pages/attachment_list.page.dart';
 import 'package:frontend/widgets/pages/task_page/sub_pages/comment_list.page.dart';
@@ -9,14 +8,17 @@ import 'package:frontend/widgets/pages/task_page/sub_pages/work_list.page.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/bottom_bar.data.dart';
+import '../../../enums/route.enum.dart';
 
 class TaskPage extends StatelessWidget {
-  const TaskPage({super.key});
+  final bool _isOwnerOfProject;
+
+  const TaskPage(this._isOwnerOfProject, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return BottomBarPage(
-      onBack: () => context.go(RouteEnum.project.value),
+      onBack: () => context.go('${RouteEnum.project.value}?canEdit=$_isOwnerOfProject'),
       items: _barItems,
     );
   }

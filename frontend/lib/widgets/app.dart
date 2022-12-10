@@ -38,7 +38,7 @@ class App extends StatelessWidget {
       ),
       GoRoute(
         path: RouteEnum.task.value,
-        builder: (context, state) => const TaskPage(),
+        builder: (context, state) => TaskPage(state.queryParams['isOwnerOfProject'] == 'true'),
       ),
     ],
   );
@@ -50,6 +50,25 @@ class App extends StatelessWidget {
       theme: ThemeData(
         colorScheme: const ColorScheme.dark(
           primary: Colors.blue,
+        ),
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color.lerp(Colors.black, Colors.white, 0.05),
+        ),
+        cardTheme: CardTheme(
+          color: Color.lerp(Colors.black, Colors.white, 0.1),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+        dialogTheme: DialogTheme(
+          backgroundColor: Color.lerp(Colors.black, Colors.white, 0.15),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.blue,
         ),
       ),
       routerConfig: _router,

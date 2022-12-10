@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/repositories/project.repository.dart';
+import 'package:frontend/view_models/base/loadable.view_model.dart';
 import 'package:frontend/view_models/base/page.view_model.dart';
 import 'package:frontend/view_models/state/auth.state.dart';
 import 'package:frontend/view_models/state/project.state.dart';
@@ -14,7 +15,7 @@ import '../models/user.dart';
 import '../repositories/user.repository.dart';
 
 @Injectable()
-class ProjectViewModel extends PageViewModel<ProjectViewModel> {
+class ProjectViewModel extends PageViewModel<ProjectViewModel> with LoadableViewModel {
   final AuthState _authState;
   final UserState _userState;
   final TagState _tagState;
@@ -34,7 +35,8 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> {
 
   @override
   void onInit() {
-    _projectState.entities$.subscribe(_projectsSubscriber);
+    _projectState.entities$.subscribe(loaderSubscriber);
+    _projectState.current$.subscribe(_currentProjectSubscriber, lazy: false);
     _userState.entities$.subscribe(defaultSubscriber, lazy: false);
   }
 
@@ -49,16 +51,20 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> {
     return this;
   }
 
-  bool _isLoading = true;
   String _name = '';
   List<String> _members = [];
 
   String getName() => _name;
   List<String> getMembers() => _members;
   List<User> getUsers() => _userState.getEntities();
+  Project? getProjectOrNull() => _projectState.getCurrentOrNull();
 
   bool get isValid {
     return _name.isNotEmpty;
+  }
+
+  bool get isEdit {
+    return _projectState.getCurrentOrNull() != null;
   }
 
   bool isUserAdded(String userId) {
@@ -67,11 +73,6 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> {
 
   void setName(String value) {
     _name = value;
-    notifyListeners();
-  }
-
-  void setMembers(List<String> value) {
-    _members = value;
     notifyListeners();
   }
 
@@ -115,25 +116,24 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> {
     );
   }
 
-  Future<void> Function() submitHandler(bool isEdit) {
-    return () async {
-      try {
-        if (isEdit) {
-          await _update();
-        } else {
-          await _create();
-        }
-      } catch (e) {
-        onException(e);
-      } finally {
-        Navigator.of(context).pop();
+  Future<void> submitHandler() async {
+    try {
+      if (isEdit) {
+        await _update();
+      } else {
+        await _create();
       }
-    };
+    } catch (e) {
+      onException(e);
+    } finally {
+      _projectState.setCurrent(null);
+      Navigator.of(context).pop();
+    }
   }
 
-  void _projectsSubscriber(List<Project> projects) {
-    if (_isLoading) _isLoading = false;
-    notifyListeners();
+  void _currentProjectSubscriber(Project? project) {
+    _name = project?.name ?? '';
+    _members = project?.members ?? [];
   }
 
   void Function() pickProjectHandler(Project project) {
@@ -147,10 +147,6 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> {
   }
 
   List<Project> getProjects() => _projectState.getEntities();
-
-  bool get isLoading {
-    return _isLoading;
-  }
 
   Future<void> _loadUserProjects() async {
     try {
@@ -172,7 +168,8 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> {
 
   @override
   void dispose() {
-    _projectState.entities$.unsubscribe(_projectsSubscriber);
+    _projectState.entities$.unsubscribe(loaderSubscriber);
+    _projectState.current$.unsubscribe(_currentProjectSubscriber);
     _userState.entities$.unsubscribe(defaultSubscriber);
 
     super.dispose();
@@ -180,7 +177,7 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> {
 
   @override
   ProjectViewModel copy(BuildContext context) {
-    final copied = ProjectViewModel(
+    return ProjectViewModel(
       context,
       _projectRepository,
       _userRepository,
@@ -189,10 +186,5 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> {
       _tagState,
       _authState,
     );
-
-    copied.setName(_name);
-    copied.setMembers(_projectState.getCurrentOrNull()?.members ?? []);
-
-    return copied;
   }
 }

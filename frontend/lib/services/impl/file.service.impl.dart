@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:frontend/services/file.service.dart';
 import 'package:injectable/injectable.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 @LazySingleton(as: FileService)
 class FileServiceImpl extends FileService {
@@ -32,7 +33,22 @@ class FileServiceImpl extends FileService {
   }
 
   @override
-  Future<void> saveFile(String name, String url) async {
+  Future<bool> saveFile(String name, String url) async {
+    if (Platform.isAndroid) {
+      final PermissionStatus status = await Permission.storage.request();
+
+      if (status.isDenied) {
+        return false;
+      }
+
+      final directory = Directory('/storage/emulated/0/Download');
+      final String filePath = '${directory.path}/$name';
+
+      await File(filePath).writeAsString('');
+      await Dio().download(url, filePath);
+      return true;
+    }
+
     final String? filePath = await FilePicker.platform.saveFile(
       dialogTitle: 'Выберите расположение',
       fileName: name,
@@ -40,6 +56,9 @@ class FileServiceImpl extends FileService {
 
     if (filePath != null) {
       await Dio().download(url, filePath);
+      return true;
     }
+
+    return false;
   }
 }

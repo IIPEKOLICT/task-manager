@@ -14,6 +14,40 @@ import '../../components/text_input.component.dart';
 class CreateTaskDialog extends StatelessWidget {
   const CreateTaskDialog({super.key});
 
+  List<Widget> _getAssignedToRowWidgets(TaskViewModel viewModel) {
+    final List<Widget> list = [
+      const Text('Исполнитель'),
+      const SizedBox(width: 10),
+    ];
+
+    final List<User> projectUsers = viewModel.getProjectUsers();
+
+    if (projectUsers.isNotEmpty) {
+      list.add(
+        DropdownButton<User>(
+          value: viewModel.getAssignedToOrNull(),
+          icon: const Icon(Icons.arrow_drop_down),
+          elevation: 16,
+          onChanged: viewModel.setAssignedTo,
+          items: [
+            const DropdownMenuItem(
+              value: null,
+              child: Text('Выбрать'),
+            ),
+            ...projectUsers.map((User user) {
+              return DropdownMenuItem(
+                value: user,
+                child: Text(user.username),
+              );
+            }).toList(),
+          ],
+        ),
+      );
+    }
+
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<TaskViewModel>();
@@ -100,28 +134,7 @@ class CreateTaskDialog extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Исполнитель'),
-                const SizedBox(width: 10),
-                DropdownButton<User>(
-                  value: viewModel.getAssignedToOrNull(),
-                  icon: const Icon(Icons.arrow_drop_down),
-                  elevation: 16,
-                  onChanged: viewModel.setAssignedTo,
-                  items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('Выбрать'),
-                    ),
-                    ...viewModel.getProjectUsers().map((User user) {
-                      return DropdownMenuItem(
-                        value: user,
-                        child: Text('${user.firstName} ${user.lastName}'),
-                      );
-                    }).toList(),
-                  ],
-                ),
-              ],
+              children: _getAssignedToRowWidgets(viewModel),
             ),
           ),
           const Divider(),

@@ -12,11 +12,13 @@ class ProjectListPage extends StatelessWidget {
 
   Null Function() _showProjectDialog(BuildContext context, {Project? project}) {
     return () {
+      final viewModel = context.read<ProjectViewModel>();
+
+      viewModel.setProject(project);
+
       showDialog(
         context: context,
-        builder: (BuildContext ctx) {
-          return ProjectDialog.onCreate(context.read(), project: project);
-        },
+        builder: (BuildContext ctx) => ProjectDialog.onCreate(viewModel),
       );
     };
   }
