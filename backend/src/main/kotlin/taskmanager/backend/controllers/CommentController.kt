@@ -19,8 +19,9 @@ import taskmanager.backend.models.User
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.CommentService
 import taskmanager.backend.services.TaskService
+import taskmanager.backend.shared.Endpoint
 
-@Controller("comments")
+@Controller(Endpoint.COMMENTS)
 class CommentController(
     private val commentService: CommentService,
     private val taskService: TaskService,

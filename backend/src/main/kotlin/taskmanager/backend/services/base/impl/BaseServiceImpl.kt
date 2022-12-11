@@ -7,7 +7,7 @@ import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
 import taskmanager.backend.enums.CollectionInfo
-import taskmanager.backend.exceptions.custom.EntityNotFoundException
+import taskmanager.backend.plugins.exceptions.custom.EntityNotFoundException
 import taskmanager.backend.models.base.impl.BaseEntityImpl
 import taskmanager.backend.models.base.BaseEntity
 import taskmanager.backend.services.base.BaseService

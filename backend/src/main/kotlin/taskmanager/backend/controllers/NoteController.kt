@@ -19,8 +19,9 @@ import taskmanager.backend.models.User
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.NoteService
 import taskmanager.backend.services.TaskService
+import taskmanager.backend.shared.Endpoint
 
-@Controller("notes")
+@Controller(Endpoint.NOTES)
 class NoteController(
     private val noteService: NoteService,
     private val taskService: TaskService,

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
 import '../../../../models/work.dart';
+import '../../../components/list.component.dart';
 
 class WorkListPage extends StatelessWidget {
   const WorkListPage({super.key});
@@ -27,25 +28,20 @@ class WorkListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<WorkViewModel>();
 
-    return Scaffold(
-      body: ListView(
-        children: viewModel.isLoading
-            ? const [LinearProgressIndicator()]
-            : viewModel
-                .getWorks()
-                .map(
-                  (Work work) => WorkCard(
-                    work: work,
-                    onEdit: _showDialog(context, work: work),
-                    onDelete: viewModel.deleteById(work.id),
-                  ),
-                )
-                .toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showDialog(context),
-        child: const Icon(Icons.add),
-      ),
+    return ListComponent(
+      isLoading: viewModel.isLoading,
+      items: viewModel
+          .getWorks()
+          .map(
+            (Work work) => WorkCard(
+              work: work,
+              onEdit: _showDialog(context, work: work),
+              onDelete: viewModel.deleteById(work.id),
+            ),
+          )
+          .toList(),
+      placeholder: 'Нет времени',
+      onAdd: _showDialog(context),
     );
   }
 

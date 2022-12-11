@@ -6,6 +6,7 @@ import 'package:frontend/widgets/dialogs/comment.dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
+import '../../../components/list.component.dart';
 
 class CommentListPage extends StatelessWidget {
   const CommentListPage({super.key});
@@ -27,25 +28,20 @@ class CommentListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<CommentViewModel>();
 
-    return Scaffold(
-      body: ListView(
-        children: viewModel.isLoading
-            ? const [LinearProgressIndicator()]
-            : viewModel
-                .getComments()
-                .map(
-                  (Comment comment) => CommentCard(
-                    comment: comment,
-                    onEdit: _showDialog(context, comment: comment),
-                    onDelete: viewModel.deleteById(comment.id),
-                  ),
-                )
-                .toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showDialog(context),
-        child: const Icon(Icons.add),
-      ),
+    return ListComponent(
+      isLoading: viewModel.isLoading,
+      items: viewModel
+          .getComments()
+          .map(
+            (Comment comment) => CommentCard(
+              comment: comment,
+              onEdit: _showDialog(context, comment: comment),
+              onDelete: viewModel.deleteById(comment.id),
+            ),
+          )
+          .toList(),
+      placeholder: 'Нет комментариев',
+      onAdd: _showDialog(context),
     );
   }
 

@@ -26,8 +26,9 @@ import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.*
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.*
+import taskmanager.backend.shared.Endpoint
 
-@Controller("tasks")
+@Controller(Endpoint.TASKS)
 class TaskController(
     private val taskService: TaskService,
     private val workService: WorkService,
@@ -94,18 +95,6 @@ class TaskController(
         @Param("id") id: String
     ): List<AttachmentResponseDto> {
         return attachmentService.getByTask(ObjectId(id)).map { it.toResponseDto(user._id) }
-    }
-
-    @Get("{id}/blocked-by")
-    @Authentication(["auth-jwt"])
-    suspend fun getAllowedBlockedByForTask(
-        @JwtUser user: User,
-        @Param("id") id: String
-    ): List<TaskResponseDto> {
-        return taskMapper.convert(
-            userId = user._id,
-            tasks = taskService.getAllowedBlockedBy(taskService.getById(ObjectId(id)))
-        )
     }
 
     @Post("{id}/works")

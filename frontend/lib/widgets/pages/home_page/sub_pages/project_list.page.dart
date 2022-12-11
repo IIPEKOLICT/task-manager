@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/components/list.component.dart';
 import 'package:frontend/widgets/dialogs/project.dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -27,26 +28,21 @@ class ProjectListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<ProjectViewModel>();
 
-    return Scaffold(
-      body: ListView(
-        children: viewModel.isLoading
-            ? const [LinearProgressIndicator()]
-            : viewModel
-                .getProjects()
-                .map(
-                  (Project project) => ProjectCard(
-                    project: project,
-                    onTap: viewModel.pickProjectHandler(project),
-                    onEdit: _showProjectDialog(context, project: project),
-                    onDelete: viewModel.deleteById(project.id),
-                  ),
-                )
-                .toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showProjectDialog(context),
-        child: const Icon(Icons.add),
-      ),
+    return ListComponent(
+      isLoading: viewModel.isLoading,
+      items: viewModel
+          .getProjects()
+          .map(
+            (Project project) => ProjectCard(
+              project: project,
+              onTap: viewModel.pickProjectHandler(project),
+              onEdit: _showProjectDialog(context, project: project),
+              onDelete: viewModel.deleteById(project.id),
+            ),
+          )
+          .toList(),
+      placeholder: 'Нет проектов',
+      onAdd: _showProjectDialog(context),
     );
   }
 

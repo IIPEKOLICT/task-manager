@@ -3,7 +3,7 @@ package taskmanager.backend.services.impl
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import org.bson.types.ObjectId
-import taskmanager.backend.exceptions.custom.InternalServerException
+import taskmanager.backend.plugins.exceptions.custom.InternalServerException
 import taskmanager.backend.services.AuthService
 import taskmanager.backend.shared.Configuration
 import java.time.Duration

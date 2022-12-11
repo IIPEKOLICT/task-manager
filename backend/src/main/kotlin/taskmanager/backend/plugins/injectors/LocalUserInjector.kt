@@ -5,8 +5,8 @@ import io.ktor.server.request.*
 import org.koin.java.KoinJavaComponent
 import taskmanager.backend.plugins.annotations.LocalUser
 import taskmanager.backend.dtos.request.LoginDto
-import taskmanager.backend.exceptions.custom.ForbiddenException
-import taskmanager.backend.exceptions.custom.UnauthorizedException
+import taskmanager.backend.plugins.exceptions.custom.ForbiddenException
+import taskmanager.backend.plugins.exceptions.custom.UnauthorizedException
 import taskmanager.backend.models.User
 import taskmanager.backend.services.UserService
 import kotlin.reflect.full.findAnnotation

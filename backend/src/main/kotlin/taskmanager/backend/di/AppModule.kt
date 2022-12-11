@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import taskmanager.backend.controllers.*
 import taskmanager.backend.enums.CollectionInfo
 import taskmanager.backend.mappers.*
+import taskmanager.backend.plugins.exceptions.ExceptionContainer
 import taskmanager.backend.plugins.middlewares.MiddlewareContainer
 import taskmanager.backend.services.*
 import taskmanager.backend.services.impl.*
@@ -59,6 +60,7 @@ object AppModule {
             single<FileService> { FileServiceImpl() }
 
             single { MiddlewareContainer(get(), get(), get(), get(), get(), get(), get()) }
+            single { ExceptionContainer() }
 
             single { TaskMapper(get(), get(), get()) }
             single { NoteMapper(get()) }

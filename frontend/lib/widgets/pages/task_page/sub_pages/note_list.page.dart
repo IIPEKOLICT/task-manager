@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
 import '../../../../view_models/note.view_model.dart';
+import '../../../components/list.component.dart';
 
 class NoteListPage extends StatelessWidget {
   const NoteListPage({super.key});
@@ -27,25 +28,20 @@ class NoteListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<NoteViewModel>();
 
-    return Scaffold(
-      body: ListView(
-        children: viewModel.isLoading
-            ? const [LinearProgressIndicator()]
-            : viewModel
-                .getNotes()
-                .map(
-                  (Note note) => NoteCard(
-                    note: note,
-                    onEdit: _showDialog(context, note: note),
-                    onDelete: viewModel.deleteById(note.id),
-                  ),
-                )
-                .toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showDialog(context),
-        child: const Icon(Icons.add),
-      ),
+    return ListComponent(
+      isLoading: viewModel.isLoading,
+      items: viewModel
+          .getNotes()
+          .map(
+            (Note note) => NoteCard(
+              note: note,
+              onEdit: _showDialog(context, note: note),
+              onDelete: viewModel.deleteById(note.id),
+            ),
+          )
+          .toList(),
+      placeholder: 'Нет заметок',
+      onAdd: _showDialog(context),
     );
   }
 

@@ -17,8 +17,9 @@ import taskmanager.backend.models.User
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.AttachmentService
 import taskmanager.backend.services.TaskService
+import taskmanager.backend.shared.Endpoint
 
-@Controller("attachments")
+@Controller(Endpoint.ATTACHMENTS)
 class AttachmentController(
     private val attachmentService: AttachmentService,
     private val taskService: TaskService

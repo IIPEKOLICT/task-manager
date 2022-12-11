@@ -1,4 +1,4 @@
-package taskmanager.backend.exceptions.custom.base
+package taskmanager.backend.plugins.exceptions.custom.base
 
 import io.ktor.http.*
 import taskmanager.backend.dtos.response.ExceptionResponseDto

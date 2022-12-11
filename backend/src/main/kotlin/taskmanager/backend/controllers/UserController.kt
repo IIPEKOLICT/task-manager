@@ -21,8 +21,9 @@ import taskmanager.backend.services.FileService
 import taskmanager.backend.services.ProjectService
 import taskmanager.backend.services.S3Service
 import taskmanager.backend.services.UserService
+import taskmanager.backend.shared.Endpoint
 
-@Controller("users")
+@Controller(Endpoint.USERS)
 class UserController(
     private val fileService: FileService,
     private val s3Service: S3Service,

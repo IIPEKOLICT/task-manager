@@ -6,6 +6,7 @@ import 'package:frontend/widgets/dialogs/tag.dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
+import '../../../components/list.component.dart';
 
 class TagListPage extends StatelessWidget {
   const TagListPage({super.key});
@@ -27,25 +28,20 @@ class TagListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<TagViewModel>();
 
-    return Scaffold(
-      body: ListView(
-        children: viewModel.isLoading
-            ? const [LinearProgressIndicator()]
-            : viewModel
-                .getTags()
-                .map(
-                  (Tag tag) => TagCard(
-                    tag: tag,
-                    onEdit: _showDialog(context, tag: tag),
-                    onDelete: viewModel.deleteById(tag.id),
-                  ),
-                )
-                .toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showDialog(context),
-        child: const Icon(Icons.add),
-      ),
+    return ListComponent(
+      isLoading: viewModel.isLoading,
+      items: viewModel
+          .getTags()
+          .map(
+            (Tag tag) => TagCard(
+              tag: tag,
+              onEdit: _showDialog(context, tag: tag),
+              onDelete: viewModel.deleteById(tag.id),
+            ),
+          )
+          .toList(),
+      placeholder: 'Нет тегов',
+      onAdd: _showDialog(context),
     );
   }
 

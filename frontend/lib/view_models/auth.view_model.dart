@@ -118,7 +118,8 @@ class AuthViewModel extends PageViewModel<AuthViewModel> with LoadableViewModel 
   Future<void> _tryRefreshToken() async {
     try {
       AuthDto data = await _authRepository.refreshToken();
-      _authState.setUserData(data).then((_) => context.go(RouteEnum.home.value));
+      toggleIsLoading();
+      _authState.setUserData(data);
     } catch (e) {
       await _authState.reset();
     }

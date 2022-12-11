@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
 import '../../../../models/attachment.dart';
+import '../../../components/list.component.dart';
 
 class AttachmentListPage extends StatelessWidget {
   const AttachmentListPage({super.key});
@@ -13,26 +14,21 @@ class AttachmentListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<AttachmentViewModel>();
 
-    return Scaffold(
-      body: ListView(
-        children: viewModel.isLoading
-            ? const [LinearProgressIndicator()]
-            : viewModel
-                .getAttachments()
-                .map(
-                  (Attachment attachment) => AttachmentCard(
-                    attachment: attachment,
-                    onCopy: viewModel.copyUrlHandler(attachment.url),
-                    onDownload: viewModel.downloadHandler(attachment),
-                    onDelete: viewModel.deleteById(attachment.id),
-                  ),
-                )
-                .toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: viewModel.createHandler,
-        child: const Icon(Icons.add),
-      ),
+    return ListComponent(
+      isLoading: viewModel.isLoading,
+      items: viewModel
+          .getAttachments()
+          .map(
+            (Attachment attachment) => AttachmentCard(
+              attachment: attachment,
+              onCopy: viewModel.copyUrlHandler(attachment.url),
+              onDownload: viewModel.downloadHandler(attachment),
+              onDelete: viewModel.deleteById(attachment.id),
+            ),
+          )
+          .toList(),
+      placeholder: 'Нет вложений',
+      onAdd: viewModel.createHandler,
     );
   }
 
