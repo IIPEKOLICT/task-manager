@@ -183,7 +183,7 @@ class TaskInfoPage extends StatelessWidget {
                 leading: const Icon(Icons.tag),
                 title: task.tags.isEmpty
                     ? const Text('Нет тегов')
-                    : Row(
+                    : Wrap(
                         children: task.tags.map((e) => TagComponent(e)).toList(),
                       ),
                 trailing: TextButton(
@@ -196,7 +196,7 @@ class TaskInfoPage extends StatelessWidget {
                 leading: const Icon(Icons.block),
                 title: blockedByTasks.isEmpty
                     ? const Text('Нет блокирующих задач')
-                    : Row(
+                    : Wrap(
                         children: blockedByTasks.map((Task t) {
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),

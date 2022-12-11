@@ -19,17 +19,21 @@ class TaskCard extends StatelessWidget {
     this.onDelete,
   });
 
-  List<Widget> get _buttons {
-    final List<Widget> publicWidgets = [
-      TextButton(
-        onPressed: onEditStatus,
-        child: Icon(Icons.task_alt, color: task.status.color),
-      ),
-      TextButton(
-        onPressed: onEditPriority,
-        child: Icon(Icons.priority_high, color: task.priority.color),
-      ),
-    ];
+  List<Widget> _renderButtons(bool isMobileResolution) {
+    final List<Widget> publicWidgets = [];
+
+    if (!isMobileResolution) {
+      publicWidgets.addAll([
+        TextButton(
+          onPressed: onEditStatus,
+          child: Icon(Icons.task_alt, color: task.status.color),
+        ),
+        TextButton(
+          onPressed: onEditPriority,
+          child: Icon(Icons.priority_high, color: task.priority.color),
+        ),
+      ]);
+    }
 
     if (task.canEdit) {
       publicWidgets.add(
@@ -45,6 +49,8 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobileResolution = MediaQuery.of(context).size.width <= 400;
+
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Card(
@@ -57,7 +63,7 @@ class TaskCard extends StatelessWidget {
               Text(task.description.isEmpty ? '(нет описания)' : task.description),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
+                child: Wrap(
                   children: task.tags.map((e) => TagComponent(e)).toList(),
                 ),
               ),
@@ -66,7 +72,7 @@ class TaskCard extends StatelessWidget {
           onTap: onTap,
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
-            children: _buttons,
+            children: _renderButtons(isMobileResolution),
           ),
         ),
       ),
