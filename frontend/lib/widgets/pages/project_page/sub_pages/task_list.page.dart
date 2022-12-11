@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../di/app.module.dart';
 import '../../../../enums/priority.enum.dart';
 import '../../../cards/task.card.dart';
+import '../../../components/list.component.dart';
 import '../../../dialogs/task/create_task.dialog.dart';
 
 class TaskListPage extends StatelessWidget {
@@ -77,27 +78,22 @@ class TaskListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<TaskListViewModel>();
 
-    return Scaffold(
-      body: ListView(
-        children: viewModel.isLoading
-            ? const [LinearProgressIndicator()]
-            : viewModel
-                .getTasks()
-                .map(
-                  (Task task) => TaskCard(
-                    task: task,
-                    onTap: viewModel.pickTaskHandler(task.id),
-                    onEditStatus: _showEditStatusDialog(context, task),
-                    onEditPriority: _showEditPriorityDialog(context, task),
-                    onDelete: viewModel.deleteById(task.id),
-                  ),
-                )
-                .toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showCreateDialog(context),
-        child: const Icon(Icons.add),
-      ),
+    return ListComponent(
+      isLoading: viewModel.isLoading,
+      items: viewModel
+          .getTasks()
+          .map(
+            (Task task) => TaskCard(
+              task: task,
+              onTap: viewModel.pickTaskHandler(task.id),
+              onEditStatus: _showEditStatusDialog(context, task),
+              onEditPriority: _showEditPriorityDialog(context, task),
+              onDelete: viewModel.deleteById(task.id),
+            ),
+          )
+          .toList(),
+      placeholder: 'Нет задач',
+      onAdd: _showCreateDialog(context),
     );
   }
 
