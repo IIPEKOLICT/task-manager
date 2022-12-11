@@ -16,21 +16,6 @@ class TaskServiceImpl(
     override val collection: CoroutineCollection<Task>
 ) : AttachedToProjectEntityServiceImpl<Task>(collection, CollectionInfo.TASK), TaskService {
 
-    override suspend fun getAllowedBlockedBy(task: Task): List<Task> {
-        return collection
-            .find(
-                and(
-                    Task::project eq task.project,
-                    nor(
-                        Task::blockedBy contains task._id,
-                        Task::_id eq task._id,
-                        Task::_id `in` task.blockedBy
-                    )
-                )
-            )
-            .toList()
-    }
-
     override suspend fun create(userId: ObjectId, projectId: ObjectId, dto: CreateTaskDto): Task {
         val task = Task(
             createdBy = userId,

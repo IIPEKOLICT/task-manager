@@ -26,10 +26,6 @@ class TaskRepository extends BaseRepository {
     return Task.fromJson(await get<Map<String, dynamic>>(path: id));
   }
 
-  Future<List<Task>> getAllowedBlockedBy(String id) async {
-    return (await get<List>(path: '$id/blocked-by')).map((json) => Task.fromJson(json)).toList();
-  }
-
   Future<List<Note>> getTaskNotes(String id) async {
     return (await get<List>(path: '$id/notes')).map((json) => Note.fromJson(json)).toList();
   }
