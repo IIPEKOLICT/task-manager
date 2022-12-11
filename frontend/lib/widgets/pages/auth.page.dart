@@ -22,6 +22,23 @@ class AuthPage extends StatelessWidget {
     };
   }
 
+  Widget _renderContainer({required bool isMobile, required List<Widget> items}) {
+    return isMobile
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: items,
+          )
+        : Center(
+            child: SizedBox(
+              width: 300,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: items,
+              ),
+            ),
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<AuthViewModel>();
@@ -44,9 +61,9 @@ class AuthPage extends StatelessWidget {
                 strokeWidth: 5,
               ),
             )
-          : Column(
-              mainAxisAlignment: isMobile ? MainAxisAlignment.end : MainAxisAlignment.center,
-              children: [
+          : _renderContainer(
+              isMobile: isMobile,
+              items: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 10),
                   child: GestureDetector(
@@ -55,7 +72,7 @@ class AuthPage extends StatelessWidget {
                       color: Colors.green,
                       size: 120,
                     ),
-                    onTap: () => SuccessSnackbar.show('Java лучший язык!', context),
+                    onTap: () => SuccessSnackbar.show(_easterEgg, context),
                   ),
                 ),
                 ListTile(
@@ -81,4 +98,6 @@ class AuthPage extends StatelessWidget {
       child: const AuthPage(),
     );
   }
+
+  static const String _easterEgg = 'Java лучший язык!';
 }
