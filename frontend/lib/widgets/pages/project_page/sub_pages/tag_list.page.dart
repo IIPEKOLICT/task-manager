@@ -18,7 +18,7 @@ class TagListPage extends StatelessWidget {
 
       await showDialog(
         context: context,
-        builder: (BuildContext ctx) => TagDialog.onCreate(context.read()),
+        builder: (BuildContext ctx) => TagDialog.onCreate(viewModel),
       );
     };
   }

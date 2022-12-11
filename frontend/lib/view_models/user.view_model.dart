@@ -126,7 +126,7 @@ class UserViewModel extends PageViewModel<UserViewModel> {
   }
 
   void logout() {
-    _authState.reset().then((_) => context.go(RouteEnum.login.value));
+    _authState.reset().then((_) => context.go(RouteEnum.auth.value));
   }
 
   @override

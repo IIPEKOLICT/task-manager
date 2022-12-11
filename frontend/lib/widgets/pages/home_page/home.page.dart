@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/widgets/bottom_bar_page.dart';
 import 'package:frontend/widgets/pages/home_page/sub_pages/project_list.page.dart';
 import 'package:frontend/widgets/pages/home_page/sub_pages/user.page.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../data/bottom_bar.data.dart';
 
@@ -12,7 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomBarPage(
-      onBack: () => SystemNavigator.pop(animated: true),
+      onBack: () => context.go(RouteEnum.auth.value),
       items: _tabItems,
     );
   }
