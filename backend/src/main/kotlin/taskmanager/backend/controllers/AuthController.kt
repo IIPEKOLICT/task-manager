@@ -16,9 +16,10 @@ import taskmanager.backend.plugins.exceptions.custom.UnauthorizedException
 import taskmanager.backend.models.User
 import taskmanager.backend.services.AuthService
 import taskmanager.backend.services.UserService
+import taskmanager.backend.shared.Endpoint
 import java.util.*
 
-@Controller("auth")
+@Controller(Endpoint.AUTH)
 class AuthController(
     private val authService: AuthService,
     private val userService: UserService

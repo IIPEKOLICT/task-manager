@@ -26,8 +26,9 @@ import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.*
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.*
+import taskmanager.backend.shared.Endpoint
 
-@Controller("tasks")
+@Controller(Endpoint.TASKS)
 class TaskController(
     private val taskService: TaskService,
     private val workService: WorkService,

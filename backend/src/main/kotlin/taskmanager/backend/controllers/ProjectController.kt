@@ -29,8 +29,9 @@ import taskmanager.backend.services.ProjectService
 import taskmanager.backend.services.TagService
 import taskmanager.backend.services.TaskService
 import taskmanager.backend.services.UserService
+import taskmanager.backend.shared.Endpoint
 
-@Controller("projects")
+@Controller(Endpoint.PROJECTS)
 class ProjectController(
     private val projectService: ProjectService,
     private val tagService: TagService,

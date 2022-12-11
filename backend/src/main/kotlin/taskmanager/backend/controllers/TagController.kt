@@ -15,8 +15,9 @@ import taskmanager.backend.models.Tag
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.TagService
 import taskmanager.backend.services.TaskService
+import taskmanager.backend.shared.Endpoint
 
-@Controller("tags")
+@Controller(Endpoint.TAGS)
 class TagController(
     private val tagService: TagService,
     private val taskService: TaskService

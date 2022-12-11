@@ -19,8 +19,9 @@ import taskmanager.backend.models.Work
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.TaskService
 import taskmanager.backend.services.WorkService
+import taskmanager.backend.shared.Endpoint
 
-@Controller("works")
+@Controller(Endpoint.WORKS)
 class WorkController(
     private val workService: WorkService,
     private val taskService: TaskService,
