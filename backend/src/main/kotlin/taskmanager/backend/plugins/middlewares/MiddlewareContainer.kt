@@ -9,7 +9,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import org.bson.types.ObjectId
 import taskmanager.backend.enums.EditableEntity
-import taskmanager.backend.exceptions.custom.ForbiddenException
+import taskmanager.backend.plugins.exceptions.custom.ForbiddenException
 import taskmanager.backend.plugins.annotations.EditAccess
 import taskmanager.backend.services.*
 import taskmanager.backend.services.base.CreatedByUserEntityService

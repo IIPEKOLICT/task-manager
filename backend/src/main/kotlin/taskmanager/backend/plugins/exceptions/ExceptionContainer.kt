@@ -1,4 +1,4 @@
-package taskmanager.backend.exceptions
+package taskmanager.backend.plugins.exceptions
 
 import com.github.iipekolict.knest.annotations.methods.DefaultExceptionHandler
 import com.github.iipekolict.knest.annotations.methods.ExceptionHandler
@@ -10,10 +10,10 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import taskmanager.backend.dtos.response.ExceptionResponseDto
-import taskmanager.backend.exceptions.custom.*
-import taskmanager.backend.exceptions.custom.NotFoundException
+import taskmanager.backend.plugins.exceptions.custom.*
+import taskmanager.backend.plugins.exceptions.custom.NotFoundException
 
-object ExceptionContainer {
+class ExceptionContainer {
 
     @DefaultExceptionHandler
     suspend fun defaultExceptionHandler(@Call call: ApplicationCall, @Exc exception: Exception) {

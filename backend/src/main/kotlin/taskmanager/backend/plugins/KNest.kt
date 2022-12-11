@@ -7,7 +7,7 @@ import io.ktor.server.application.*
 import org.bson.types.ObjectId
 import org.koin.ktor.ext.inject
 import taskmanager.backend.controllers.*
-import taskmanager.backend.exceptions.ExceptionContainer
+import taskmanager.backend.plugins.exceptions.ExceptionContainer
 import taskmanager.backend.plugins.injectors.JwtUserInjector
 import taskmanager.backend.plugins.injectors.LocalUserInjector
 import taskmanager.backend.plugins.middlewares.MiddlewareContainer
@@ -30,6 +30,7 @@ fun Application.configureKNest() {
     val attachmentController by inject<AttachmentController>()
 
     val middlewareContainer by inject<MiddlewareContainer>()
+    val exceptionContainer by inject<ExceptionContainer>()
 
     install(KNest) {
         framework {
@@ -50,7 +51,7 @@ fun Application.configureKNest() {
         }
 
         exceptionHandling {
-            setContainers(ExceptionContainer)
+            setContainers(exceptionContainer)
         }
 
         middleware {

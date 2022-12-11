@@ -5,7 +5,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import org.bson.types.ObjectId
 import org.koin.java.KoinJavaComponent
-import taskmanager.backend.exceptions.custom.UnauthorizedException
+import taskmanager.backend.plugins.exceptions.custom.UnauthorizedException
 import taskmanager.backend.plugins.annotations.JwtUser
 import taskmanager.backend.models.User
 import taskmanager.backend.services.UserService

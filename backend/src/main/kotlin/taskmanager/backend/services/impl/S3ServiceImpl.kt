@@ -6,7 +6,7 @@ import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.*
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
-import taskmanager.backend.exceptions.custom.AWSException
+import taskmanager.backend.plugins.exceptions.custom.AWSException
 import taskmanager.backend.services.S3Service
 import taskmanager.backend.shared.Configuration
 import java.time.Duration
