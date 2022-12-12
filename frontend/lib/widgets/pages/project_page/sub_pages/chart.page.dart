@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gantt_chart/gantt_chart.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
 import '../../../../models/gantt_item.dart';
+import '../../../../shared/utils.dart';
 import '../../../../view_models/gantt.view_model.dart';
 
 class ChartPage extends StatelessWidget {
@@ -116,7 +115,6 @@ class ChartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<GanttViewModel>();
-    final bool isMobile = Platform.isAndroid || Platform.isIOS;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -126,7 +124,7 @@ class ChartPage extends StatelessWidget {
                 maxDuration: Duration(hours: viewModel.getHours()),
                 startDate: DateTime.now(),
                 stickyAreaWidth: 200,
-                showStickyArea: !isMobile,
+                showStickyArea: !isMobileResolution(context),
                 showDays: true,
                 startOfTheWeek: WeekDay.monday,
                 weekEnds: const {},

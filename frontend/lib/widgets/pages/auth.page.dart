@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/constants/ui.dart';
@@ -7,6 +5,7 @@ import 'package:frontend/widgets/shackbars/success.snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '../../di/app.module.dart';
+import '../../shared/utils.dart';
 import '../../view_models/auth.view_model.dart';
 import '../dialogs/auth.dialog.dart';
 
@@ -42,7 +41,6 @@ class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<AuthViewModel>();
-    final bool isMobile = Platform.isAndroid || Platform.isIOS;
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +60,7 @@ class AuthPage extends StatelessWidget {
               ),
             )
           : _renderContainer(
-              isMobile: isMobile,
+              isMobile: isMobileResolution(context),
               items: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 10),
