@@ -1,38 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/enums/status.enum.dart';
 import 'package:frontend/models/task.dart';
 import 'package:frontend/view_models/task_list.view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
-import '../../../../enums/priority.enum.dart';
 import '../../../cards/task.card.dart';
 import '../../../components/list.component.dart';
 import '../../../dialogs/task/create_task.dialog.dart';
+import '../../../dialogs/task/edit_task_popup.dialog.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({super.key});
 
   Future<void> Function() _showEditStatusDialog(BuildContext context, Task task) {
-    final viewModel = context.read<TaskListViewModel>();
-
     return () async {
+      final viewModel = context.read<TaskListViewModel>();
+
       await showDialog(
         context: context,
         builder: (BuildContext ctx) {
-          return AlertDialog(
-            scrollable: true,
-            title: const Text('Изменить статус'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: StatusEnum.values.map((StatusEnum status) {
-                return PopupMenuItem(
-                  onTap: viewModel.updateStatusHandler(task.id, status),
-                  textStyle: TextStyle(color: status == task.status ? Colors.white : Colors.grey),
-                  child: Text(status.label),
-                );
-              }).toList(),
-            ),
+          return EditTaskPopupDialog.createStatusDialog(
+            onPick: viewModel.updateStatusHandler(task.id),
+            task: task,
           );
         },
       );
@@ -40,25 +29,15 @@ class TaskListPage extends StatelessWidget {
   }
 
   Future<void> Function() _showEditPriorityDialog(BuildContext context, Task task) {
-    final viewModel = context.read<TaskListViewModel>();
-
     return () async {
+      final viewModel = context.read<TaskListViewModel>();
+
       await showDialog(
         context: context,
         builder: (BuildContext ctx) {
-          return AlertDialog(
-            scrollable: true,
-            title: const Text('Изменить приоритет'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: PriorityEnum.values.map((PriorityEnum priority) {
-                return PopupMenuItem(
-                  onTap: viewModel.updatePriorityHandler(task.id, priority),
-                  textStyle: TextStyle(color: priority == task.priority ? Colors.white : Colors.grey),
-                  child: Text(priority.label),
-                );
-              }).toList(),
-            ),
+          return EditTaskPopupDialog.createPriorityDialog(
+            onPick: viewModel.updatePriorityHandler(task.id),
+            task: task,
           );
         },
       );
