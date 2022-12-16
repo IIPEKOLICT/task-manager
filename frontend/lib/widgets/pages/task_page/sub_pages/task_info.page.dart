@@ -7,10 +7,9 @@ import 'package:frontend/widgets/dialogs/task/edit_task_tags.dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../di/app.module.dart';
-import '../../../../enums/priority.enum.dart';
-import '../../../../enums/status.enum.dart';
 import '../../../../models/user.dart';
 import '../../../components/tag.component.dart';
+import '../../../dialogs/task/edit_task_popup.dialog.dart';
 
 class TaskInfoPage extends StatelessWidget {
   const TaskInfoPage({super.key});
@@ -22,19 +21,9 @@ class TaskInfoPage extends StatelessWidget {
       await showDialog(
         context: context,
         builder: (BuildContext ctx) {
-          return AlertDialog(
-            scrollable: true,
-            title: const Text('Изменить статус'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: StatusEnum.values.map((StatusEnum status) {
-                return PopupMenuItem(
-                  onTap: viewModel.updateStatusHandler(task.id, status),
-                  textStyle: TextStyle(color: status == task.status ? Colors.white : Colors.grey),
-                  child: Text(status.label),
-                );
-              }).toList(),
-            ),
+          return EditTaskPopupDialog.createStatusDialog(
+            onPick: viewModel.updateStatusHandler(task.id),
+            task: task,
           );
         },
       );
@@ -48,19 +37,9 @@ class TaskInfoPage extends StatelessWidget {
       await showDialog(
         context: context,
         builder: (BuildContext ctx) {
-          return AlertDialog(
-            scrollable: true,
-            title: const Text('Изменить приоритет'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: PriorityEnum.values.map((PriorityEnum priority) {
-                return PopupMenuItem(
-                  onTap: viewModel.updatePriorityHandler(task.id, priority),
-                  textStyle: TextStyle(color: priority == task.priority ? Colors.white : Colors.grey),
-                  child: Text(priority.label),
-                );
-              }).toList(),
-            ),
+          return EditTaskPopupDialog.createPriorityDialog(
+            onPick: viewModel.updatePriorityHandler(task.id),
+            task: task,
           );
         },
       );
@@ -74,21 +53,10 @@ class TaskInfoPage extends StatelessWidget {
       await showDialog(
         context: context,
         builder: (BuildContext ctx) {
-          return AlertDialog(
-            scrollable: true,
-            title: const Text('Изменить исполнителя'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: viewModel.getProjectUsers().map((User user) {
-                return PopupMenuItem(
-                  onTap: viewModel.updateAssignedToHandler(task.id, user),
-                  textStyle: TextStyle(
-                    color: task.assignedTo?.id == user.id ? Colors.white : Colors.grey,
-                  ),
-                  child: Text('${user.firstName} ${user.lastName}'),
-                );
-              }).toList(),
-            ),
+          return EditTaskPopupDialog.createAssignedToDialog(
+            onPick: viewModel.updateAssignedToHandler(task.id),
+            users: viewModel.getProjectUsers(),
+            task: task,
           );
         },
       );

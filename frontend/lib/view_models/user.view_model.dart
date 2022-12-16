@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend/enums/route.enum.dart';
 import 'package:frontend/models/user.dart';
-import 'package:frontend/view_models/state/auth.state.dart';
+import 'package:frontend/state/auth.state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 

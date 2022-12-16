@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/models/attachment.dart';
+import 'package:frontend/state/attachment.state.dart';
+import 'package:frontend/state/task.state.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
 import 'package:frontend/view_models/base/page.view_model.dart';
-import 'package:frontend/view_models/state/attachment.state.dart';
-import 'package:frontend/view_models/state/task.state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../repositories/attachment.repository.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/widgets/components/tag.component.dart';
 
 import '../../models/task.dart';
+import '../../shared/utils.dart';
 
 class TaskCard extends StatelessWidget {
   final Task task;
@@ -49,8 +50,6 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isMobileResolution = MediaQuery.of(context).size.width <= 400;
-
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Card(
@@ -72,7 +71,7 @@ class TaskCard extends StatelessWidget {
           onTap: onTap,
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
-            children: _renderButtons(isMobileResolution),
+            children: _renderButtons(isMobileResolution(context)),
           ),
         ),
       ),

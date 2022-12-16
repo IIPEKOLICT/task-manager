@@ -1,10 +1,10 @@
 import 'package:frontend/enums/priority.enum.dart';
 import 'package:frontend/models/task.dart';
 import 'package:frontend/repositories/project.repository.dart';
+import 'package:frontend/state/project.state.dart';
+import 'package:frontend/state/task.state.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
-import 'package:frontend/view_models/state/project.state.dart';
-import 'package:frontend/view_models/state/task.state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
@@ -50,22 +50,20 @@ class TaskListViewModel extends BaseViewModel with LoadableViewModel {
     }
   }
 
-  Future<void> Function() _update(Future<Task> Function() taskGetter) {
-    return () async {
-      try {
-        _taskState.updateEntity(await taskGetter());
-      } catch (e) {
-        onException(e);
-      }
-    };
+  Future<void> _update(Future<Task> Function() taskGetter) async {
+    try {
+      _taskState.updateEntity(await taskGetter());
+    } catch (e) {
+      onException(e);
+    }
   }
 
-  Future<void> Function() updatePriorityHandler(String id, PriorityEnum priority) {
-    return _update(() async => _taskRepository.updatePriority(id, priority));
+  Future<void> Function(PriorityEnum) updatePriorityHandler(String id) {
+    return (PriorityEnum priority) async => _update(() async => _taskRepository.updatePriority(id, priority));
   }
 
-  Future<void> Function() updateStatusHandler(String id, StatusEnum status) {
-    return _update(() async => _taskRepository.updateStatus(id, status));
+  Future<void> Function(StatusEnum) updateStatusHandler(String id) {
+    return (StatusEnum status) async => _update(() async => _taskRepository.updateStatus(id, status));
   }
 
   Future<void> Function() deleteById(String id) {

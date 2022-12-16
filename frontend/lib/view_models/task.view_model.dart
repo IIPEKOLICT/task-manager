@@ -6,10 +6,10 @@ import 'package:frontend/models/tag.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/repositories/project.repository.dart';
 import 'package:frontend/repositories/task.repository.dart';
-import 'package:frontend/view_models/state/project.state.dart';
-import 'package:frontend/view_models/state/tag.state.dart';
-import 'package:frontend/view_models/state/task.state.dart';
-import 'package:frontend/view_models/state/user.state.dart';
+import 'package:frontend/state/project.state.dart';
+import 'package:frontend/state/tag.state.dart';
+import 'package:frontend/state/task.state.dart';
+import 'package:frontend/state/user.state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../models/task.dart';
@@ -233,26 +233,24 @@ class TaskViewModel extends PageViewModel<TaskViewModel> {
     );
   }
 
-  Future<void> Function() _update(Future<Task> Function() taskGetter) {
-    return () async {
-      try {
-        _taskState.setCurrent(await taskGetter());
-      } catch (e) {
-        onException(e);
-      }
-    };
+  Future<void> _update(Future<Task> Function() taskGetter) async {
+    try {
+      _taskState.setCurrent(await taskGetter());
+    } catch (e) {
+      onException(e);
+    }
   }
 
-  Future<void> Function() updatePriorityHandler(String id, PriorityEnum priority) {
-    return _update(() async => _taskRepository.updatePriority(id, priority));
+  Future<void> Function(PriorityEnum) updatePriorityHandler(String id) {
+    return (PriorityEnum priority) async => _update(() async => _taskRepository.updatePriority(id, priority));
   }
 
-  Future<void> Function() updateStatusHandler(String id, StatusEnum status) {
-    return _update(() async => _taskRepository.updateStatus(id, status));
+  Future<void> Function(StatusEnum) updateStatusHandler(String id) {
+    return (StatusEnum status) async => _update(() async => _taskRepository.updateStatus(id, status));
   }
 
-  Future<void> Function() updateAssignedToHandler(String id, User user) {
-    return _update(() async => _taskRepository.updateAssignedTo(id, user.id));
+  Future<void> Function(User) updateAssignedToHandler(String id) {
+    return (User user) async => _update(() async => _taskRepository.updateAssignedTo(id, user.id));
   }
 
   Future<void> updateTagsHandler() {

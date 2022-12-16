@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/note.dart';
+import 'package:frontend/state/note.state.dart';
+import 'package:frontend/state/task.state.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
 import 'package:frontend/view_models/base/page.view_model.dart';
-import 'package:frontend/view_models/state/note.state.dart';
-import 'package:frontend/view_models/state/task.state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../repositories/note.repository.dart';
