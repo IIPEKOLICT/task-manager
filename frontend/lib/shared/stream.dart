@@ -1,4 +1,4 @@
-import 'package:frontend/view_models/shared/observable.dart';
+import 'package:frontend/shared/observable.dart';
 
 class Stream<T> extends Observable<T> {
   T _value;

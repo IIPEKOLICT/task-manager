@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/tag.dart';
 import 'package:frontend/repositories/project.repository.dart';
 import 'package:frontend/repositories/tag.repository.dart';
+import 'package:frontend/state/project.state.dart';
+import 'package:frontend/state/tag.state.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
 import 'package:frontend/view_models/base/page.view_model.dart';
-import 'package:frontend/view_models/state/project.state.dart';
-import 'package:frontend/view_models/state/tag.state.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()

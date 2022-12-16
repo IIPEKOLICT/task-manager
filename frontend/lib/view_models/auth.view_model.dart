@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:frontend/dtos/response/auth.dto.dart';
 import 'package:frontend/repositories/auth.repository.dart';
 import 'package:frontend/repositories/main.repository.dart';
+import 'package:frontend/state/auth.state.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
 import 'package:frontend/view_models/base/page.view_model.dart';
-import 'package:frontend/view_models/state/auth.state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 

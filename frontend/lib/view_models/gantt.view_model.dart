@@ -1,9 +1,9 @@
 import 'package:frontend/dtos/response/gantt_chart.dto.dart';
 import 'package:frontend/models/gantt_item.dart';
 import 'package:frontend/repositories/project.repository.dart';
+import 'package:frontend/state/project.state.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
-import 'package:frontend/view_models/state/project.state.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:frontend/services/storage.service.dart';
-import 'package:frontend/view_models/state/auth.state.dart';
+import 'package:frontend/state/auth.state.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()

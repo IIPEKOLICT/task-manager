@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/comment.dart';
 import 'package:frontend/repositories/comment.repository.dart';
+import 'package:frontend/state/comment.state.dart';
+import 'package:frontend/state/task.state.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
 import 'package:frontend/view_models/base/page.view_model.dart';
-import 'package:frontend/view_models/state/comment.state.dart';
-import 'package:frontend/view_models/state/task.state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../repositories/task.repository.dart';

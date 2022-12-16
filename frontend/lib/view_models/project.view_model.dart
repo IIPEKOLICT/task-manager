@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/repositories/project.repository.dart';
+import 'package:frontend/state/auth.state.dart';
+import 'package:frontend/state/project.state.dart';
+import 'package:frontend/state/tag.state.dart';
+import 'package:frontend/state/user.state.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
 import 'package:frontend/view_models/base/page.view_model.dart';
-import 'package:frontend/view_models/state/auth.state.dart';
-import 'package:frontend/view_models/state/project.state.dart';
-import 'package:frontend/view_models/state/tag.state.dart';
-import 'package:frontend/view_models/state/user.state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 

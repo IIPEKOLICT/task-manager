@@ -1,6 +1,6 @@
 import 'package:frontend/models/base/base_entity.dart';
-import 'package:frontend/view_models/shared/observable.dart';
-import 'package:frontend/view_models/shared/stream.dart';
+import 'package:frontend/shared/observable.dart';
+import 'package:frontend/shared/stream.dart';
 
 abstract class SharableState<E extends BaseEntity> {
   final Stream<List<E>> _entities$ = Stream([]);

@@ -1,10 +1,10 @@
 import 'package:frontend/enums/priority.enum.dart';
 import 'package:frontend/models/task.dart';
 import 'package:frontend/repositories/project.repository.dart';
+import 'package:frontend/state/project.state.dart';
+import 'package:frontend/state/task.state.dart';
 import 'package:frontend/view_models/base/base.view_model.dart';
 import 'package:frontend/view_models/base/loadable.view_model.dart';
-import 'package:frontend/view_models/state/project.state.dart';
-import 'package:frontend/view_models/state/task.state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 

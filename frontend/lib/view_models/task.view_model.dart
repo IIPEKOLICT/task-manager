@@ -6,10 +6,10 @@ import 'package:frontend/models/tag.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/repositories/project.repository.dart';
 import 'package:frontend/repositories/task.repository.dart';
-import 'package:frontend/view_models/state/project.state.dart';
-import 'package:frontend/view_models/state/tag.state.dart';
-import 'package:frontend/view_models/state/task.state.dart';
-import 'package:frontend/view_models/state/user.state.dart';
+import 'package:frontend/state/project.state.dart';
+import 'package:frontend/state/tag.state.dart';
+import 'package:frontend/state/task.state.dart';
+import 'package:frontend/state/user.state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../models/task.dart';
