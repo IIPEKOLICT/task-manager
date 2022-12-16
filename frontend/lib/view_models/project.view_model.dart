@@ -78,6 +78,7 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> with LoadableView
 
   void setProject(Project? value) {
     _projectState.setCurrent(value);
+    _projectState.setCurrentId(value?.id);
   }
 
   void Function(bool?) changeMemberHandler(String userId) {
@@ -127,6 +128,7 @@ class ProjectViewModel extends PageViewModel<ProjectViewModel> with LoadableView
       onException(e);
     } finally {
       _projectState.setCurrent(null);
+      _projectState.setCurrentId(null);
       Navigator.of(context).pop();
     }
   }

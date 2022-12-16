@@ -14,13 +14,11 @@ import '../../components/text_input.component.dart';
 class CreateTaskDialog extends StatelessWidget {
   const CreateTaskDialog({super.key});
 
-  List<Widget> _getAssignedToRowWidgets(TaskViewModel viewModel) {
+  List<Widget> _getAssignedToRowWidgets(TaskViewModel viewModel, List<User> projectUsers) {
     final List<Widget> list = [
       const Text('Исполнитель'),
       const SizedBox(width: 10),
     ];
-
-    final List<User> projectUsers = viewModel.getProjectUsers();
 
     if (projectUsers.isNotEmpty) {
       list.add(
@@ -134,7 +132,7 @@ class CreateTaskDialog extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: _getAssignedToRowWidgets(viewModel),
+              children: _getAssignedToRowWidgets(viewModel, viewModel.getProjectUsers()),
             ),
           ),
           const Divider(),
