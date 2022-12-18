@@ -1,22 +1,21 @@
-import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/models/note.dart';
+import 'package:frontend/repositories/base/read_delete.repository.dart';
 import 'package:injectable/injectable.dart';
 
 import 'base/base.repository.dart';
 
 @LazySingleton()
-class NoteRepository extends BaseRepository {
+class NoteRepository extends BaseRepository with ReadDeleteRepository<Note> {
   NoteRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'notes';
 
-  Future<Note> getById(String id) async {
-    return Note.fromJson(await get<Map<String, dynamic>>(path: id));
-  }
+  @override
+  Note Function(Map<String, dynamic> p1) get convertResponse => Note.fromJson;
 
   Future<Note> updateById(String id, String header, String text) async {
-    return Note.fromJson(
+    return convertResponse(
       await put<Map<String, dynamic>>(
         path: id,
         body: {
@@ -25,9 +24,5 @@ class NoteRepository extends BaseRepository {
         },
       ),
     );
-  }
-
-  Future<String> deleteById(String id) async {
-    return DeleteDto.fromJson(await delete<Map<String, dynamic>>(path: id)).id;
   }
 }

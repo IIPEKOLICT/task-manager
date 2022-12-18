@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/enums/status.enum.dart';
 import 'package:frontend/models/attachment.dart';
 import 'package:frontend/models/comment.dart';
 import 'package:frontend/models/note.dart';
+import 'package:frontend/repositories/base/read_delete.repository.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mime/mime.dart';
@@ -16,15 +16,14 @@ import '../models/work.dart';
 import 'base/base.repository.dart';
 
 @LazySingleton()
-class TaskRepository extends BaseRepository {
+class TaskRepository extends BaseRepository with ReadDeleteRepository<Task> {
   TaskRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'tasks';
 
-  Future<Task> getById(String id) async {
-    return Task.fromJson(await get<Map<String, dynamic>>(path: id));
-  }
+  @override
+  Task Function(Map<String, dynamic> p1) get convertResponse => Task.fromJson;
 
   Future<List<Note>> getTaskNotes(String id) async {
     return (await get<List>(path: '$id/notes')).map((json) => Note.fromJson(json)).toList();
@@ -98,14 +97,14 @@ class TaskRepository extends BaseRepository {
   }
 
   Future<Task> updateInfo(String id, String title, String description, num? expectedHours) async {
-    return Task.fromJson(await patch<Map<String, dynamic>>(
+    return convertResponse(await patch<Map<String, dynamic>>(
       path: '$id/info',
       body: {'title': title, 'description': description, 'expectedHours': expectedHours},
     ));
   }
 
   Future<Task> updateAssignedTo(String id, String userId) async {
-    return Task.fromJson(
+    return convertResponse(
       await patch<Map<String, dynamic>>(
         path: '$id/assigned-to',
         body: {'assignedTo': userId},
@@ -114,7 +113,7 @@ class TaskRepository extends BaseRepository {
   }
 
   Future<Task> updateStatus(String id, StatusEnum status) async {
-    return Task.fromJson(
+    return convertResponse(
       await patch<Map<String, dynamic>>(
         path: '$id/status',
         body: {'status': status.value},
@@ -123,7 +122,7 @@ class TaskRepository extends BaseRepository {
   }
 
   Future<Task> updatePriority(String id, PriorityEnum priority) async {
-    return Task.fromJson(
+    return convertResponse(
       await patch<Map<String, dynamic>>(
         path: '$id/priority',
         body: {'priority': priority.value},
@@ -132,7 +131,7 @@ class TaskRepository extends BaseRepository {
   }
 
   Future<Task> updateTags(String id, List<String> tags) async {
-    return Task.fromJson(
+    return convertResponse(
       await patch<Map<String, dynamic>>(
         path: '$id/tags',
         body: {'tags': tags},
@@ -141,15 +140,11 @@ class TaskRepository extends BaseRepository {
   }
 
   Future<Task> updateBlockedBy(String id, List<String> blockedBy) async {
-    return Task.fromJson(
+    return convertResponse(
       await patch<Map<String, dynamic>>(
         path: '$id/blocked-by',
         body: {'blockedBy': blockedBy},
       ),
     );
-  }
-
-  Future<String> deleteById(String id) async {
-    return DeleteDto.fromJson(await delete<Map<String, dynamic>>(path: id)).id;
   }
 }

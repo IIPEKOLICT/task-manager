@@ -1,25 +1,20 @@
-import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/models/tag.dart';
+import 'package:frontend/repositories/base/read_delete.repository.dart';
 import 'package:injectable/injectable.dart';
 
 import 'base/base.repository.dart';
 
 @LazySingleton()
-class TagRepository extends BaseRepository {
+class TagRepository extends BaseRepository with ReadDeleteRepository<Tag> {
   TagRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'tags';
 
-  Future<Tag> getById(String id) async {
-    return Tag.fromJson(await get<Map<String, dynamic>>(path: id));
-  }
+  @override
+  Tag Function(Map<String, dynamic> p1) get convertResponse => Tag.fromJson;
 
   Future<Tag> updateName(String id, String name) async {
-    return Tag.fromJson(await patch<Map<String, dynamic>>(path: '$id/name', body: {'name': name}));
-  }
-
-  Future<String> deleteById(String id) async {
-    return DeleteDto.fromJson(await delete<Map<String, dynamic>>(path: id)).id;
+    return convertResponse(await patch<Map<String, dynamic>>(path: '$id/name', body: {'name': name}));
   }
 }

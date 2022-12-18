@@ -1,19 +1,18 @@
-import 'package:frontend/dtos/response/delete.dto.dart';
+import 'package:frontend/repositories/base/read_delete.repository.dart';
 import 'package:injectable/injectable.dart';
 
 import '../models/work.dart';
 import 'base/base.repository.dart';
 
 @LazySingleton()
-class WorkRepository extends BaseRepository {
+class WorkRepository extends BaseRepository with ReadDeleteRepository<Work> {
   WorkRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'works';
 
-  Future<Work> getById(String id) async {
-    return Work.fromJson(await get<Map<String, dynamic>>(path: id));
-  }
+  @override
+  Work Function(Map<String, dynamic> p1) get convertResponse => Work.fromJson;
 
   Future<Work> updateById(
     String id,
@@ -21,7 +20,7 @@ class WorkRepository extends BaseRepository {
     DateTime startDate,
     DateTime endDate,
   ) async {
-    return Work.fromJson(
+    return convertResponse(
       await put<Map<String, dynamic>>(
         path: id,
         body: {
@@ -31,9 +30,5 @@ class WorkRepository extends BaseRepository {
         },
       ),
     );
-  }
-
-  Future<String> deleteById(String id) async {
-    return DeleteDto.fromJson(await delete<Map<String, dynamic>>(path: id)).id;
   }
 }
