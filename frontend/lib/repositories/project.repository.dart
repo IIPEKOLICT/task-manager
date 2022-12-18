@@ -1,8 +1,8 @@
-import 'package:frontend/dtos/response/delete.dto.dart';
 import 'package:frontend/dtos/response/gantt_chart.dto.dart';
 import 'package:frontend/models/project.dart';
 import 'package:frontend/models/tag.dart';
 import 'package:frontend/models/user.dart';
+import 'package:frontend/repositories/base/read_delete.repository.dart';
 import 'package:injectable/injectable.dart';
 
 import '../dtos/request/create_task.dto.dart';
@@ -10,18 +10,17 @@ import '../models/task.dart';
 import 'base/base.repository.dart';
 
 @LazySingleton()
-class ProjectRepository extends BaseRepository {
+class ProjectRepository extends BaseRepository with ReadDeleteRepository<Project> {
   ProjectRepository(super.httpClient, super.mainInterceptor);
 
   @override
   String get endpoint => 'projects';
 
-  Future<List<Project>> getByUser() async {
-    return (await get<List>()).map((json) => Project.fromJson(json)).toList();
-  }
+  @override
+  Project Function(Map<String, dynamic> p1) get convertResponse => Project.fromJson;
 
-  Future<Project> getById(String id) async {
-    return Project.fromJson(await get<Map<String, dynamic>>(path: id));
+  Future<List<Project>> getByUser() async {
+    return (await get<List>()).map((json) => convertResponse(json)).toList();
   }
 
   Future<List<Tag>> getProjectTags(String id) async {
@@ -41,7 +40,7 @@ class ProjectRepository extends BaseRepository {
   }
 
   Future<Project> create(String name, List<String> members) async {
-    return Project.fromJson(await post<Map<String, dynamic>>(body: {'name': name, 'members': members}));
+    return convertResponse(await post<Map<String, dynamic>>(body: {'name': name, 'members': members}));
   }
 
   Future<Tag> createProjectTag(String projectId, String name) async {
@@ -53,10 +52,6 @@ class ProjectRepository extends BaseRepository {
   }
 
   Future<Project> updateById(String id, String name, List<String> members) async {
-    return Project.fromJson(await put<Map<String, dynamic>>(path: id, body: {'name': name, 'members': members}));
-  }
-
-  Future<String> deleteById(String id) async {
-    return DeleteDto.fromJson(await delete<Map<String, dynamic>>(path: id)).id;
+    return convertResponse(await put<Map<String, dynamic>>(path: id, body: {'name': name, 'members': members}));
   }
 }
