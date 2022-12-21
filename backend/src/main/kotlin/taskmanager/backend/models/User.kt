@@ -21,7 +21,6 @@ data class User(
     }
 
     fun comparePassword(checkedPassword: String): Boolean {
-        println(BCrypt.verifyer().verify(checkedPassword.toCharArray(), password))
         return BCrypt.verifyer().verify(checkedPassword.toCharArray(), password).verified
     }
 
